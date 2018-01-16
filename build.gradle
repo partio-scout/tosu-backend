@@ -1,0 +1,79 @@
+
+buildscript {
+    repositories {
+	mavenCentral()
+    }
+    dependencies {
+    	classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
+    }
+}
+plugins {
+    id 'net.ltgt.apt' version '0.10'
+
+}
+
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'application'
+
+
+
+logging.captureStandardOutput LogLevel.ERROR
+
+project.ext {
+    junitVersion = "4.12"
+}
+
+run {
+    standardInput = System.in
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/snapshot' }
+}
+    
+mainClassName='app.Main'
+
+
+dependencies {
+
+    compileOnly 'org.projectlombok:lombok:1.16.18'
+    compile("org.springframework.boot:spring-boot-devtools")
+    apt "org.projectlombok:lombok:1.16.18"
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect")
+    
+    compile("com.h2database:h2")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("com.heroku.sdk:heroku-jdbc:0.1.1")
+    compile("org.postgresql:postgresql:9.4.1212.jre7")
+    
+    compile("org.springframework.boot:spring-boot-devtools")
+	
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("org.springframework:spring-test")
+    testCompile "junit:junit:" + junitVersion 
+}
+
+test {
+    testLogging.showStandardStreams = false
+    systemProperties System.getProperties()
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}
+
+
+task applicationCodeCoverageReport(type:JacocoReport){
+    executionData run
+    sourceSets sourceSets.main
+}
+
