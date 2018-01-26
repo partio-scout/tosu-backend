@@ -1,4 +1,4 @@
-#!/bin/bash
+'#!/bin/bash
 set -x
 eval "$(ssh-agent -s)"
 chmod 600 ~/.travis/id_rsa
@@ -9,8 +9,7 @@ ssh-add ~/.travis/id_rsa
 #git push deploy master
 
 ssh deploy@$IP -p $PORT <<EOF
-    cd $DEPLOY_DIR
-    cd ..
+    cd /var/www
     git clone https://github.com/partio-scout/tosu-backend.git
     cd tosu-backend
     gradle bootRepackage
