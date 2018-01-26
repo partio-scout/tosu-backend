@@ -1,4 +1,4 @@
-'#!/bin/bash
+#!/bin/bash
 set -x
 eval "$(ssh-agent -s)"
 chmod 600 ~/.travis/id_rsa
