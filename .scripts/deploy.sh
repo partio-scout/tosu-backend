@@ -10,5 +10,5 @@ git push deploy master
 
 ssh deploy@$IP -p $PORT <<EOF
     cd $DEPLOY_DIR
-    echo "jee" > testi.txt
+    echo "jeejee" > testi.txt
 EOF
