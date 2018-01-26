@@ -14,8 +14,7 @@ ssh deploy@$IP -p $PORT <<EOF
     cd tosu-backend
     gradle bootRepackage
     mv build/libs/gs-rest-service-0.1.0.jar /var/www/html/backend.jar
-    cd /var/www/html
-    java -jar backend.jar &
+    java -jar /var/www/html/backend.jar &
     cd /var/www
     rm -rf tosu-backend
 EOF
