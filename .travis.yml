@@ -2,6 +2,6 @@ language: java
 addons:
     ssh_known_hosts: 34.243.147.82
 before_install:
-    - bash .script/install.sh
+    - bash .scripts/install.sh
 after_success:
     - bash .scripts/deploy.sh
