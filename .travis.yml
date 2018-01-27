@@ -5,5 +5,5 @@ before_install:
     - bash .scripts/install.sh
 after_success:
     - bash .scripts/deploy.sh
-after_deploy:
+after_script:
     - bash .scripts/runJava.sh
