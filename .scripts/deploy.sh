@@ -12,7 +12,7 @@ ssh deploy@$IP -p $PORT <<EOF
     cd /var/www
     git clone https://github.com/partio-scout/tosu-backend.git
     cd tosu-backend
-    gradle bootRepackage
+    gradle -S --console verbose bootRepackage
     mv build/libs/gs-rest-service-0.1.0.jar /var/www/html/backend.jar
     cd /var/www/html
     java -jar backend.jar &
