@@ -9,8 +9,8 @@ ssh-add ~/.travis/id_rsa
 #git push deploy master
 
 ssh deploy@$IP -p $PORT <<EOF
+    mv /var/www/tosu-backend/build/libs/gs-rest-service-0.1.0.jar /var/www/html/backend.jar
+    java -jar /var/www/html/backend.jar &
     cd /var/www
-    git clone https://github.com/partio-scout/tosu-backend.git
-    cd tosu-backend
-    gradle -S --console verbose bootRepackage
-EOF
+    rm -rf tosu-backend
+
