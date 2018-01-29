@@ -13,7 +13,7 @@ apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 
 jar {
-    baseName = 'gs-rest-service'
+    baseName = 'tosu-backend'
     version =  '0.1.0'
     manifest {
         attributes 'Main-Class': 'partio.Application'
