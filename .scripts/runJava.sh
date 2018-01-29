@@ -10,8 +10,8 @@ ssh-add ~/.travis/id_rsa
 
 ssh deploy@$IP -p $PORT <<EOF
     sudo service tosu-backend stop
-    mv -f /var/www/tosu-backend/build/libs/gs-rest-service-0.1.0.jar /var/tosu-apps/tosu-backend.jar
+    sudo mv -f /var/www/tosu-backend/build/libs/gs-rest-service-0.1.0.jar /var/tosu-apps/tosu-backend.jar
     sudo service tosu-backend start
     cd /var/www
-    rm -rf tosu-backend
+    sudo rm -rf tosu-backend
 
