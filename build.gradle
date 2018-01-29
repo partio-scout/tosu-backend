@@ -7,8 +7,13 @@ buildscript {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'application'
 
 jar {
     baseName = 'tosu-backend'
@@ -18,15 +23,31 @@ jar {
     }
 }
 
-repositories {
-    mavenCentral()
+run {
+    standardInput = System.in
 }
+
+test {
+    testLogging.showStandardStreams = false
+    systemProperties System.getProperties()
+}
+mainClassName='partio.Application'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
+    
     compile("org.springframework.boot:spring-boot-starter-web")
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.springframework.boot:spring-boot-devtools")
+    
+    compile("com.h2database:h2")
+    compile("org.postgresql:postgresql:9.4.1212.jre7")
+    
+    compile("org.springframework.boot:spring-boot-devtools")
+    
+    
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    
 }
