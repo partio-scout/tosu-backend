@@ -17,7 +17,7 @@ public class EventService {
     private EventRepository eventRepository;
 
     public List<Event> list() {
-        List<Event> events = eventRepository.findByEndTimeLessThan(LocalDateTime.now());
+        List<Event> events = eventRepository.findByEndTimeAfter(LocalDateTime.now());
         return events;
     }
 
