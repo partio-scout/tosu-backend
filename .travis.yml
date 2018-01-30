@@ -7,3 +7,5 @@ after_success:
     - bash .scripts/deploy.sh
 after_script:
     - bash .scripts/runJava.sh
+notifications:
+    slack: ohtupartio:9Fqci61YwcZE8Wj25AzaV2ID
