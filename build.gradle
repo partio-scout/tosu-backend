@@ -8,8 +8,14 @@ buildscript {
 }
 
 plugins {
-    id 'io.franzbecker.gradle-lombok' version '1.11'
+	id 'io.franzbecker.gradle-lombok' version '1.11'
+	id 'java'
 }
+lombok {
+	version = "1.16.20" 
+	sha256 = ""
+}
+
 repositories {
     mavenCentral()
 }
