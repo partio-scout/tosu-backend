@@ -14,6 +14,4 @@ ssh deploy@$IP -p $PORT <<EOF
     sudo systemctl daemon-reload
     sudo chmod +x /var/tosu-apps/tosu-backend.jar
     sudo service tosu-backend start
-    cd /var/www
-    sudo rm -rf tosu-backend
 EOF

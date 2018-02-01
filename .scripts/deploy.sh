@@ -9,8 +9,10 @@ ssh-add ~/.travis/id_rsa
 #git push deploy master
 
 ssh deploy@$IP -p $PORT <<EOF
-    cd /var/www
-    git clone https://github.com/partio-scout/tosu-backend.git
-    cd tosu-backend
-    gradle -S --console verbose bootRepackage
+    eval "$(ssh-agent -s)"
+    ssh-add ~/.ssh/deploy.pem
+    cd /var/www/tosu-backend
+    git pull
+    gradle clean
+    gradle bootRepackage
 EOF
