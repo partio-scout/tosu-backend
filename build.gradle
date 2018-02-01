@@ -26,6 +26,13 @@ jar {
 run {
     standardInput = System.in
 }
+bootRun {
+//gradle -Dspring.profiles.active=production bootRun
+//with this command you can test how program works with production profile
+//assuming you have a mock postgresql running with this command
+//createdb -h localhost -p 5432 -U postgres tosudb password tosudb;
+    systemProperties System.properties
+}
 
 test {
     testLogging.showStandardStreams = false
