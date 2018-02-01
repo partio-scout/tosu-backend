@@ -27,11 +27,11 @@ public class GreetingTest {
 
     @Test
     public void greetingShouldReturnDefaultMessage() throws Exception {
-        Greeting g = new Greeting("asd");
-        repo.save(g);
-        System.out.println(repo.findAll());
-        System.out.println("asdffdß\nefdsv\nfewasdf\nfd");
-        Assert.assertTrue(true);
+//        Greeting g = new Greeting("asd");
+//        repo.save(g);
+//        System.out.println(repo.findAll());
+//        System.out.println("asdffdß\nefdsv\nfewasdf\nfd");
+//        Assert.assertTrue(true);
 //        Assert.assertFalse(repo.findAll().isEmpty());
     }
 }
