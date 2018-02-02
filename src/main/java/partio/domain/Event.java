@@ -2,6 +2,7 @@ package partio.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 //import javax.persistence.ManyToMany;
@@ -17,13 +18,16 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Entity
 public class Event extends AbstractPersistable<Long> {
 
-    private String name;
+    private String title;
     private LocalDate startDate;
-    private LocalDate endDate;
     private LocalTime startTime;
-    private LocalTime endTime;  
+    private LocalDate endDate;  
+    private LocalTime endTime; 
+    private String type;
     @Column(length = 10000)
-    private String description;
+    private String information;
+    private List<String> activities;
+    
 /*
     For example:
     @ManyToMany
@@ -31,4 +35,6 @@ public class Event extends AbstractPersistable<Long> {
     @ManyToMany
     private List<Scout> scouts;
     */
+
+
 }

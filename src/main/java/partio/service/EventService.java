@@ -21,15 +21,34 @@ public class EventService {
     }
 
     @Transactional
-    public void add(String name, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String description) {
+    public void add(String title, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, String type, String information) {
         Event event = new Event();
-        event.setName(name);
+        event.setTitle(title);
         event.setStartDate(startDate);
-        event.setEndDate(endDate);
         event.setStartTime(startTime);
+        event.setEndDate(endDate);        
         event.setEndTime(endTime);
-        event.setDescription(description);
+        event.setType(type);
+        event.setInformation(information);
 
+        eventRepository.save(event);
+    }
+
+    @Transactional
+    public void addActivity(Long eventId, String activity) {
+        Event event = eventRepository.findOne(eventId);
+        List<String> activities = event.getActivities();
+        activities.add(activity);
+        event.setActivities(activities);
+        eventRepository.save(event);
+    }
+
+    @Transactional
+    public void removeActivity(Long eventId, String activity) {
+        Event event = eventRepository.findOne(eventId);
+        List<String> activities = event.getActivities();
+        activities.remove(activity);
+        event.setActivities(activities);
         eventRepository.save(event);
     }
 
