@@ -9,5 +9,6 @@ import partio.domain.Event;
 
 public interface EventRepository extends JpaRepository<Event, Long>{
      List<Event> findByEndDateAfter(LocalDate date);
+     
 
 }

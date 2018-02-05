@@ -1,19 +1,22 @@
 buildscript {
+    ext {
+        springBootVersion = '1.5.10.RELEASE'
+    }
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE")
     }
-}
+    }
 
 plugins {
-	id 'io.franzbecker.gradle-lombok' version '1.11'
-	id 'java'
+    id 'io.franzbecker.gradle-lombok' version '1.11'
+    id 'java'
 }
 lombok {
-	version = "1.16.20" 
-	sha256 = ""
+    version = "1.16.20"
+    sha256 = ""
 }
 
 repositories {
@@ -31,18 +34,18 @@ jar {
     baseName = 'tosu-backend'
     version =  '0.1.0'
     manifest {
-        attributes 'Main-Class': 'partio.Application'
-    }
+    attributes 'Main-Class': 'partio.Application'
+}
 }
 
 run {
     standardInput = System.in
 }
 bootRun {
-//gradle -Dspring.profiles.active=production bootRun
-//with this command you can test how program works with production profile
-//assuming you have a mock postgresql running with this command
-//createdb -h localhost -p 5432 -U postgres tosudb password tosudb;
+    //gradle -Dspring.profiles.active=production bootRun
+    //with this command you can test how program works with production profile
+    //assuming you have a mock postgresql running with this command
+    //createdb -h localhost -p 5432 -U postgres tosudb password tosudb;
     systemProperties System.properties
 }
 
@@ -55,17 +58,15 @@ mainClassName='partio.Application'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+
 dependencies {
-    
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile("org.springframework.boot:spring-boot-devtools")
-    
-    compile("com.h2database:h2")
-    compile("org.postgresql:postgresql:9.4.1212.jre7")
-    
-    compile("org.springframework.boot:spring-boot-devtools")
-        
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-data-rest')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    runtime('org.springframework.boot:spring-boot-devtools')
+    runtime('com.h2database:h2')
+    runtime('org.postgresql:postgresql')
+    compileOnly('org.projectlombok:lombok')
     testCompile('org.springframework.boot:spring-boot-starter-test')
-    
 }
+
