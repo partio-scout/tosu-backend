@@ -29,7 +29,6 @@ public class EventService {
         event.setStartTime(startTime);
         event.setEndTime(endTime);
         event.setDescription(description);
-
         eventRepository.save(event);
     }
 
