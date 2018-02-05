@@ -9,8 +9,6 @@ ssh-add ~/.travis/id_rsa
 #git push deploy master
 
 ssh deploy@$IP -p $PORT <<EOF
-#    eval "$(ssh-agent -s)"
-#    ssh-add /home/deploy/.ssh/deploy.pem
     cd /var/www/
     git clone https://github.com/partio-scout/tosu-backend.git
     gradle bootRepackage
