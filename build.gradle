@@ -8,12 +8,12 @@ buildscript {
 }
 
 plugins {
-	id 'io.franzbecker.gradle-lombok' version '1.11'
-	id 'java'
+    id 'io.franzbecker.gradle-lombok' version '1.11'
+    id 'java'
 }
 lombok {
-	version = "1.16.20" 
-	sha256 = ""
+    version = "1.16.20" 
+    sha256 = ""
 }
 
 repositories {
@@ -39,10 +39,10 @@ run {
     standardInput = System.in
 }
 bootRun {
-//gradle -Dspring.profiles.active=production bootRun
-//with this command you can test how program works with production profile
-//assuming you have a mock postgresql running with this command
-//createdb -h localhost -p 5432 -U postgres tosudb password tosudb;
+    //gradle -Dspring.profiles.active=production bootRun
+    //with this command you can test how program works with production profile
+    //assuming you have a mock postgresql running with this command
+    //createdb -h localhost -p 5432 -U postgres tosudb password tosudb;
     systemProperties System.properties
 }
 
@@ -65,6 +65,9 @@ dependencies {
     compile("org.postgresql:postgresql:9.4.1212.jre7")
     
     compile("org.springframework.boot:spring-boot-devtools")
+    
+    //json
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
         
     testCompile('org.springframework.boot:spring-boot-starter-test')
     
