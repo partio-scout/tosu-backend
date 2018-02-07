@@ -19,7 +19,7 @@ public class ActivityController {
     @Autowired
     private ActivityService activityService;
     @Autowired
-    private ActivityRepository ar;
+    private ActivityRepository activityRepository;
     
     @DeleteMapping("/activities/{activityId}")
     public Activity deleteActivity(@PathVariable Long activityId) {
@@ -28,13 +28,13 @@ public class ActivityController {
     }
 
     @PostMapping("events/{eventId}/activities")
-    public Activity postActivity(@PathVariable Long eventId, @RequestBody Activity activity) {
-        Activity a = activityService.addActivity(eventId, activity);
-        return a;
+    public Activity postActivity(@PathVariable Long eventId, @RequestBody Activity jsonActivity) {
+        Activity activity = activityService.addActivity(eventId, jsonActivity);
+        return activity;
     }
 
     @GetMapping("/activities")
     public List<Activity> getActivity() {
-        return ar.findAll();
+        return activityRepository.findAll();
     }
 }

@@ -17,16 +17,16 @@ public class ActivityService {
     @Autowired
     private ActivityRepository activityRepository;
 
-    public Activity addActivity(Long eventId, Activity a) {
+    public Activity addActivity(Long eventId, Activity activity) {
 
         Event event = eventRepository.findOne(eventId);
-        a.setEventid(eventId);
-        a.setEvent(event);
-        activityRepository.save(a);
+        activity.setEventid(eventId);
+        activity.setEvent(event);
+        activityRepository.save(activity);
 
-        event.getActivities().add(a);
+        event.getActivities().add(activity);
         eventRepository.save(event);
-        return a;
+        return activity;
     }
 
     public Activity removeActivity(Long activityId) {
