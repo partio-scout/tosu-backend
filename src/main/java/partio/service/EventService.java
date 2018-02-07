@@ -20,6 +20,7 @@ public class EventService {
         return events;
     }
 
+
     public Event add(Event event) {
         eventRepository.save(event);
         return event;
