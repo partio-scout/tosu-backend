@@ -29,6 +29,7 @@ public class EventServiceTest {
 
     @Test
     public void testPostEventsEnterDB() throws InterruptedException {
+        clean();
         es.add(new Event());
         Thread.sleep(10);
         Assert.assertEquals(1, er.findAll().size());
