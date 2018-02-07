@@ -19,6 +19,15 @@ public class EventController {
 
     @PostConstruct
     public void construct() {
+        Event event = new Event();
+        event.setTitle("Superleiri 2018");
+        event.setInformation("leireillään porukalla ja paistellaan makkaraa");
+        event.setType("leiri");
+        //event.setStartDate("2018-03-11");
+        //event.setEndDate("2018-03-15");
+        //event.setStartTime("16:00");
+        //event.setEndTime("10:00");
+        eventService.add(event);
 //        eventService.add("mennyt tapahtuma", LocalDate.of(2016, 2, 4), LocalDate.of(2016, 2, 6), LocalTime.of(13, 0), LocalTime.of(15, 0), "Tämän ei pitäisi näkyä listalla");
 //        eventService.add("Alkanut tapahtuma", LocalDate.of(2018, 1, 13), LocalDate.of(2018, 5, 14), LocalTime.of(13, 0), LocalTime.of(15, 0), "Tämän pitäisi näkyä listalla");
 //        eventService.add("Tuleva tapahtuma", LocalDate.of(2019, 5, 13), LocalDate.of(2019, 5, 14), LocalTime.of(13, 0), LocalTime.of(15, 0), "Tämän pitäisi näkyä listalla");
