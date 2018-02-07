@@ -35,7 +35,7 @@ public class Event extends AbstractPersistable<Long> {
     @Column(length = 10000)
     private String information;
    
-     @JsonManagedReference
+    @JsonManagedReference
     @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Activity> activities;
     
