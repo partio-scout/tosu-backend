@@ -2,6 +2,10 @@ package partio.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -9,13 +13,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
+//import javax.persistence.ManyToMany;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Entity
 public class Event extends AbstractPersistable<Long> {
 //event=kokous, sisältää aktiviteettejä
@@ -40,12 +44,15 @@ public class Event extends AbstractPersistable<Long> {
     private List<Activity> activities;
     
 /*
+
     For example:
     @ManyToMany
     private List<Scout> leaders;
     @ManyToMany
     private List<Scout> scouts;
+
     */
+
 
 
 }
