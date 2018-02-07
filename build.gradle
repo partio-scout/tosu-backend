@@ -15,7 +15,7 @@ plugins {
     id 'java'
 }
 lombok {
-    version = "1.16.20"
+    version = "1.16.20" 
     sha256 = ""
 }
 
@@ -67,6 +67,8 @@ dependencies {
     runtime('com.h2database:h2')
     runtime('org.postgresql:postgresql')
     compileOnly('org.projectlombok:lombok')
+    //json
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
