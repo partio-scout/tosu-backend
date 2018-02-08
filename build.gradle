@@ -8,7 +8,7 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE")
     }
-    }
+}
 
 plugins {
     id 'io.franzbecker.gradle-lombok' version '1.11'
@@ -23,8 +23,6 @@ repositories {
     mavenCentral()
 }
 
-
-
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'application'
@@ -34,8 +32,8 @@ jar {
     baseName = 'tosu-backend'
     version =  '0.1.0'
     manifest {
-    attributes 'Main-Class': 'partio.Application'
-}
+        attributes 'Main-Class': 'partio.Application'
+    }
 }
 
 run {

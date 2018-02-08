@@ -14,6 +14,8 @@ public class ProductionConfiguration {
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource dataSource() {
+        PostgreSQLDatabaseGenerator postgreSQLDatabaseGenerator = new PostgreSQLDatabaseGenerator();
+        postgreSQLDatabaseGenerator.generate();
         return DataSourceBuilder.create().build();
     }
 }
