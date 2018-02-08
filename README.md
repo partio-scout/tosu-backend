@@ -4,6 +4,7 @@ https://docs.google.com/spreadsheets/d/1cA-ldx-M_ppxSicxjL06BmAjhoNi5I55M5BugoUB
 
 
 post event muista headeri!!!!!!!!!!!!!!!!!!!!</br>
+POST</br>
 http://localhost:3001/events</br>
 {</br>
 	"title":"weee",</br>
@@ -19,3 +20,7 @@ http://localhost:3001/events/1/activities</br>
 {</br>
 	"information":"aaaaaabbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaweee"</br>
 }</br>
+</br>
+DELETE</br>
+http://localhost:3001/activities/1</br>
+http://localhost:3001/activities/2</br>
