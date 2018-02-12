@@ -27,5 +27,16 @@ public class EventService {
         return event;
     }
 
+    public Event edit(Long eventId, Event editedEvent) {        
+//        editedEvent.setId(eventId);
+        eventRepository.save(editedEvent);
+        return eventRepository.getOne(eventId);        
+    }
+
+    public Event deleteById(Long eventId) {
+        
+        return null;
+    }
+
   
 }
