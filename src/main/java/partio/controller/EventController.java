@@ -3,7 +3,9 @@ package partio.controller;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +17,6 @@ public class EventController {
 
     @Autowired
     private EventService eventService;
-    
 
     @PostConstruct
     public void construct() {
@@ -32,6 +33,7 @@ public class EventController {
 //        eventService.add("Alkanut tapahtuma", LocalDate.of(2018, 1, 13), LocalDate.of(2018, 5, 14), LocalTime.of(13, 0), LocalTime.of(15, 0), "Tämän pitäisi näkyä listalla");
 //        eventService.add("Tuleva tapahtuma", LocalDate.of(2019, 5, 13), LocalDate.of(2019, 5, 14), LocalTime.of(13, 0), LocalTime.of(15, 0), "Tämän pitäisi näkyä listalla");
     }
+
     @GetMapping("/events")
     public List<Event> getEvents() {
         List<Event> events = eventService.list();
@@ -44,4 +46,13 @@ public class EventController {
         return newEvent;
     }
 
+    @PostMapping("/events/{eventId}")
+    public Event editEvent(@PathVariable Long eventId, @RequestBody Event event) {
+        return eventService.edit(eventId, event);
+    }
+
+    @DeleteMapping("/events/{eventId}")
+    public Event deleteBook(@PathVariable Long eventId) {
+        return eventService.deleteById(eventId);
+    }
 }

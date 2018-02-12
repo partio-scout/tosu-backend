@@ -19,7 +19,7 @@ public class ActivityService {
 
     public Activity addActivity(Long eventId, Activity activity) {
 
-        Event event = eventRepository.findOne(eventId);
+        Event event = eventRepository.getOne(eventId);
         activity.setEventid(eventId);
         activity.setEvent(event);
         activityRepository.save(activity);
@@ -30,7 +30,7 @@ public class ActivityService {
     }
 
     public Activity removeActivity(Long activityId) {
-        Activity activity = activityRepository.findOne(activityId);
+        Activity activity = activityRepository.getOne(activityId);
         activityRepository.delete(activity);
         return activity;
     }
