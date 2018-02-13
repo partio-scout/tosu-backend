@@ -43,16 +43,4 @@ public class Event extends AbstractPersistable<Long> {
     @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Activity> activities;
     
-/*
-
-    For example:
-    @ManyToMany
-    private List<Scout> leaders;
-    @ManyToMany
-    private List<Scout> scouts;
-
-    */
-
-
-
 }

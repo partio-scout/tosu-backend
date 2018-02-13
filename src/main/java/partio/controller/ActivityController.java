@@ -21,6 +21,7 @@ public class ActivityController {
     @Autowired
     private ActivityRepository activityRepository;
     
+    
     @DeleteMapping("/activities/{activityId}")
     public Activity deleteActivity(@PathVariable Long activityId) {
         Activity activity = activityService.removeActivity(activityId);
@@ -37,4 +38,5 @@ public class ActivityController {
     public List<Activity> getActivity() {
         return activityRepository.findAll();
     }
+    
 }
