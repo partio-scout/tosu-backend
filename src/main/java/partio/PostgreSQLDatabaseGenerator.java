@@ -30,6 +30,9 @@ public class PostgreSQLDatabaseGenerator {
         settings.put("hibernate.hbm2ddl.auto", "create");
         settings.put("show_sql", "true");
         settings.put("server.port", "3001");
+        settings.put("server.ssl.key-store-type", "PKCS12");
+        settings.put("server.ssl.key-store", "certificate.p12");
+        settings.put("server.ssl.key-store-password", "tosudb");
 
         MetadataSources metadata = new MetadataSources(
                 new StandardServiceRegistryBuilder()
