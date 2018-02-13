@@ -3,6 +3,7 @@ package partio.controller;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,18 +42,18 @@ public class EventController {
     }
 
     @PostMapping("/events")
-    public Event postEvent(@RequestBody Event event) {
-        Event newEvent = eventService.add(event);
+    public ResponseEntity<Object> postEvent(@RequestBody Event event) {     
+        ResponseEntity<Object> newEvent = eventService.add(event);
         return newEvent;
     }
 
     @PostMapping("/events/{eventId}")
-    public Event editEvent(@PathVariable Long eventId, @RequestBody Event event) {
+    public ResponseEntity<Object> editEvent(@PathVariable Long eventId, @RequestBody Event event) {
         return eventService.edit(eventId, event);
     }
 
     @DeleteMapping("/events/{eventId}")
-    public Event deleteBook(@PathVariable Long eventId) {
+    public ResponseEntity<Object> deleteBook(@PathVariable Long eventId) {
         return eventService.deleteById(eventId);
     }
 }

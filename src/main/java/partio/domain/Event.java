@@ -43,4 +43,16 @@ public class Event extends AbstractPersistable<Long> {
     @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Activity> activities;
     
+    public void setAllButId(Event event) {
+        this.title = event.title;
+        this.startDate = event.startDate;
+        this.endDate = event.endDate;
+        this.startTime = event.startTime;
+        this.endTime = event.endTime;
+        this.type = event.type;
+        this.information = event.information;
+        
+        this.activities = event.activities;
+    }
+    
 }
