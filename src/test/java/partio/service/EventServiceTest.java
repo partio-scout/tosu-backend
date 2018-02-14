@@ -27,14 +27,14 @@ public class EventServiceTest {
         });
     }
 
-    @Test
-    public void testPostEventsEnterDB() throws InterruptedException {
+    @Test//we have added validation not good enough anymore
+    public void testInvalidPostEventsEnterDB() throws InterruptedException {
         clean();
         es.add(new Event());
         Thread.sleep(10);
-        Assert.assertEquals(1, er.findAll().size());
+        Assert.assertEquals(0, er.findAll().size());
         es.add(new Event());
-        Assert.assertEquals(2, er.findAll().size());
+        Assert.assertEquals(0, er.findAll().size());
         clean();
     }
 }
