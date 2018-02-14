@@ -53,7 +53,7 @@ public class EventController {
     }
 
     @DeleteMapping("/events/{eventId}")
-    public ResponseEntity<Object> deleteBook(@PathVariable Long eventId) {
+    public ResponseEntity<Object> deleteEvent(@PathVariable Long eventId) {
         return eventService.deleteById(eventId);
     }
 }
