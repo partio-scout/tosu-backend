@@ -7,7 +7,7 @@ ssh-add ~/.travis/id_rsa
 #git config --global push.default matching
 #git remote add deploy ssh://git@$IP:$PORT$DEPLOY_DIR
 #git push deploy master
-ssh -tt deploy@$IP -p $PORT <<EOF
+ssh deploy@$IP -p $PORT <<EOF
     if [[ $TRAVIS_BRANCH = 'master' ]]
     then
         sudo cp -f /var/www/tosu-backend/build/libs/tosu-backend-0.1.0.jar /var/tosu-apps/tosu-backend.jar
