@@ -45,7 +45,7 @@ public class EventService {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
 
     }
-
+    //have an option if single or whole group?
     public ResponseEntity<Object> deleteById(Long eventId) {
         Event toDelete = eventRepository.findOne(eventId);
         if (toDelete == null) {

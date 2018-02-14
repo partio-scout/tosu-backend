@@ -7,8 +7,7 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.spi.MetadataImplementor;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
-import partio.domain.Activity;
-import partio.domain.Event;
+import partio.domain.*;
 
 public class PostgreSQLDatabaseGenerator {
     
@@ -28,6 +27,7 @@ public class PostgreSQLDatabaseGenerator {
                         .applySettings(settings)
                         .build());
         metadata.addAnnotatedClass(Event.class);
+        metadata.addAnnotatedClass(EventGroup.class);
         metadata.addAnnotatedClass(Activity.class);
         SchemaExport schemaExport = new SchemaExport(
                 (MetadataImplementor) metadata.buildMetadata()

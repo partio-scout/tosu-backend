@@ -1,5 +1,6 @@
 package partio.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
@@ -8,10 +9,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 //import javax.persistence.ManyToMany;
@@ -38,10 +42,29 @@ public class Event extends AbstractPersistable<Long> {
     private String type;
     @Column(length = 10000)
     private String information;
+    
+    @JsonBackReference   
+    @ManyToOne
+    @JoinColumn    
+    private EventGroup group;   
    
     @JsonManagedReference
     @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Activity> activities;
+
+    public Event(String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String type, String information) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.type = type;
+        this.information = information;
+        this.group = null;
+        this.activities = new ArrayList<>();
+    }
+    
+    
     
     public void setAllButId(Event event) {
         this.title = event.title;
@@ -52,6 +75,7 @@ public class Event extends AbstractPersistable<Long> {
         this.type = event.type;
         this.information = event.information;        
         this.activities = event.activities;
+        this.group = event.group;
     }
     
 }
