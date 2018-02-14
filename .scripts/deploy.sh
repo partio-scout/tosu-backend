@@ -11,8 +11,8 @@ ssh-add ~/.travis/id_rsa
 ssh deploy@$IP -p $PORT <<EOF
     cd /var/www/
     git clone https://github.com/partio-scout/tosu-backend.git
-    cp certificate.p12 /var/www/tosu-backend/src/main/resources/
-    cp -f application-production.properties /var/www/tosu-backend/src/main/resources/
+    cp certificate.p12 /var/www/tosu-backend/src/main/resources/certificate.p12
+    cp -f application-production.properties /var/www/tosu-backend/src/main/resources/application-production.properties
     cd tosu-backend
     gradle bootRepackage
 EOF
