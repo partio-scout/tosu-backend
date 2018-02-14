@@ -7,13 +7,15 @@ ssh-add ~/.travis/id_rsa
 #git config --global push.default matching
 #git remote add deploy ssh://git@$IP:$PORT$DEPLOY_DIR
 #git push deploy master
-if [[ $TRAVIS_BRANCH = 'master' ]]
-    ssh deploy@$IP -p $PORT <<EOF
+ssh deploy@$IP -p $PORT <<EOF
+    echo $TRAVIS_BRANCH
+    if [[ $TRAVIS_BRANCH = 'master' ]]
+    then
         cd /var/www/
         git clone https://github.com/partio-scout/tosu-backend.git
         cp certificate.p12 /var/www/tosu-backend/src/main/resources/certificate.p12
         cp -f application-production.properties /var/www/tosu-backend/src/main/resources/application-production.properties
         cd tosu-backend
         gradle bootRepackage
-    EOF
-fi
+    fi
+EOF
