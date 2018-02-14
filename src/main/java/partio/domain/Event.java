@@ -50,8 +50,7 @@ public class Event extends AbstractPersistable<Long> {
         this.startTime = event.startTime;
         this.endTime = event.endTime;
         this.type = event.type;
-        this.information = event.information;
-        
+        this.information = event.information;        
         this.activities = event.activities;
     }
     

@@ -52,7 +52,7 @@ public class EventService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } else {
             eventRepository.delete(toDelete);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            return ResponseEntity.ok(toDelete);
         }
     }
 
