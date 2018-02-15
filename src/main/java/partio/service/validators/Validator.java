@@ -1,13 +1,18 @@
 package partio.service.validators;
 
 import java.util.List;
+import org.springframework.stereotype.Service;
+import partio.domain.Event;
 
+@Service
 public abstract class Validator<T> {
 
     protected static final boolean CAN_NULL = false;
     protected static final boolean NOT_NULL = true;
 
-    public abstract List<String> validate(T t);
+    public abstract List<String> validateNew(T t);
+    public abstract List<String> validateChanges(Event original, Event changes);
+    protected abstract List<String> validateNewAndOld(T t);
     
     protected boolean validateStringLength(String toValidate, int min, int max, boolean notNull) {
         if (toValidate == null || toValidate.isEmpty()) {
