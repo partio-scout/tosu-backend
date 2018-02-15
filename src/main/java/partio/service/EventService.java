@@ -41,7 +41,7 @@ public class EventService {
     public ResponseEntity<Object> edit(Long eventId, Event editedEvent) {
         Event original = eventRepository.findOne(eventId);
         List<String> errors = eventValidator.validateChanges(original, editedEvent);
-
+        
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
 
     }

@@ -113,21 +113,15 @@ public class EventValidatorTest {
     }
 
     @Test
-    public void invalidNewEventAcceptedDay() {
-        Event stub = new Event("lol", DateNowPlusAmount(0, 2, 2), DateNowPlusAmount(0, 2, 1), LocalTime.MIN, LocalTime.MIN, "ass", "asshole");
-        Assert.assertFalse("validator should have found errors!", 0 == validator.validateNew(stub).size());
-    }
-
-    @Test
     public void invalidNewEventAcceptedMaxLength() {
-        Event stub = new Event("lol", DateNowPlusAmount(0, 0, 0), DateNowPlusAmount(0, 12, 1), LocalTime.MIN, LocalTime.MIN, "ass", "asshole");
+        Event stub = new Event("lol", DateNowPlusAmount(0, 0, 0), DateNowPlusAmount(0, 12, 1), LocalTime.MAX, LocalTime.MIN, "ass", "asshole");
         Assert.assertFalse("validator should have found errors!", 0 == validator.validateNew(stub).size());
     }
 
 //time valid test
     @Test
-    public void validNewEventAcceptedSameAsCurrentTime() {
-        Event stub = new Event("lol", LocalDate.now(), LocalDate.now(), LocalTime.now(), LocalTime.now(), "ass", "asshole");
+    public void validNewEventAcceptedSameLengthTimeZero() {
+        Event stub = new Event("lol", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "ass", "asshole");
         Assert.assertTrue(validator.validateNew(stub).toString(), 0 == validator.validateNew(stub).size());
     }
 
