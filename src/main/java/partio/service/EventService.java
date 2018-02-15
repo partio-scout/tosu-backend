@@ -37,12 +37,17 @@ public class EventService {
 
     }
 
-    //tää jäljellä
     public ResponseEntity<Object> edit(Long eventId, Event editedEvent) {
         Event original = eventRepository.findOne(eventId);
         List<String> errors = eventValidator.validateChanges(original, editedEvent);
         
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
+        if (errors.isEmpty()) {
+            original.setAllButId(editedEvent);
+            eventRepository.save(original);
+            return ResponseEntity.ok(original);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
+        }
 
     }
     //have an option if single or whole group?
