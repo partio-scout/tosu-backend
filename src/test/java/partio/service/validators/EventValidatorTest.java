@@ -58,8 +58,8 @@ public class EventValidatorTest {
     }
 
     @Test
-    public void validNewEventStartIsNowMin() {
-        Event stub = new Event("lol", DateNowPlusAmount(0, 0, 0), DateNowPlusAmount(0, 0, 0), LocalTime.now(), LocalTime.now(), "ass", "asshole");
+    public void validNewEventStartIs5MinFromNow() {
+        Event stub = new Event("lol", DateNowPlusAmount(0, 0, 0), DateNowPlusAmount(0, 0, 0), TimeNowPlusAmount(0, 5), TimeNowPlusAmount(0, 5), "ass", "asshole");
         Assert.assertTrue(validator.validateNew(stub).toString(), 0 == validator.validateNew(stub).size());
     }
 
