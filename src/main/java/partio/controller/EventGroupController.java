@@ -25,7 +25,7 @@ public class EventGroupController {
        return groupService.list();
     }
     
-    //no events are accepted, this one creates a pure group
+    //creates a new group without params since it's only made of ids
     @PostMapping("/eventgroup")
     public ResponseEntity<Object> postEventGroup() throws IOException {
        return groupService.createEventGroup();

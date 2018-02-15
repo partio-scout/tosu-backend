@@ -2,7 +2,6 @@ package partio.jsonconfig;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import partio.domain.Activity;
 import partio.domain.Event;
-import partio.domain.EventGroup;
 
 public class EventSerializer extends StdSerializer<Event> {
 
