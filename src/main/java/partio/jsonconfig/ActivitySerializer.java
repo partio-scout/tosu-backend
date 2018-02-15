@@ -6,25 +6,27 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
-import partio.domain.EventGroup;
+import partio.domain.Activity;
 
-public class EventGroupSerializer extends StdSerializer<EventGroup> {
+public class ActivitySerializer extends StdSerializer<Activity> {
 
-   public EventGroupSerializer() {
+   public ActivitySerializer() {
         this(null);
     }
    
-    public EventGroupSerializer(Class<EventGroup> t) {
+    public ActivitySerializer(Class<Activity> t) {
         super(t);
     }
  
     @Override
     public void serialize(
-      EventGroup group, JsonGenerator jgen, SerializerProvider provider) 
+      Activity value, JsonGenerator jgen, SerializerProvider provider) 
       throws IOException, JsonProcessingException {
   
         jgen.writeStartObject();
-        jgen.writeNumberField("groupId", group.getId());
+        jgen.writeNumberField("id", value.getId());
+        jgen.writeStringField("information", value.getInformation());
+        jgen.writeNumberField("eventId", value.getEvent().getId());
         jgen.writeEndObject();
     }
         

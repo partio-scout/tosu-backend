@@ -22,7 +22,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import partio.jsonconfig.EventSerializer;
-//import javax.persistence.ManyToMany;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,7 +31,7 @@ import partio.jsonconfig.EventSerializer;
 @JsonDeserialize(using = EventDeserializer.class)
 @JsonSerialize(using = EventSerializer.class)
 
-//format is for readin date, serializer still has to write correct format
+//format is for reading date, serializer still has to write correct format
 public class Event extends AbstractPersistable<Long> {
 //event=kokous, sisältää aktiviteettejä
     private String title;
