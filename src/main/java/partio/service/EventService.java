@@ -27,7 +27,7 @@ public class EventService {
 
     public ResponseEntity<Object> add(Event event) {
         List<String> errors = eventValidator.validateNew(event);
-
+                
         if (errors.isEmpty()) {
             eventRepository.save(event);
             return ResponseEntity.ok(event);
@@ -36,13 +36,14 @@ public class EventService {
         }
 
     }
+// group id cannot be changed, activities changed by activitycontroller
 
     public ResponseEntity<Object> edit(Long eventId, Event editedEvent) {
         Event original = eventRepository.findOne(eventId);
         List<String> errors = eventValidator.validateChanges(original, editedEvent);
-        
+
         if (errors.isEmpty()) {
-            original.setAllButId(editedEvent);
+            original.setVariables(editedEvent);
             eventRepository.save(original);
             return ResponseEntity.ok(original);
         } else {
@@ -50,6 +51,7 @@ public class EventService {
         }
 
     }
+
     //have an option if single or whole group?
     public ResponseEntity<Object> deleteById(Long eventId) {
         Event toDelete = eventRepository.findOne(eventId);

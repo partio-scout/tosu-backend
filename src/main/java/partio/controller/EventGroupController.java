@@ -1,0 +1,38 @@
+
+package partio.controller;
+
+import java.io.IOException;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+import partio.domain.EventGroup;
+import partio.service.EventGroupService;
+
+@RestController
+@Transactional
+public class EventGroupController {
+    @Autowired
+    private EventGroupService groupService;
+    
+    @GetMapping("/eventgroup")
+    public List<EventGroup> getAll() throws IOException {
+       return groupService.list();
+    }
+    
+    //no events are accepted, this one creates a pure group
+    @PostMapping("/eventgroup")
+    public ResponseEntity<Object> postEventGroup() throws IOException {
+       return groupService.createEventGroup();
+    }
+    
+    @DeleteMapping("/eventgroup/{groupId}")
+    public ResponseEntity<Object> delete(@PathVariable Long groupId) throws IOException {
+       return groupService.delete(groupId);
+    }
+}
