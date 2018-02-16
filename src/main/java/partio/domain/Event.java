@@ -1,8 +1,11 @@
 package partio.domain;
 
+import partio.jsonconfig.EventDeserializer;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import org.springframework.data.jpa.domain.AbstractPersistable;
+import partio.jsonconfig.EventSerializer;
 //import javax.persistence.ManyToMany;
 
 @NoArgsConstructor
@@ -25,6 +29,10 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
+@JsonDeserialize(using = EventDeserializer.class)
+@JsonSerialize(using = EventSerializer.class)
+
+//format is for readin date, serializer still has to write correct format
 public class Event extends AbstractPersistable<Long> {
 //event=kokous, sisältää aktiviteettejä
     private String title;
@@ -46,7 +54,7 @@ public class Event extends AbstractPersistable<Long> {
     @JsonBackReference   
     @ManyToOne
     @JoinColumn    
-    private EventGroup group;   
+    private EventGroup groupId;   
    
     @JsonManagedReference
     @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -60,22 +68,20 @@ public class Event extends AbstractPersistable<Long> {
         this.endTime = endTime;
         this.type = type;
         this.information = information;
-        this.group = null;
+        this.groupId = null;
         this.activities = new ArrayList<>();
     }
     
     
     
-    public void setAllButId(Event event) {
+    public void setVariables(Event event) {
         this.title = event.title;
         this.startDate = event.startDate;
         this.endDate = event.endDate;
         this.startTime = event.startTime;
         this.endTime = event.endTime;
         this.type = event.type;
-        this.information = event.information;        
-        this.activities = event.activities;
-        this.group = event.group;
+        this.information = event.information;
     }
     
 }
