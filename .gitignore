@@ -1,8 +1,5 @@
 
 /build
 /.gradle
-<<<<<<< HEAD
 .nb-gradle
-=======
-/.nb-gradle
->>>>>>> 0bfc77c77d70c9751ad70a08a6c9528c90e796bd
+
