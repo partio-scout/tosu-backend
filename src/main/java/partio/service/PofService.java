@@ -22,10 +22,10 @@ public final class PofService extends RestTemplate {
         this.uri = URI.create(uri);
     }
 
-    public Object getPof() throws IOException {
+    public ObjectNode getPof() throws IOException {
         String json = restTemplate.getForObject(uri, String.class);
         ObjectMapper mapper = new ObjectMapper();
-        Object jsonObject = mapper.readValue(json, ObjectNode.class);
+        ObjectNode jsonObject = mapper.readValue(json, ObjectNode.class);
         return jsonObject;
     }
 

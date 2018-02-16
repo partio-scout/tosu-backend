@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import partio.domain.Event;
+import partio.repository.EventGroupRepository;
 
 /*
 lengths of info
@@ -23,6 +25,9 @@ public class EventValidator extends Validator<Event> {
     public static final int MAX_TYPE_LENGTH = 64;
     public static final int MIN_TITLE_LENGTH = 2;
     public static final int MAX_TITLE_LENGTH = 64;
+
+    @Autowired
+    EventGroupRepository groupRepository;
 
     @Override
     public List<String> validateNew(Event event) {
@@ -106,6 +111,10 @@ public class EventValidator extends Validator<Event> {
             errors.add("event has to start and end within a year of now");
         }
 
+        if (!ifHasGroupItIsKnown(event)) {
+            errors.add("this group id is unknown!");
+        }
+
         return errors;
     }
 
@@ -141,22 +150,24 @@ public class EventValidator extends Validator<Event> {
     }
 
     private boolean startAfterCurrentTime(Event t) {
-        //      System.out.println("check start time");
         LocalDate dateNow = LocalDate.now();
         if (t.getStartDate().isAfter(dateNow)) {
-            //        System.out.println("start date after now");
             return true;
 
         } else if (t.getStartDate().isEqual(dateNow)) {
-            //      System.out.println("start date same as now");
             LocalTime timeNow = LocalTime.now();
-
-            //    System.out.println("event starttime is before now: "+t.getStartTime().isBefore(timeNow));
             return !t.getStartTime().isBefore(timeNow);
 
         } else {
-            //  System.out.println("start date before this day");
+
             return false;
         }
+    }
+
+    private boolean ifHasGroupItIsKnown(Event event) {
+        if (event.getGroupId() == null) {
+            return true;
+        }
+        return groupRepository.findOne(event.getGroupId().getId()) != null;
     }
 }
