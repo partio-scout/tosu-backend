@@ -8,7 +8,6 @@ ssh-add ~/.travis/id_rsa
 #git remote add deploy ssh://git@$IP:$PORT$DEPLOY_DIR
 #git push deploy master
 ssh deploy@$IP -p $PORT <<EOF
-    echo $TRAVIS_BRANCH
     if [[ $TRAVIS_BRANCH = 'master' ]]
     then
         cd /var/www/
