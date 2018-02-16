@@ -1,6 +1,7 @@
 package partio.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.net.URI;
 import org.springframework.stereotype.Service;
@@ -21,14 +22,11 @@ public final class PofService extends RestTemplate {
         this.uri = URI.create(uri);
     }
 
-    public Object getPof() throws IOException {
+    public ObjectNode getPof() throws IOException {
         String json = restTemplate.getForObject(uri, String.class);
         ObjectMapper mapper = new ObjectMapper();
-        Object jsonObject = mapper.readValue(json, Object.class);
-        String prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-
-        System.out.println(prettyJson);
-        return (prettyJson);
+        ObjectNode jsonObject = mapper.readValue(json, ObjectNode.class);
+        return jsonObject;
     }
 
 }
