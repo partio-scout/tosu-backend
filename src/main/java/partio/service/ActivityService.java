@@ -1,5 +1,6 @@
 package partio.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,12 @@ public class ActivityService {
         Event event = eventRepository.findOne(eventId);
         if (event == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        //very quick validation check for not empty string will be refactored later
+        if (activity.getInformation() == null || activity.getInformation().trim().isEmpty()) {
+            ArrayList<String> errors = new ArrayList<>();
+            errors.add("activity is empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
         activity.setEvent(event);
         activityRepository.save(activity);
