@@ -27,7 +27,6 @@ public class EventService {
 
     public ResponseEntity<Object> add(Event event) {
         List<String> errors = eventValidator.validateNew(event);
-                
         if (errors.isEmpty()) {
             eventRepository.save(event);
             return ResponseEntity.ok(event);

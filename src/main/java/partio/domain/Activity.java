@@ -3,6 +3,7 @@ package partio.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;

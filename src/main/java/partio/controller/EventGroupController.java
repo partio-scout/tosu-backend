@@ -31,6 +31,8 @@ public class EventGroupController {
        return groupService.createEventGroup();
     }
     
+    //make it so it wont delete events that are completed if loggin is needed 
+    //(logging is not yet needed so this will do)
     @DeleteMapping("/eventgroup/{groupId}")
     public ResponseEntity<Object> delete(@PathVariable Long groupId) throws IOException {
        return groupService.delete(groupId);
