@@ -37,4 +37,5 @@ public class EventGroupController {
     public ResponseEntity<Object> delete(@PathVariable Long groupId) throws IOException {
        return groupService.delete(groupId);
     }
+    //useless line
 }
