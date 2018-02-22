@@ -71,7 +71,7 @@ public class ActivityControllerTest {
 
         Activity savedindb = activityRepo.findAll().get(0);
 
-        Assert.assertTrue(savedindb.getInformation().equals(stub.getInformation()));
+        Assert.assertTrue(savedindb.getGuid().equals(stub.getGuid()));
         Assert.assertTrue(Objects.equals(savedindb.getEvent().getId(), indbEvent.getId()));
     }
 
