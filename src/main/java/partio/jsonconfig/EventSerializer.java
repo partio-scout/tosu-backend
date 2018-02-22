@@ -46,8 +46,12 @@ public class EventSerializer extends StdSerializer<Event> {
         jgen.writeObjectField("endTime", eventTimeFormat(event.getEndTime()));
 
         jgen.writeStringField("type", event.getType());
-        jgen.writeStringField("information", event.getInformation());
 
+        if (event.getInformation() != null) {
+            jgen.writeStringField("information", event.getInformation());
+        } else {
+            jgen.writeStringField("information", "");
+        }
         if (event.getGroupId() != null) {
             jgen.writeNumberField("groupId", event.getGroupId().getId());
         } else {
