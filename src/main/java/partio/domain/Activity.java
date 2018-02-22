@@ -21,6 +21,7 @@ import partio.jsonconfig.ActivitySerializer;
 @JsonSerialize(using = ActivitySerializer.class)
 public class Activity  extends AbstractPersistable<Long> {  
       
+    //turha lisäys
     @ManyToOne
     @JoinColumn    
     private Event event;    

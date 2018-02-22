@@ -10,9 +10,9 @@ ssh-add ~/.travis/id_rsa
 ssh deploy@$IP -p $PORT <<EOF
     if [[ $TRAVIS_BRANCH = 'master' ]]
     then
-        sudo cp -f /var/www/tosu-backend/build/libs/tosu-backend-0.1.0.jar /var/tosu-apps/tosu-backend.jar
+        cp -f /var/www/tosu-backend/build/libs/tosu-backend-0.1.0.jar /var/tosu-apps/tosu-backend.jar
         sudo systemctl daemon-reload
-        sudo chmod +x /var/tosu-apps/tosu-backend.jar
+        chmod +x /var/tosu-apps/tosu-backend.jar
         sudo service tosu-backend restart
         rm -rf /var/www/tosu-backend
     fi
