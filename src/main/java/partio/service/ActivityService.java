@@ -28,7 +28,7 @@ public class ActivityService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         //very quick validation check for not empty string will be refactored later
-        if (activity.getGuid()== null || activity.getGuid().trim().isEmpty()) {
+        if (activity.getInformation() == null || activity.getInformation().trim().isEmpty()) {
             ArrayList<String> errors = new ArrayList<>();
             errors.add("activity is empty");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);

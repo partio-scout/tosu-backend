@@ -23,7 +23,6 @@ public class Activity  extends AbstractPersistable<Long> {
       
     @ManyToOne
     @JoinColumn    
-    private Event event;   
-    //pof backend id
-    private String guid;
+    private Event event;    
+    private String information;
 }

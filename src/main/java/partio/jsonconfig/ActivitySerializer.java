@@ -25,7 +25,7 @@ public class ActivitySerializer extends StdSerializer<Activity> {
   
         jgen.writeStartObject();
         jgen.writeNumberField("id", value.getId());
-        jgen.writeStringField("guid", value.getGuid());
+        jgen.writeStringField("information", value.getInformation());
         jgen.writeNumberField("eventId", value.getEvent().getId());
         jgen.writeEndObject();
     }
