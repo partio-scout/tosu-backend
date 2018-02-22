@@ -37,7 +37,7 @@ public class EventDeserializer extends StdDeserializer<Event> {
         LocalTime endTime = LocalTime.parse(node.get("endTime").asText());
         
         String type = node.get("type").asText();
-        String information = node.get("information").asText();
+        String guid = node.get("guid").asText();
 
         List<Activity> activities = null;
         if (node.get("activities") != null) {
@@ -48,7 +48,7 @@ public class EventDeserializer extends StdDeserializer<Event> {
         if (node.get("groupId") != null) {
             groupId = mapper.readValue(node.get("groupId").asText(), EventGroup.class);
         }
-        return new Event(title, startDate, endDate, startTime, endTime, type, information, groupId, activities);
+        return new Event(title, startDate, endDate, startTime, endTime, type, guid, groupId, activities);
     }
 
 }
