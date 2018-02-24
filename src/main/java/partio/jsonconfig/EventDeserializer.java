@@ -44,9 +44,10 @@ public class EventDeserializer extends StdDeserializer<Event> {
         if (node.get("information") != null) {
             information = node.get("information").asText();
         } */
-
-        String guid = node.get("guid").asText();
-
+        if (node.get("guid") != null) {
+            String guid = node.get("guid").asText();
+        }
+        
         List<Activity> activities = null;
         if (node.get("activities") != null) {
             activities = mapper.readValue(node.get("activities").asText(),
