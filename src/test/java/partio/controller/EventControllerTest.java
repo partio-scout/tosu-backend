@@ -66,26 +66,27 @@ public class EventControllerTest {
         String responseBody = res.andReturn().getResponse().getContentAsString();
         Assert.assertTrue(responseBody.contains(helper.responseExpectedToContain(validStub)));
     }
-     @Test
+
+    @Test
     public void validWithGroupPost() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/eventgroup")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
-        
-        EventGroup group = groupRepo.findAll().get(0);      
+
+        EventGroup group = groupRepo.findAll().get(0);
         validStub.setGroupId(group);
-        
+
         ResultActions res = mockMvc.perform(MockMvcRequestBuilders.post("/events")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isOk());
 
-         System.out.println("expexted---\n        "+helper.responseExpectedToContain(validStub)+"<-expexted");
-         System.out.println("received--\n"+res.andReturn().getResponse().getContentAsString()+"<-received");
+        System.out.println("expexted---\n        " + helper.responseExpectedToContain(validStub) + "<-expexted");
+        System.out.println("received--\n" + res.andReturn().getResponse().getContentAsString() + "<-received");
         String responseBody = res.andReturn().getResponse().getContentAsString();
         Assert.assertTrue(responseBody.contains(helper.responseExpectedToContain(validStub)));
         Assert.assertTrue(responseBody.contains("\"groupId\":" + group.getId()));
-    } 
+    }
 
     @Test
     public void invalidPost() throws Exception {
@@ -105,7 +106,7 @@ public class EventControllerTest {
         long id = eventRepo.findAll().get(0).getId();
 
         validStub.setInformation("we have modded info for testing");
-        ResultActions res = mockMvc.perform(MockMvcRequestBuilders.put("/events/"+ id)
+        ResultActions res = mockMvc.perform(MockMvcRequestBuilders.put("/events/" + id)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isOk());
@@ -113,7 +114,7 @@ public class EventControllerTest {
         String responseBody = res.andReturn().getResponse().getContentAsString();
         Assert.assertTrue(responseBody.contains(helper.responseExpectedToContain(validStub)));
     }
-    
+
     @Test
     public void invalidPut() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/events")
@@ -124,7 +125,7 @@ public class EventControllerTest {
         long id = eventRepo.findAll().get(0).getId();
 
         validStub.setInformation(" ");
-        ResultActions res = mockMvc.perform(MockMvcRequestBuilders.put("/events/"+ id)
+        ResultActions res = mockMvc.perform(MockMvcRequestBuilders.put("/events/" + id)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isBadRequest());
@@ -132,22 +133,22 @@ public class EventControllerTest {
         String responseBody = res.andReturn().getResponse().getContentAsString();
         Assert.assertFalse(responseBody.contains(helper.responseExpectedToContain(validStub)));
     }
-    
+
     @Test
     public void validDelete() throws Exception {
-                mockMvc.perform(MockMvcRequestBuilders.post("/events")
+        mockMvc.perform(MockMvcRequestBuilders.post("/events")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isOk());
-        
+
         long id = eventRepo.findAll().get(0).getId();
-        ResultActions res = mockMvc.perform(MockMvcRequestBuilders.delete("/events/"+ id)
+        ResultActions res = mockMvc.perform(MockMvcRequestBuilders.delete("/events/" + id)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
         Assert.assertTrue(eventRepo.findOne(id) == null);
     }
-    
+
     @Test
     public void invalidDelete() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/events/1")

@@ -26,7 +26,7 @@ public class EventDeserializer extends StdDeserializer<Event> {
 
     @Override
     public Event deserialize(JsonParser jp, DeserializationContext dc) throws IOException, JsonProcessingException {
-        
+
         JsonNode node = jp.getCodec().readTree(jp);
         ObjectMapper mapper = new ObjectMapper();
 
@@ -35,16 +35,14 @@ public class EventDeserializer extends StdDeserializer<Event> {
         LocalDate endDate = LocalDate.parse(node.get("endDate").asText());
         LocalTime startTime = LocalTime.parse(node.get("startTime").asText());
         LocalTime endTime = LocalTime.parse(node.get("endTime").asText());
-        
+
         String type = node.get("type").asText();
-        
-        
-         String information = "";
-        
+        String information = "";
+
         if (node.get("information") != null) {
             information = node.get("information").asText();
-        } 
-        
+        }
+
         List<Activity> activities = null;
         if (node.get("activities") != null) {
             activities = mapper.readValue(node.get("activities").asText(),
