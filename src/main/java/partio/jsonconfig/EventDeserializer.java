@@ -37,8 +37,7 @@ public class EventDeserializer extends StdDeserializer<Event> {
         LocalTime endTime = LocalTime.parse(node.get("endTime").asText());
         
         String type = node.get("type").asText();
-        
-        
+       
          String information = "";
         
         if (node.get("information") != null) {
