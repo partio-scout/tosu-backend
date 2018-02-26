@@ -44,21 +44,15 @@ public class EventSerializer extends StdSerializer<Event> {
 
         jgen.writeObjectField("startTime", eventTimeFormat(event.getStartTime()));
         jgen.writeObjectField("endTime", eventTimeFormat(event.getEndTime()));
-
         jgen.writeStringField("type", event.getType());
+        jgen.writeStringField("information", event.getInformation());
 
-        /* if (event.getInformation() != null) {
-            jgen.writeStringField("information", event.getInformation());
-        } else {
-            jgen.writeStringField("information", "");
-        }
         if (event.getGroupId() != null) {
             jgen.writeNumberField("groupId", event.getGroupId().getId());
         } else {
             jgen.writeNumberField("groupId", null);
-        } */
-        jgen.writeStringField("guid", event.getInformation());
-        
+        }
+
         if (event.getActivities() != null) {
 
             jgen.writeArrayFieldStart("activities");
@@ -68,7 +62,7 @@ public class EventSerializer extends StdSerializer<Event> {
                 jgen.writeNumberField("id", activity.getId());
                 // jgen.writeStringField("information", activity.getInformation());
                 jgen.writeStringField("guid", activity.getGuid());
-                jgen.writeEndObject(); 
+                jgen.writeEndObject();
             }
 
             jgen.writeEndArray();
