@@ -19,6 +19,7 @@ public class ActivityController {
     @Autowired
     private ActivityService activityService;    
     
+    //tämän
     @DeleteMapping("/activities/{activityId}")
     public ResponseEntity<Object> deleteActivity(@PathVariable Long activityId) {
         return activityService.removeActivity(activityId);

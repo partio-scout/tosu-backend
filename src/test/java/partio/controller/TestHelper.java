@@ -14,7 +14,7 @@ public class TestHelper {
     }
 
     public String activityToJson(Activity activity) {
-        return "{ \"guid\":\"" + activity.getGuid()+ "\"}";
+        return "{ \"guid\":\"" + activity.getGuid() + "\"}";
     }
 
     public String eventToJson(Event event) {
@@ -24,12 +24,12 @@ public class TestHelper {
                 + "\"startTime\":\"" + eventTimeFormat(event.getStartTime()) + "\","
                 + "\"endTime\":\"" + eventTimeFormat(event.getEndTime()) + "\","
                 + "\"type\":\"" + event.getType() + "\",";
-                
-        
+
         if (event.getGroupId() != null) {
             json += "\"groupId\":\"" + event.getGroupId().getId() + "\",";
-        } 
-            json += "\"guid\":\"" + event.getInformation() + "\"}";
+        }
+        
+        json += "\"information\":\"" + event.getInformation() + "\"}";
         return json;
     }
 
@@ -40,7 +40,7 @@ public class TestHelper {
                 + "\"startTime\":\"" + eventTimeFormat(posted.getStartTime()) + "\","
                 + "\"endTime\":\"" + eventTimeFormat(posted.getEndTime()) + "\","
                 + "\"type\":\"" + posted.getType() + "\","
-                + "\"guid\":\"" + posted.getInformation() + "\"";
+                + "\"information\":\"" + posted.getInformation() + "\"";
     }
 
     public String eventDateFormat(LocalDate date) {
