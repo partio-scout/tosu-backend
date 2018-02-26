@@ -66,7 +66,9 @@ public class EventControllerTest {
         String responseBody = res.andReturn().getResponse().getContentAsString();
         Assert.assertTrue(responseBody.contains(helper.responseExpectedToContain(validStub)));
     }
-/*     @Test
+
+     @Test
+
     public void validWithGroupPost() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/eventgroup")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -80,10 +82,13 @@ public class EventControllerTest {
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isOk());
 
+         System.out.println("expexted---\n        "+helper.responseExpectedToContain(validStub)+"<-expexted");
+         System.out.println("received--\n"+res.andReturn().getResponse().getContentAsString()+"<-received");
         String responseBody = res.andReturn().getResponse().getContentAsString();
         Assert.assertTrue(responseBody.contains(helper.responseExpectedToContain(validStub)));
         Assert.assertTrue(responseBody.contains("\"groupId\":" + group.getId()));
-    } */
+
+    } 
 
     @Test
     public void invalidPost() throws Exception {
