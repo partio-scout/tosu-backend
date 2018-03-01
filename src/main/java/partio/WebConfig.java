@@ -61,7 +61,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
             }
         };
 
-      //  tomcat.addAdditionalTomcatConnectors(initiateHttpConnector());
+    //tässä lisätään redirect portti eli alempi metodi
+        tomcat.addAdditionalTomcatConnectors(initiateHttpConnector());
         return tomcat;
     }    
     //new connctor redirect http reqs to https
