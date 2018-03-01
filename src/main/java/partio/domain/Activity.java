@@ -26,6 +26,5 @@ public class Activity  extends AbstractPersistable<Long> {
     @JoinColumn    
     private Event event;   
     //pof backend id
-    @Column(unique=true)
     private String guid;
 }

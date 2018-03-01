@@ -7,7 +7,7 @@ import partio.domain.Event;
 
 public interface ActivityRepository extends JpaRepository<Activity, Long>{
  //    List<Activity> findByEvent(Event event);
-    Activity findByGuid(String guid);
+//    Activity findByGuid(String guid);
 
 }
 
