@@ -27,12 +27,19 @@ public class ActivityService {
         if (event == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+        String guid = activity.getGuid();
         //very quick validation check for not empty string will be refactored later
-        if (activity.getGuid()== null || activity.getGuid().trim().isEmpty()) {
+        if (guid== null || guid.trim().isEmpty()) {
             ArrayList<String> errors = new ArrayList<>();
             errors.add("guid cannot be empty");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
+        
+        Activity sameActivity = activityRepository.findByGuid(guid);
+        if(sameActivity == null){
+            activity = sameActivity;
+        }
+        
         activity.setEvent(event);
         activityRepository.save(activity);
 
