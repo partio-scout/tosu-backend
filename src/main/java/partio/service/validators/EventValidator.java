@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import partio.domain.Event;
 import partio.repository.EventGroupRepository;
+import partio.repository.EventRepository;
 
 /*
 lengths of info
@@ -25,9 +26,12 @@ public class EventValidator extends Validator<Event> {
     public static final int MAX_TYPE_LENGTH = 64;
     public static final int MIN_TITLE_LENGTH = 2;
     public static final int MAX_TITLE_LENGTH = 64;
+    public static final int GROUP_LIMIT = 55;
 
     @Autowired
-    EventGroupRepository groupRepository;
+    private EventGroupRepository groupRepository;
+    @Autowired
+    private EventRepository eventRepository;
 
     @Override
     public List<String> validateNew(Event event) {
@@ -36,6 +40,11 @@ public class EventValidator extends Validator<Event> {
 
             if (!startAfterCurrentTime(event)) {
                 errors.add("you cannot create an event that starts in the past");
+            }
+            if (event.getGroupId() != null) {
+                if (eventRepository.countByGroupId(event.getGroupId()) >= GROUP_LIMIT) {
+                    errors.add("This event group is full. Max capacity:" + GROUP_LIMIT);
+                }
             }
 
             return errors;
@@ -85,10 +94,10 @@ public class EventValidator extends Validator<Event> {
             errors.add("information length has to be between " + MIN_INFORMATION_LENGTH + "-" + MAX_INFORMATION_LENGTH);
         }
         if (!validateStringLength(event.getType(), MIN_TYPE_LENGTH, MAX_TYPE_LENGTH, NOT_NULL)) {
-            errors.add("information length has to be between " + MIN_TYPE_LENGTH + "-" + MAX_TYPE_LENGTH);
+            errors.add("type length has to be between " + MIN_TYPE_LENGTH + "-" + MAX_TYPE_LENGTH);
         }
         if (!validateStringLength(event.getTitle(), MIN_TITLE_LENGTH, MAX_TITLE_LENGTH, NOT_NULL)) {
-            errors.add("information length has to be between " + MIN_TYPE_LENGTH + "-" + MAX_TYPE_LENGTH);
+            errors.add("title length has to be between " + MIN_TYPE_LENGTH + "-" + MAX_TYPE_LENGTH);
         }
         //not only space in strings 
         if (!validateStringNotOnlySpaces(event.getTitle(), NOT_NULL)) {

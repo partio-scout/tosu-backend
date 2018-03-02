@@ -2,6 +2,8 @@ package partio.service.validators;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import partio.domain.Event;
+import partio.domain.EventGroup;
+import partio.repository.EventGroupRepository;
+import partio.repository.EventRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -17,11 +22,17 @@ public class EventValidatorTest {
 
     @Autowired
     private EventValidator validator;
+    @Autowired
+    private EventRepository eventRepository;
+    @Autowired
+    private EventGroupRepository groupRepository;
     private Event preEvent;
 
     @Before
     public void makePreEvent() {
         this.preEvent = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information");
+        groupRepository.deleteAll();
+        eventRepository.deleteAll();
     }
 
 //helpers
@@ -392,4 +403,25 @@ public class EventValidatorTest {
         Event stub = new Event("lol", LocalDate.now(), DateNowPlusAmount(0, 0, 2), LocalTime.MIN, LocalTime.MIN, "ass", "asshole");
         Assert.assertFalse(validator.validateChanges(preStub, stub).toString(), 0 == validator.validateChanges(preStub, stub).size());
     }
+
+    @Test
+    public void onlyMaxAmountOfEventsFitInGroup() {
+        EventGroup group = new EventGroup();
+        groupRepository.save(group);
+        List<Event> stubs = new ArrayList<>();
+        for (int i = 0; i < EventValidator.GROUP_LIMIT; i++) {
+            Event stub = new Event(makeStringLengthOf(EventValidator.MIN_TITLE_LENGTH, 'a'), DateNowPlusAmount(0, 2, 1),
+                    DateNowPlusAmount(0, 2, 2), LocalTime.MIN, LocalTime.MIN,
+                    makeStringLengthOf(EventValidator.MIN_TYPE_LENGTH, 'a'),
+                    makeStringLengthOf(EventValidator.MIN_INFORMATION_LENGTH, 'a'));
+
+            stub.setGroupId(group);
+            stubs.add(stub);
+        }
+        eventRepository.save(stubs);
+        Assert.assertFalse(validator.validateNew(stubs.get(0)).isEmpty());
+        Assert.assertTrue(eventRepository.countByGroupId(group) == EventValidator.GROUP_LIMIT);
+
+    }
+
 }
