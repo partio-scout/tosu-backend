@@ -85,10 +85,10 @@ public class EventValidator extends Validator<Event> {
             errors.add("information length has to be between " + MIN_INFORMATION_LENGTH + "-" + MAX_INFORMATION_LENGTH);
         }
         if (!validateStringLength(event.getType(), MIN_TYPE_LENGTH, MAX_TYPE_LENGTH, NOT_NULL)) {
-            errors.add("information length has to be between " + MIN_TYPE_LENGTH + "-" + MAX_TYPE_LENGTH);
+            errors.add("type length has to be between " + MIN_TYPE_LENGTH + "-" + MAX_TYPE_LENGTH);
         }
         if (!validateStringLength(event.getTitle(), MIN_TITLE_LENGTH, MAX_TITLE_LENGTH, NOT_NULL)) {
-            errors.add("information length has to be between " + MIN_TYPE_LENGTH + "-" + MAX_TYPE_LENGTH);
+            errors.add("title length has to be between " + MIN_TYPE_LENGTH + "-" + MAX_TYPE_LENGTH);
         }
         //not only space in strings 
         if (!validateStringNotOnlySpaces(event.getTitle(), NOT_NULL)) {

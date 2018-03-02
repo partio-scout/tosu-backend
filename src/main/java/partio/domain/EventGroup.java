@@ -2,12 +2,7 @@
 package partio.domain;
 
 import partio.jsonconfig.EventGroupSerializer;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import java.io.IOException;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

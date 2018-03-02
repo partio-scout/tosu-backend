@@ -11,6 +11,7 @@ import partio.domain.Activity;
 import partio.domain.Event;
 import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
+import partio.service.validators.ActivityValidator;
 
 @Service
 @Transactional
@@ -20,6 +21,8 @@ public class ActivityService {
     private EventRepository eventRepository;
     @Autowired
     private ActivityRepository activityRepository;
+    @Autowired
+    private ActivityValidator validator;
 
     public ResponseEntity<Object> addActivity(Long eventId, Activity activity) {
 
@@ -27,18 +30,26 @@ public class ActivityService {
         if (event == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        //very quick validation check for not empty string will be refactored later
-        if (activity.getGuid()== null || activity.getGuid().trim().isEmpty()) {
-            ArrayList<String> errors = new ArrayList<>();
-            errors.add("guid cannot be empty");
+
+        List<String> errors = validator.validateNew(activity);
+        
+        //for when we move onto next step (right now only uniq activities are allowed)
+        //another suggestion would be adding if activity is not finished 
+        //can add same acitivity
+        
+        //  if (event.getActivities().contains(guid)) {
+        //    errors.add("Event can't have same activity more than once.");
+        //  }
+        if (!errors.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
+
         activity.setEvent(event);
         activityRepository.save(activity);
 
         event.getActivities().add(activity);
         eventRepository.save(event);
-        
+
         return ResponseEntity.ok(activity);
     }
 
