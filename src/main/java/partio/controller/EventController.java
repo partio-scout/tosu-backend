@@ -1,8 +1,8 @@
 package partio.controller;
 
 import java.util.List;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +21,8 @@ public class EventController {
     private EventService eventService;
 
     @GetMapping("/events")
-    public List<Event> getEvents() {
-        List<Event> events = eventService.list();
+    public Page<Event> getEvents() {
+        Page<Event> events = eventService.list();
         return events;
     }
 
