@@ -24,6 +24,11 @@ public class Activity extends AbstractPersistable<Long> {
     @ManyToOne
     @JoinColumn
     private Event event;
+    
+    @ManyToOne
+    @JoinColumn
+    private ActivityBuffer buffer;
+    
     //pof backend id
     private String guid;
 
@@ -38,6 +43,11 @@ public class Activity extends AbstractPersistable<Long> {
         }
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return "guid: "+guid + " id: " + getId();
+    }
 
     @Override
     public int hashCode() {
@@ -45,4 +55,5 @@ public class Activity extends AbstractPersistable<Long> {
         hash = 59 * hash + Objects.hashCode(this.guid);
         return hash;
     }
+ 
 }
