@@ -2,6 +2,10 @@ package partio.service;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,9 +23,11 @@ public class EventService {
     @Autowired
     private EventValidator eventValidator;
 
-    public List<Event> list() {
-        List<Event> events = eventRepository.findAll();
+    public Page<Event> list() {
+        Pageable pageable = new PageRequest(0, 100, Sort.Direction.ASC, "startDate");
+        Page<Event> events = eventRepository.findAll(pageable);
         //List<Event> events = eventRepository.findByEndDateAfter(LocalDate.now());
+//        List<Event> events = eventRepository.findAll();
         return events;
     }
 
