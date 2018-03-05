@@ -20,17 +20,22 @@ import partio.jsonconfig.ActivitySerializer;
 //@EqualsAndHashCode(callSuper = false)
 @JsonSerialize(using = ActivitySerializer.class)
 public class Activity extends AbstractPersistable<Long> {
-
     @ManyToOne
     @JoinColumn
     private Event event;
     
     @ManyToOne
     @JoinColumn
-    private ActivityBuffer buffer;
     
+    private ActivityBuffer buffer;
     //pof backend id
     private String guid;
+    
+    //tests need this constructor
+    public Activity(Event event,String guid) {
+        this.guid = guid;
+        this.event=event;
+    }
 
     @Override
     public boolean equals(Object object) {
