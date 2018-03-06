@@ -1,6 +1,5 @@
 package partio.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Event;
-import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
 import partio.service.validators.ActivityValidator;
@@ -19,8 +17,6 @@ import partio.service.validators.ActivityValidator;
 @Transactional
 public class ActivityService {
 
-    @Autowired
-    private ActivityBufferRepository bufferRepository;
     @Autowired
     private EventRepository eventRepository;
     @Autowired
@@ -66,51 +62,49 @@ public class ActivityService {
     }
 
     //new stuff from here
-    public ResponseEntity<Object> restfulPut(Activity activity) {
-        Activity original = activityRepository.findOne(activity.getId());
+    public ResponseEntity<Object> restfulPut(long id, Activity activity) {
+        System.out.println(activity);
+        Activity original = activityRepository.findOne(id);
         if (original == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        
+
         List<String> errors = validator.validateChanges(original, activity);
         if (!errors.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
-        
+
         activityRepository.save(activity);
         return ResponseEntity.ok(activity);
     }
 
-    private boolean allExistsForEventAndActivityAndBuffer(Long activityId, Long eventId, Long ActivityBufferId) {
-        return (bufferRepository.exists(bufferService.findBuffer(ActivityBufferId).getId())
-                && activityRepository.exists(activityId)
-                && eventRepository.exists(eventId));
-    }
-
     public ResponseEntity<Object> moveActivityFromEventToBuffer(Long activityId, Long eventId, Long activityBufferId) {
-        if (!allExistsForEventAndActivityAndBuffer(activityId, eventId, activityBufferId)) {
+        Activity activity = activityRepository.findOne(activityId);
+        if (activity == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        Activity activity = activityRepository.findOne(activityId);
         Event from = eventRepository.findOne(eventId);
         ActivityBuffer to = bufferService.findBuffer(eventId);
-
         if (!from.getActivities().contains(activity)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
         activity.setBuffer(to);
         activity.setEvent(null);
+        List<String> errors = validator.validateChanges(activityRepository.findOne(activityId), activity);
+        if (!errors.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
         activityRepository.save(activity);
 
         return ResponseEntity.ok(activity);
     }
 
     public ResponseEntity<Object> moveActivityFromBufferToEvent(Long activityId, Long activityBufferId, Long eventId) {
-        if (!allExistsForEventAndActivityAndBuffer(activityId, eventId, activityBufferId)) {
+        Activity activity = activityRepository.findOne(activityId);
+        if (activity == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        Activity activity = activityRepository.findOne(activityId);
         Event to = eventRepository.findOne(eventId);
         ActivityBuffer from = bufferService.findBuffer(eventId);
 
@@ -120,6 +114,10 @@ public class ActivityService {
 
         activity.setBuffer(null);
         activity.setEvent(to);
+        List<String> errors = validator.validateChanges(activityRepository.findOne(activityId), activity);
+        if (!errors.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
         activityRepository.save(activity);
 
         return ResponseEntity.ok(activity);

@@ -64,13 +64,4 @@ public class ActivityBufferService {
         return ResponseEntity.ok(buffer);
     }
 
-    public ResponseEntity<Object> deleteActivity(Long ActivityBufferId, long activityId) {
-        ActivityBuffer buffer = findBuffer(ActivityBufferId);
-
-        if (buffer == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        return ResponseEntity.ok(buffer);
-    }
-
 }

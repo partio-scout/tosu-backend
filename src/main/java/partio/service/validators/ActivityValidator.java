@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import partio.domain.Activity;
+import partio.domain.ActivityBuffer;
 import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
@@ -41,6 +42,7 @@ public class ActivityValidator extends Validator<Activity> {
         return errors;
     }
 
+    @Override
     public List<String> validateChanges(Activity original, Activity changes) {
         List<String> errors = validateNewAndOld(changes);
         if (original.getGuid().equals(changes.getGuid()) == false) {
@@ -58,10 +60,19 @@ public class ActivityValidator extends Validator<Activity> {
            }
         }
         if (t.getBuffer()!= null) {
-           if (bufferRepository.exists(t.getBuffer().getId()) == false) {
+            ActivityBuffer bufferInDb = bufferRepository.findOne(t.getBuffer().getId());
+           if (bufferInDb == null) {
                errors.add("buffer of activity is not found in db.");
+           } else if (bufferInDb.getActivities() != null &&
+                   bufferInDb.getActivities().size() > ActivityBuffer.BUFFER_SIZE) {                  
+                errors.add("buffer is full.");
+           }
+           if (t.getEvent() != null) {
+               errors.add("Activity can exist only in event OR in buffer");
            }
         }
+        
+        
 
         return errors;
     }

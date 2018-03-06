@@ -19,6 +19,7 @@ import partio.jsonconfig.ActivityBufferSerializer;
 @Entity
 @JsonSerialize(using = ActivityBufferSerializer.class)
 public class ActivityBuffer extends AbstractPersistable<Long> {
+    public static final int BUFFER_SIZE = 5;
    // @JsonManagedReference
     @OneToMany(mappedBy = "buffer", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Activity> activities;

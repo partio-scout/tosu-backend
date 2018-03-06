@@ -36,9 +36,13 @@ public class ActivityController {
     }
     
      //new stuff from here
-    @PutMapping("/activity/")
-    public ResponseEntity<Object> put(@RequestBody Activity activity) {      
-        return activityService.restfulPut(activity);
+    
+    //this regular put is really hard to use because it requires event and buffer to be included
+    //(put replaces old object) and having to write event and buffer in json is a bitch
+    //after these put there are some not so restful but working ways to swap to/from event/buffer
+    @PutMapping("/activity/{id}")
+    public ResponseEntity<Object> put(@PathVariable long id, @RequestBody Activity activity) {      
+        return activityService.restfulPut(id, activity);
     }
    
     @PutMapping("/activity/{id}/fromevent/{eventId}/tobuffer/{bufferId}")
