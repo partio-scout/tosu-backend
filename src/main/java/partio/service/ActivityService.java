@@ -64,11 +64,27 @@ public class ActivityService {
     public List<Activity> list() {
         return activityRepository.findAll();
     }
-    
-      private boolean allExistsForEventAndActivityAndBuffer(Long activityId, Long eventId, Long ActivityBufferId) {
-        return (bufferRepository.exists(bufferService.findBuffer(ActivityBufferId).getId()) &&
-                activityRepository.exists(activityId) &&
-                eventRepository.exists(eventId));
+
+    //new stuff from here
+    public ResponseEntity<Object> restfulPut(Activity activity) {
+        Activity original = activityRepository.findOne(activity.getId());
+        if (original == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        
+        List<String> errors = validator.validateChanges(original, activity);
+        if (!errors.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
+        
+        activityRepository.save(activity);
+        return ResponseEntity.ok(activity);
+    }
+
+    private boolean allExistsForEventAndActivityAndBuffer(Long activityId, Long eventId, Long ActivityBufferId) {
+        return (bufferRepository.exists(bufferService.findBuffer(ActivityBufferId).getId())
+                && activityRepository.exists(activityId)
+                && eventRepository.exists(eventId));
     }
 
     public ResponseEntity<Object> moveActivityFromEventToBuffer(Long activityId, Long eventId, Long activityBufferId) {
@@ -78,16 +94,16 @@ public class ActivityService {
         Activity activity = activityRepository.findOne(activityId);
         Event from = eventRepository.findOne(eventId);
         ActivityBuffer to = bufferService.findBuffer(eventId);
-        
+
         if (!from.getActivities().contains(activity)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        
+
         activity.setBuffer(to);
         activity.setEvent(null);
         activityRepository.save(activity);
-        
-        return ResponseEntity.ok(null);
+
+        return ResponseEntity.ok(activity);
     }
 
     public ResponseEntity<Object> moveActivityFromBufferToEvent(Long activityId, Long activityBufferId, Long eventId) {
@@ -97,16 +113,16 @@ public class ActivityService {
         Activity activity = activityRepository.findOne(activityId);
         Event to = eventRepository.findOne(eventId);
         ActivityBuffer from = bufferService.findBuffer(eventId);
-        
+
         if (!from.getActivities().contains(activity)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        
+
         activity.setBuffer(null);
         activity.setEvent(to);
         activityRepository.save(activity);
-        
-        return ResponseEntity.ok(null);
+
+        return ResponseEntity.ok(activity);
     }
 
 }

@@ -35,6 +35,12 @@ public class ActivityController {
         return activityService.list();
     }
     
+     //new stuff from here
+    @PutMapping("/activity/")
+    public ResponseEntity<Object> put(@RequestBody Activity activity) {      
+        return activityService.restfulPut(activity);
+    }
+   
     @PutMapping("/activity/{id}/fromevent/{eventId}/tobuffer/{bufferId}")
     public ResponseEntity<Object> moveActivityFromEventToBuffer(@PathVariable Long id,
             @PathVariable Long eventId, 

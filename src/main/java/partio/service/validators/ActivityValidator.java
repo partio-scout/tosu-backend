@@ -5,21 +5,26 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import partio.domain.Activity;
-import partio.domain.Event;
+import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
+import partio.repository.EventRepository;
 
 @Service
 public class ActivityValidator extends Validator<Activity> {
 
     private static final int MAX_GUID_LENGTH = 127;
     private static final int MIN_GUID_LENGTH = 1;
-    
+
     @Autowired
     private ActivityRepository acitvityRepository;
+    @Autowired
+    private EventRepository eventRepository;
+    @Autowired
+    private ActivityBufferRepository bufferRepository;
 
     @Override
     public List<String> validateNew(Activity activity) {
-        List<String> errors = new ArrayList<>();
+        List<String> errors = validateNewAndOld(activity);
 
         if (!validateStringLength(activity.getGuid(), MIN_GUID_LENGTH, MAX_GUID_LENGTH, NOT_NULL)) {
             errors.add("guid length has to be between " + MIN_GUID_LENGTH + "-" + MAX_GUID_LENGTH);
@@ -28,32 +33,44 @@ public class ActivityValidator extends Validator<Activity> {
         if (!validateStringNotOnlySpaces(activity.getGuid(), NOT_NULL)) {
             errors.add("guid cannot be whitespace only");
         }
-        
+
         if (activityWithSameGuidExists((activity.getGuid()))) {
-           errors.add("activity with same guid already exists");
-        }      
-        
+            errors.add("activity with same guid already exists");
+        }
+
         return errors;
     }
 
-    @Override
-    public List<String> validateChanges(Event original, Event changes) {
-        List<String> errors = new ArrayList<>();
-        errors.add("you are not allowed to modify this");
-        return errors;
+    public List<String> validateChanges(Activity original, Activity changes) {
+        List<String> errors = validateNewAndOld(changes);
+        if (original.getGuid().equals(changes.getGuid()) == false) {
+            errors.add("guid is not allowed to change");
+        }
+          return errors;
     }
 
     @Override
     protected List<String> validateNewAndOld(Activity t) {
-        throw new UnsupportedOperationException("Not supported yet. Activity cannot be modified anyways."); //To change body of generated methods, choose Tools | Templates.
+        List<String> errors = new ArrayList<>();
+        if (t.getEvent() != null) {
+           if (eventRepository.exists(t.getEvent().getId()) == false) {
+               errors.add("event of activity is not found in db.");
+           }
+        }
+        if (t.getBuffer()!= null) {
+           if (bufferRepository.exists(t.getBuffer().getId()) == false) {
+               errors.add("buffer of activity is not found in db.");
+           }
+        }
 
+        return errors;
     }
 
     private boolean activityWithSameGuidExists(String guid) {
-         if (acitvityRepository.findByGuid(guid) == null) {
-             return false;
-         }
-         return true;
+        if (acitvityRepository.findByGuid(guid) == null) {
+            return false;
+        }
+        return true;
     }
 
 }
