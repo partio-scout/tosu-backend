@@ -62,35 +62,18 @@ public class ActivityService {
     }
 
     //new stuff from here
-    public ResponseEntity<Object> restfulPut(long id, Activity activity) {
-        System.out.println(activity);
-        Activity original = activityRepository.findOne(id);
-        if (original == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
-        List<String> errors = validator.validateChanges(original, activity);
-        if (!errors.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-        }
-
-        activityRepository.save(activity);
-        return ResponseEntity.ok(activity);
-    }
-
+   
     public ResponseEntity<Object> moveActivityFromEventToBuffer(Long activityId, Long eventId, Long activityBufferId) {
         Activity activity = activityRepository.findOne(activityId);
-        /*   if (activity == null) {
+           if (activity == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         Event from = eventRepository.findOne(eventId);
         ActivityBuffer to = bufferService.findBuffer(eventId);
-        if (!from.getActivities().contains(activity)) {
+        if ((from == null || from.getActivities() == null || !from.getActivities().contains(activity)) || to == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }*/
+        }
 
-        Event from = eventRepository.findOne(eventId);
-        ActivityBuffer to = bufferService.findBuffer(eventId);
         if (to.getActivities() != null && to.getActivities().size() >= ActivityBuffer.BUFFER_SIZE) {
             activityRepository.delete(activity);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(activity);
@@ -98,10 +81,6 @@ public class ActivityService {
 
         activity.setBuffer(to);
         activity.setEvent(null);
-        List<String> errors = validator.validateChanges(activityRepository.findOne(activityId), activity);
-        if (!errors.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-        }
         activityRepository.save(activity);
 
         return ResponseEntity.ok(activity);
@@ -115,7 +94,7 @@ public class ActivityService {
         Event to = eventRepository.findOne(eventId);
         ActivityBuffer from = bufferService.findBuffer(eventId);
 
-        if (!from.getActivities().contains(activity)) {
+        if (from == null || from.getActivities() == null || !from.getActivities().contains(activity)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 

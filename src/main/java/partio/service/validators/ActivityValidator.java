@@ -44,13 +44,7 @@ public class ActivityValidator extends Validator<Activity> {
 
     @Override
     public List<String> validateChanges(Activity original, Activity changes) {
-         List<String> errors;
-        if (original == null) {
-            errors = new ArrayList<>();
-            errors.add(("original activity not found!"));
-            return errors;
-        }
-       errors = validateNewAndOld(changes);
+        List<String> errors = validateNewAndOld(changes);
         if (original.getGuid().equals(changes.getGuid()) == false) {
             errors.add("guid is not allowed to change");
         }
@@ -69,7 +63,10 @@ public class ActivityValidator extends Validator<Activity> {
             ActivityBuffer bufferInDb = bufferRepository.findOne(t.getBuffer().getId());
            if (bufferInDb == null) {
                errors.add("buffer of activity is not found in db.");
-           } 
+           } else if (bufferInDb.getActivities() != null &&
+                   bufferInDb.getActivities().size() > ActivityBuffer.BUFFER_SIZE) {                  
+                errors.add("buffer is full.");
+           }
            if (t.getEvent() != null) {
                errors.add("Activity can exist only in event OR in buffer");
            }

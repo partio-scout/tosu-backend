@@ -1,5 +1,6 @@
 package partio.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,6 +59,9 @@ public class ActivityBufferService {
         }
 
         activityRepository.save(activity);
+        if (buffer.getActivities() == null) {
+            buffer.setActivities(new ArrayList<>());
+        }
         buffer.getActivities().add(activity);
 
         bufferRepository.save(buffer);
