@@ -1,7 +1,12 @@
 package partio.service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,9 +25,15 @@ public class EventService {
     private EventValidator eventValidator;
 
     public List<Event> list() {
-        List<Event> events = eventRepository.findAll();
-        //List<Event> events = eventRepository.findByEndDateAfter(LocalDate.now());
+        // List<Event> events = eventRepository.findAll();
+        List<Event> events = eventRepository.findAll(orderBy());
         return events;
+    }
+
+    private Sort orderBy() {
+        return new Sort(
+                new Order(Direction.ASC, "startDate"),
+                new Order(Direction.ASC, "startTime"));
     }
 
     public ResponseEntity<Object> add(Event event) {
@@ -33,7 +44,6 @@ public class EventService {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
         }
-
     }
 // group id cannot be changed, activities changed by activitycontroller
 
@@ -48,10 +58,8 @@ public class EventService {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
         }
-
     }
 
-    //have an option if single or whole group?
     public ResponseEntity<Object> deleteById(Long eventId) {
         Event toDelete = eventRepository.findOne(eventId);
         if (toDelete == null) {
@@ -61,5 +69,4 @@ public class EventService {
             return ResponseEntity.ok(toDelete);
         }
     }
-
 }
