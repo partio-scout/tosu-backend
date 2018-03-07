@@ -80,13 +80,20 @@ public class ActivityService {
 
     public ResponseEntity<Object> moveActivityFromEventToBuffer(Long activityId, Long eventId, Long activityBufferId) {
         Activity activity = activityRepository.findOne(activityId);
-        if (activity == null) {
+        /*   if (activity == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         Event from = eventRepository.findOne(eventId);
         ActivityBuffer to = bufferService.findBuffer(eventId);
         if (!from.getActivities().contains(activity)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }*/
+
+        Event from = eventRepository.findOne(eventId);
+        ActivityBuffer to = bufferService.findBuffer(eventId);
+        if (to.getActivities() != null && to.getActivities().size() >= ActivityBuffer.BUFFER_SIZE) {
+            activityRepository.delete(activity);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(activity);
         }
 
         activity.setBuffer(to);
