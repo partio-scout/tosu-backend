@@ -11,7 +11,7 @@ public abstract class Validator<T> {
     protected static final boolean NOT_NULL = true;
 
     public abstract List<String> validateNew(T t);
-    public abstract List<String> validateChanges(Event original, Event changes);
+    public abstract List<String> validateChanges(T original, T changes);
     protected abstract List<String> validateNewAndOld(T t);
     
     protected boolean validateStringLength(String toValidate, int min, int max, boolean notNull) {

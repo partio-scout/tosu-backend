@@ -2,7 +2,6 @@ package partio.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -20,12 +19,22 @@ import partio.jsonconfig.ActivitySerializer;
 //@EqualsAndHashCode(callSuper = false)
 @JsonSerialize(using = ActivitySerializer.class)
 public class Activity extends AbstractPersistable<Long> {
-
     @ManyToOne
     @JoinColumn
     private Event event;
+    
+    @ManyToOne
+    @JoinColumn
+    
+    private ActivityBuffer buffer;
     //pof backend id
     private String guid;
+    
+    //tests need this constructor
+    public Activity(Event event,String guid) {
+        this.guid = guid;
+        this.event=event;
+    }
 
     @Override
     public boolean equals(Object object) {
@@ -38,6 +47,11 @@ public class Activity extends AbstractPersistable<Long> {
         }
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return "guid: "+guid + " id: " + getId();
+    }
 
     @Override
     public int hashCode() {
@@ -45,4 +59,5 @@ public class Activity extends AbstractPersistable<Long> {
         hash = 59 * hash + Objects.hashCode(this.guid);
         return hash;
     }
+ 
 }
