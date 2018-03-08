@@ -38,8 +38,7 @@ public class ActivityBufferService {
     }
 
     public ResponseEntity<Object> getBufferContent(Long id) {
-        ActivityBuffer buffer = findBuffer(id);
-        System.out.println(buffer);
+        ActivityBuffer buffer = findBuffer(id);        
         if (buffer == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

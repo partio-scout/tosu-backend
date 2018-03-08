@@ -28,7 +28,7 @@ public class TestHelper {
         if (event.getGroupId() != null) {
             json += "\"groupId\":\"" + event.getGroupId().getId() + "\",";
         }
-        
+
         json += "\"information\":\"" + event.getInformation() + "\"}";
         return json;
     }
@@ -42,6 +42,11 @@ public class TestHelper {
                 + "\"type\":\"" + posted.getType() + "\","
                 + "\"information\":\"" + posted.getInformation() + "\"";
     }
+
+//    public String responseExpectedToContainActivity(Activity posted) {
+//        return "\"guid\":\"" + posted.getGuid() + "\","
+//                + "\"buffer\":\"" + posted.getBuffer() + "\"";
+//    }
 
     public String eventDateFormat(LocalDate date) {
         sb.setLength(0); //clear sb
