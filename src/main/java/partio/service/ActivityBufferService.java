@@ -52,18 +52,19 @@ public class ActivityBufferService {
         }
 
         activity.setBuffer(buffer);
+        
         List<String> errors = activityValidator.validateNew(activity);
         if (!errors.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-        }
-
-        activityRepository.save(activity);
+        } 
+        
         if (buffer.getActivities() == null) {
             buffer.setActivities(new ArrayList<>());
         }
         buffer.getActivities().add(activity);
 
         bufferRepository.save(buffer);
+        activityRepository.save(activity);
         return ResponseEntity.ok(buffer);
     }
 
