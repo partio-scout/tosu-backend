@@ -1,10 +1,13 @@
 package partio.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 //import lombok.EqualsAndHashCode;
@@ -24,10 +27,12 @@ public class Activity extends AbstractPersistable<Long> {
     private Event event;
     
     @ManyToOne
-    @JoinColumn
-    
+    @JoinColumn    
     private ActivityBuffer buffer;
     //pof backend id
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE, orphanRemoval = true)    
+    private List<Plan> plans;
+    
     private String guid;
     
     //tests need this constructor
