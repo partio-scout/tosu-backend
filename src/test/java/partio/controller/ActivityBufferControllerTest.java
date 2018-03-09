@@ -3,11 +3,16 @@ package partio.controller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -18,6 +23,8 @@ import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
 import partio.service.ActivityBufferService;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ActivityBufferControllerTest {
@@ -25,7 +32,7 @@ public class ActivityBufferControllerTest {
     @Autowired
     private WebApplicationContext webAppContext;
     @Autowired
-    private ActivityBufferService bufferService;
+    private ActivityBufferService bufferService; //
     @Autowired
     private EventRepository eventRepo;
     @Autowired
@@ -45,10 +52,10 @@ public class ActivityBufferControllerTest {
         helper = new TestHelper();
         buffer = new ActivityBuffer();
         activity.setGuid("testguid");
-        
+
         activityRepo.deleteAll();
         eventRepo.deleteAll();
-        
+
         bufferRepository.save(buffer);
         activityRepo.save(activity);
     }
@@ -59,4 +66,9 @@ public class ActivityBufferControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void testAddActivityToBuffer() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/activitybuffer/{id}/activities/", buffer.getId(), activity))
+                .andExpect(status().isOk());
+    }
 }
