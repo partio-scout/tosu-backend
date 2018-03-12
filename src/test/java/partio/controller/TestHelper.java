@@ -3,6 +3,7 @@ package partio.controller;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import partio.domain.Activity;
+import partio.domain.ActivityBuffer;
 import partio.domain.Event;
 
 public class TestHelper {
@@ -28,7 +29,7 @@ public class TestHelper {
         if (event.getGroupId() != null) {
             json += "\"groupId\":\"" + event.getGroupId().getId() + "\",";
         }
-        
+
         json += "\"information\":\"" + event.getInformation() + "\"}";
         return json;
     }
@@ -43,6 +44,10 @@ public class TestHelper {
                 + "\"information\":\"" + posted.getInformation() + "\"";
     }
 
+//    public String responseExpectedToContainActivity(Activity posted) {
+//        return "\"guid\":\"" + posted.getGuid() + "\","
+//                + "\"buffer\":\"" + posted.getBuffer() + "\"";
+//    }
     public String eventDateFormat(LocalDate date) {
         sb.setLength(0); //clear sb
 
@@ -73,6 +78,11 @@ public class TestHelper {
         }
         sb.append(time.getMinute());
         return sb.toString();
+    }
+
+    public String bufferToJson(ActivityBuffer buffer) {
+        return "\"id\":\""+buffer.getId()+"\","
+                + "\"activities\": []";                
     }
 
 }
