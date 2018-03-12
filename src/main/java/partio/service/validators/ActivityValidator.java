@@ -71,9 +71,7 @@ public class ActivityValidator extends Validator<Activity> {
                errors.add("Activity can exist only in event OR in buffer");
            }
         }
-        
-        
-
+                
         return errors;
     }
 
