@@ -14,6 +14,7 @@ ssh deploy@$IP -p $PORT <<EOF
         git clone https://github.com/partio-scout/tosu-backend.git
         cp certificate.p12 /var/www/tosu-backend/src/main/resources/certificate.p12
         cp -f application-production.properties /var/www/tosu-backend/src/main/resources/application-production.properties
+	cp -f PostgreSQLDatabaseGenerator.java /var/www/tosu-backend/src/main/java/partio/PostgreSQLDatabaseGenerator.java
         cd tosu-backend
         gradle bootRepackage
     fi
