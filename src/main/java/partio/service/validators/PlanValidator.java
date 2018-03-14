@@ -11,6 +11,9 @@ import partio.repository.PlanRepository;
 @Service
 public class PlanValidator extends Validator<Plan> {
 
+    private static final int MAX_GUID_LENGTH = 127;
+    private static final int MIN_GUID_LENGTH = 1;
+
     @Autowired
     private ActivityRepository acitvityRepository;
 
@@ -20,11 +23,23 @@ public class PlanValidator extends Validator<Plan> {
     @Override
     public List<String> validateNew(Plan plan) {
         List<String> errors = validateNewAndOld(plan);
+        if (!validateStringLength(plan.getGuid(), MIN_GUID_LENGTH, MAX_GUID_LENGTH, NOT_NULL)) {
+            errors.add("guid length has to be between " + MIN_GUID_LENGTH + "-" + MAX_GUID_LENGTH);
+        }
+
+        if (!validateStringNotOnlySpaces(plan.getGuid(), NOT_NULL)) {
+            errors.add("guid cannot be whitespace only");
+        }
+
         return errors;
     }
 
     @Override
     public List<String> validateChanges(Plan original, Plan changes) {
+
+        //? täs se palauttaa aina tyhjän listan
+        validateNew(changes);
+        validateNewAndOld(original);
         List<String> errors = new ArrayList<>();
         return errors;
     }
@@ -32,21 +47,13 @@ public class PlanValidator extends Validator<Plan> {
     @Override
     protected List<String> validateNewAndOld(Plan plan) {
         List<String> errors = new ArrayList<>();
-
-        String url = plan.getUrl();
+//eti reposta myös että aktiviteetti on tosiaan olemassa
+//tai heitä try catchiin
         if (plan.getActivity() != null) {
             errors.add("Execution plan can't exist without activity");
         }
-        if (!isValid(plan.getUrl())) {
-            errors.add("Url isn't valid.");
-        }
 
         return errors;
-    }
-
-    private boolean isValid(String url) {
-        //coming soon
-        return true;
     }
 
 }

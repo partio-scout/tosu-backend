@@ -18,6 +18,6 @@ public class Plan extends AbstractPersistable<Long> {
     @JoinColumn
     private Activity activity;
     
-    private String url;
+    private String guid;
     //not sure yet what else will come here
 }
