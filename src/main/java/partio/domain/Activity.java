@@ -35,6 +35,10 @@ public class Activity extends AbstractPersistable<Long> {
     
     private String guid;
     
+    public Activity(String guid) {
+	this.guid = guid;
+    }
+    
     //tests need this constructor
     public Activity(Event event,String guid) {
         this.guid = guid;
