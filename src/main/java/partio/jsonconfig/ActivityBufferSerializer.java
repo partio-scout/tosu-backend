@@ -1,4 +1,3 @@
-
 package partio.jsonconfig;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -10,27 +9,27 @@ import java.math.BigDecimal;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 
-
 public class ActivityBufferSerializer extends StdSerializer<ActivityBuffer> {
 
     public ActivityBufferSerializer() {
         this(null);
     }
-   
+
     public ActivityBufferSerializer(Class<ActivityBuffer> t) {
         super(t);
     }
- 
+
     @Override
     public void serialize(
-      ActivityBuffer buffer, JsonGenerator jgen, SerializerProvider provider) 
-      throws IOException, JsonProcessingException {
-  
-        jgen.writeStartObject();
-        if (buffer.getActivities()!= null) {
+            ActivityBuffer buffer, JsonGenerator jgen, SerializerProvider provider)
+            throws IOException, JsonProcessingException {
 
-            jgen.writeNumberField("id", buffer.getId());
-            jgen.writeArrayFieldStart("activities");
+        jgen.writeStartObject();
+
+        jgen.writeNumberField("id", buffer.getId());
+        jgen.writeArrayFieldStart("activities");
+
+        if (buffer.getActivities() != null) {
 
             for (Activity activity : buffer.getActivities()) {
                 jgen.writeStartObject();
@@ -38,12 +37,10 @@ public class ActivityBufferSerializer extends StdSerializer<ActivityBuffer> {
                 jgen.writeStringField("guid", activity.getGuid());
                 jgen.writeEndObject();
             }
-
-            jgen.writeEndArray();
-        } else {
-            jgen.writeStringField("activities", null);
         }
+        jgen.writeEndArray();
+
         jgen.writeEndObject();
     }
-    
+
 }
