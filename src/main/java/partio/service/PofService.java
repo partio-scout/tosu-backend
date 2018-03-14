@@ -7,7 +7,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -16,83 +20,94 @@ import org.springframework.web.client.RestTemplate;
 @Transactional
 public class PofService extends RestTemplate {
 
-    private final URI uri;
+    private final String POF = "rawpofData", TARPPO = "tarppo", TARPPODEV = "tarppodev";
     private RestTemplate restTemplate;
-
-    private LocalDate lastUpdatePof;
-    private LocalDate lastUpdateTarppo;
-    private ObjectNode rawpofData;
-    private ArrayNode tarppoData;
+    private Map<String, ExpirableObject> pofData;
 
     //   all/old pof
     public PofService() {
+        pofData = new HashMap<>();
+        pofData.put(TARPPO, new ExpirableObject());
+        pofData.put(TARPPODEV, new ExpirableObject());
+        pofData.put(POF, new ExpirableObject());
+
         this.restTemplate = new RestTemplate();
-        this.uri = URI.create("https://pof-backend.partio.fi/spn-ohjelma-json-taysi/?postGUID=86b5b30817ce3649e590c5059ec88921");
-        lastUpdatePof = LocalDate.MIN;
-        lastUpdateTarppo = LocalDate.MIN;
         try {
             getPof();
-         //   getTarppo(); this slows down starting the app a lot, uncomment when in actual production with real users
+            updateageGroupTasksIfNeeded("tarppodev");
         } catch (IOException ex) {
-            System.err.println("initializing pof failed");
+            System.err.println("initializing pofservice failed");
         }
     }
 
+    //rawpof
     public ObjectNode getPof() throws IOException {
         updatePofIfNeeded();
-        return rawpofData;
+        return (ObjectNode) pofData.get(POF).getContent();
     }
-    public ArrayNode getTarppo() throws IOException {   
-        updateTarppoPofIfNeeded();
-        return tarppoData;
-    }
-    
-    //rawpof
-    private void updatePofIfNeeded() throws IOException { 
-        if (!lastUpdatePof.equals(LocalDate.now())) {
-            lastUpdatePof = LocalDate.now();
-            rawpofData = fetchDataFromPof();
+
+    private void updatePofIfNeeded() throws IOException {
+        ExpirableObject pof = pofData.get(POF);
+        if (!pof.getLastUpdated().equals(LocalDate.now())) {
+            pof.setContent(fetchDataFromPof());
         }
     }
-     private ObjectNode fetchDataFromPof() throws IOException {
+
+    private ObjectNode fetchDataFromPof() throws IOException {
+        URI uri = URI.create("https://pof-backend.partio.fi/spn-ohjelma-json-taysi/?postGUID=86b5b30817ce3649e590c5059ec88921");
         String json = restTemplate.getForObject(uri, String.class);
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, ObjectNode.class);
     }
-     
-     //tarppo
-    private void updateTarppoPofIfNeeded() throws IOException { 
+
+    //new stuff
+    public ResponseEntity<Object> getTasks(String ageGroup) throws IOException {
+        if (pofData.containsKey(ageGroup)) {
+            updateageGroupTasksIfNeeded(ageGroup);
+            return ResponseEntity.ok(pofData.get(ageGroup).getContent());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    private void updateageGroupTasksIfNeeded(String ageGroup) throws IOException {
         //uses pof so it has to be updated as well
         updatePofIfNeeded();
-        if (!lastUpdateTarppo.equals(LocalDate.now())) {
-            lastUpdateTarppo = LocalDate.now();
-            tarppoData = getPofActivitiesOfAge("tarppo");
+        ExpirableObject tasks = pofData.get(ageGroup);
+        if (!tasks.getLastUpdated().equals(LocalDate.now())) {
+            tasks.setContent(getPofActivitiesOfAge(ageGroup));
         }
     }
 
     //new pof by agegroup
     private ArrayNode getPofActivitiesOfAge(String age) throws IOException {
-        //get the agegroup of choice ONLY TARPPO WORKS right now
+        //get the agegroup of choice ONLY tarppo and tarppodev WORKS right now
         JsonNode pofOfAge = getTaskGroupsOfAge(age);
         //below returns tasks separated by taskgroups, so it's an array that has only tasks in them
         List<JsonNode> taskGroups = pofOfAge.findValues("tasks");
+        //lets cut size if age contains dev in it
+        if (age.contains("dev")) {
+            int newSize = taskGroups.size() / 8;
+            taskGroups = taskGroups.subList(taskGroups.size()-newSize, taskGroups.size()-1);
+        }
         //here goes into forloop and visits every url of each task
         //to create our custom activity for frontend easy to read
         ArrayNode customTasks = getTasksFromTaskGroups(taskGroups);
-
         return customTasks;
     }
 
-    //only tarppo for now
+    //only tarppo/tarppodev for now
     private JsonNode getTaskGroupsOfAge(String age) {
-        JsonNode cutByAge = rawpofData
-                .findValue("agegroups");
+        JsonNode cutByAge = (JsonNode) pofData.get(POF).getContent();
+        cutByAge = cutByAge.findValue("agegroups");
 
         switch (age) {
-            case "tarppo":
+            case TARPPO:
+                return cutByAge.get(3).findValue("taskgroups");
+            case TARPPODEV:
                 return cutByAge.get(3).findValue("taskgroups");
             default:
-                throw new IllegalArgumentException("no agegroup found for:"+age);
+                throw new IllegalArgumentException("no agegroup found for:" + age);
         }
     }
 
@@ -100,11 +115,9 @@ public class PofService extends RestTemplate {
     private ArrayNode getTasksFromTaskGroups(List<JsonNode> taskGroups) {
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode activities = mapper.createArrayNode();
-        int i = 0;
         long atStart = System.currentTimeMillis();
         for (JsonNode taskGroup : taskGroups) {
             for (JsonNode taskShallowDescription : taskGroup) {
-                i++;
                 JsonNode task = createFrontEndActivity(taskShallowDescription);
                 if (task != null) {
                     activities.add(task);
@@ -112,8 +125,7 @@ public class PofService extends RestTemplate {
             }
         }
         //20sec-1min on my laptop, curius too see how long travis or aws will take
-        System.out.println("tasks total: " + i + " successfully parsed: " + activities.size()
-                + "\n time:" + ((System.currentTimeMillis() - atStart) / 1000) + "sec");
+        System.out.println("time used to parse: " + ((System.currentTimeMillis() - atStart) / 1000) + "sec");
         return activities;
     }
 
@@ -155,8 +167,12 @@ public class PofService extends RestTemplate {
         if (task.findValue("taitoalueet") != null) {
             skillArray.addAll(task.findValue("taitoalueet").findValues("name"));
         }
-        activity.set("suggestionDetailsUrl", task.findValue("suggestions_details").findValue("details"));
-
+        ArrayNode suggestionArray = activity.putArray("suggestions");
+        if (task.findValue("suggestions_details").findValue("details") != null) {
+            URI detailUrl = URI.create(task.findValue("suggestions_details").findValue("details").asText());
+            JsonNode suggestionsIn = restTemplate.getForObject(detailUrl, JsonNode.class);         
+            suggestionArray.addAll(suggestionsIn.findValue("items").findValues("content"));
+        }
         activity.set("originUrl", task.findValue("languages").findValue("details"));
 
         return activity;
