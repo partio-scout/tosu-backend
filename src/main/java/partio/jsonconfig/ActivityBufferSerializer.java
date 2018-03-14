@@ -25,28 +25,21 @@ public class ActivityBufferSerializer extends StdSerializer<ActivityBuffer> {
             throws IOException, JsonProcessingException {
 
         jgen.writeStartObject();
-        try {
+
+        jgen.writeNumberField("id", buffer.getId());
+        jgen.writeArrayFieldStart("activities");
+
         if (buffer.getActivities() != null) {
 
-            jgen.writeNumberField("id", buffer.getId());
-            jgen.writeArrayFieldStart("activities");
-
-            if (buffer.getActivities() != null) {
-
-                for (Activity activity : buffer.getActivities()) {
-                    jgen.writeStartObject();
-                    jgen.writeNumberField("id", activity.getId());
-                    jgen.writeStringField("guid", activity.getGuid());
-                    jgen.writeEndObject();
-                }
+            for (Activity activity : buffer.getActivities()) {
+                jgen.writeStartObject();
+                jgen.writeNumberField("id", activity.getId());
+                jgen.writeStringField("guid", activity.getGuid());
+                jgen.writeEndObject();
             }
-            jgen.writeEndArray();
-        } else {
-            jgen.writeStringField("activities", null);
         }
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+        jgen.writeEndArray();
+
         jgen.writeEndObject();
     }
 
