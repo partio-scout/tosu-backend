@@ -19,8 +19,9 @@ public class PofController {
     public Object getLe() throws IOException {
        return pof.getPof();
     }
+    //tarppo= all tarppo, tarppoDev= sample from tarppo (faster but less data)
     @GetMapping("/pofdata/{ageGroup}")
     public Object getPofActivities(@PathVariable String ageGroup) throws IOException {
-       return pof.getTarppo();
+       return pof.getTasks(ageGroup);
     }
 }
