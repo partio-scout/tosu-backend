@@ -1,5 +1,6 @@
 package partio.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Event;
+import partio.domain.Plan;
 import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
 import partio.service.validators.ActivityValidator;
@@ -42,6 +44,8 @@ public class ActivityService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
         activity.setEvent(event);
+        List<Plan> plans = new ArrayList<>();
+        activity.setPlans(plans);
         activityRepository.save(activity);
         event.getActivities().add(activity);
         eventRepository.save(event);
