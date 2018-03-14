@@ -30,12 +30,14 @@ public class PlanValidator extends Validator<Plan> {
         if (!validateStringNotOnlySpaces(plan.getGuid(), NOT_NULL)) {
             errors.add("guid cannot be whitespace only");
         }
-        
+
         return errors;
     }
 
     @Override
     public List<String> validateChanges(Plan original, Plan changes) {
+
+        //? täs se palauttaa aina tyhjän listan
         validateNew(changes);
         validateNewAndOld(original);
         List<String> errors = new ArrayList<>();
@@ -45,14 +47,13 @@ public class PlanValidator extends Validator<Plan> {
     @Override
     protected List<String> validateNewAndOld(Plan plan) {
         List<String> errors = new ArrayList<>();
-
+//eti reposta myös että aktiviteetti on tosiaan olemassa
+//tai heitä try catchiin
         if (plan.getActivity() != null) {
             errors.add("Execution plan can't exist without activity");
         }
 
         return errors;
     }
-
-
 
 }

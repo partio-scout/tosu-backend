@@ -34,6 +34,7 @@ public class PlanService {
     }
 
     public ResponseEntity<Object> addPlan(Long activityId, Plan plan) {
+        //getOne voi heittää exceptionin jos aktiviteettiä ei löydy
         Activity activity = activityRepository.getOne(activityId);
 
         if (activity == null) {
@@ -41,28 +42,30 @@ public class PlanService {
         }
 
         List<String> errors = validator.validateNew(plan);
-
         if (!errors.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
 
+        //tää kait kuuluu validointiin, kaikki tarkastukset sinne paitsi 404 errorit
         for(Plan planExist : activity.getPlans()){
             if(planExist.getGuid().equals(plan.getGuid())){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Plan may only be added to activity once.");
             }
         }
         
+        //nullpointteri jos aktiviteetin lista on tyhjä
         activity.getPlans().add(plan);
-
         plan.setActivity(activity);
 
         planRepository.save(plan);
-        activityRepository.save(activity);
+        //planissa on se viite niin aktiviteettiin ei tuu muutoksia eli ei tarvi tallentaa
+      //  activityRepository.save(activity);
 
         return ResponseEntity.ok(plan);
     }
 
     public List<Plan> list(Long activityId) {
+        //exception getone kanssa mahdollista + nullpointer jos ei ole planeja
         return activityRepository.getOne(activityId).getPlans();
     }
 
