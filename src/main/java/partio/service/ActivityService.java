@@ -81,7 +81,7 @@ public class ActivityService {
 
         activity.setBuffer(to);
         activity.setEvent(null);
-        activityRepository.save(activity);
+        activityRepository.save(activity);//it already exists so no need to validate
 
         return ResponseEntity.ok(activity);
     }
@@ -99,13 +99,26 @@ public class ActivityService {
         }
 
         activity.setBuffer(null);
-        activity.setEvent(to);
-        List<String> errors = validator.validateChanges(activityRepository.findOne(activityId), activity);
-        if (!errors.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-        }
+        activity.setEvent(to);//it already exists so no need to validate
         activityRepository.save(activity);
 
+        return ResponseEntity.ok(activity);
+    }
+    
+    public ResponseEntity<Object> moveActivityFromEventToOtherEvent(Long activityId, Long eventIdFrom, Long eventIdTo) {
+        Activity activity = activityRepository.findOne(activityId);
+        if (activity == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        Event to = eventRepository.findOne(eventIdTo);
+        Event from = eventRepository.findOne(eventIdFrom);
+
+        if (from == null || from.getActivities() == null || !from.getActivities().contains(activity)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        activity.setEvent(to);//it already exists so no need to validate
+        activityRepository.save(activity);
         return ResponseEntity.ok(activity);
     }
 

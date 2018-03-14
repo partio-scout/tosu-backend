@@ -39,30 +39,35 @@ public class PofService extends RestTemplate {
     }
 
     public ObjectNode getPof() throws IOException {
-        if (lastUpdatePof != LocalDate.now()) {
-            lastUpdatePof = LocalDate.now();
-            rawpofData = fetchDataFromPof();
-        }
+        updatePofIfNeeded();
         return rawpofData;
     }
-
-    public ArrayNode getTarppo() throws IOException {
-        //uses pof so it has to be updated as well
+    public ArrayNode getTarppo() throws IOException {   
+        updateTarppoPofIfNeeded();
+        return tarppoData;
+    }
+    
+    //rawpof
+    private void updatePofIfNeeded() throws IOException { 
         if (!lastUpdatePof.equals(LocalDate.now())) {
             lastUpdatePof = LocalDate.now();
             rawpofData = fetchDataFromPof();
         }
+    }
+     private ObjectNode fetchDataFromPof() throws IOException {
+        String json = restTemplate.getForObject(uri, String.class);
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(json, ObjectNode.class);
+    }
+     
+     //tarppo
+    private void updateTarppoPofIfNeeded() throws IOException { 
+        //uses pof so it has to be updated as well
+        updatePofIfNeeded();
         if (!lastUpdateTarppo.equals(LocalDate.now())) {
             lastUpdateTarppo = LocalDate.now();
             tarppoData = getPofActivitiesOfAge("tarppo");
         }
-        return tarppoData;
-    }
-
-    private ObjectNode fetchDataFromPof() throws IOException {
-        String json = restTemplate.getForObject(uri, String.class);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, ObjectNode.class);
     }
 
     //new pof by agegroup

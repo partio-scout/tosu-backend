@@ -51,4 +51,12 @@ public class ActivityController {
         
         return activityService.moveActivityFromBufferToEvent(id, eventId, bufferId);
     }
+    
+    @PutMapping("/activity/{id}/fromevent/{fromId}/toevent/{toId}")
+    public ResponseEntity<Object> moveActivityFromEventToOtherEvent(@PathVariable Long id,
+            @PathVariable Long fromId, 
+            @PathVariable Long toId) {
+        
+        return activityService.moveActivityFromEventToOtherEvent(id, fromId, toId);
+    }
 }
