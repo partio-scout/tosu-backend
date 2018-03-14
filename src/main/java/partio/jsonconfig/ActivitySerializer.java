@@ -31,9 +31,12 @@ public class ActivitySerializer extends StdSerializer<Activity> {
         } else {
             jgen.writeNumberField("eventId", null);
         }
-        //buffer is not here because a) a singleton b) there will be 1 buffer per user
-        //that means basically find buffer by user and all activities of 1 user would have same bufferId
-        //this is why frontend shoudnt need it
+        if (value.getBuffer()!= null) {
+        jgen.writeNumberField("bufferZoneId", value.getBuffer().getId());
+        } else {
+            jgen.writeNumberField("bufferZoneId", null);
+        }
+        //buffer added if needed in debugging
         jgen.writeEndObject();
     }
         

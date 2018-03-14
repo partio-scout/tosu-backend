@@ -57,15 +57,10 @@ public class ActivityBufferService {
         if (!errors.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         } 
-        
-        if (buffer.getActivities() == null) {
-            buffer.setActivities(new ArrayList<>());
-        }
-        buffer.getActivities().add(activity);
-
-        bufferRepository.save(buffer);
+        //saves to bufferzone as well because join column is in activity
         activityRepository.save(activity);
-        return ResponseEntity.ok(buffer);
+        
+        return ResponseEntity.ok(activity);
     }
 
 }
