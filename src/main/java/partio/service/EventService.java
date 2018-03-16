@@ -2,6 +2,7 @@ package partio.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -11,7 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import partio.domain.Activity;
+import partio.domain.ActivityBuffer;
 import partio.domain.Event;
+import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
 import partio.service.validators.EventValidator;
 
@@ -21,6 +25,12 @@ public class EventService {
 
     @Autowired
     private EventRepository eventRepository;
+    @Autowired
+    private ActivityRepository activityRepository;
+    @Autowired
+    private ActivityBufferService bufferService;
+    @Autowired
+    private ActivityService activityService;
     @Autowired
     private EventValidator eventValidator;
 
@@ -64,9 +74,16 @@ public class EventService {
         Event toDelete = eventRepository.findOne(eventId);
         if (toDelete == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } else {
-            eventRepository.delete(toDelete);
-            return ResponseEntity.ok(toDelete);
         }
+        List<Activity> eventActivitys = toDelete.getActivities();
+        if (eventActivitys != null) {
+            eventActivitys.forEach((eventActivity) -> {
+                activityService.moveActivityFromEventToBuffer(eventActivity.getId(), eventId, 0l);
+            });
+        }
+        toDelete.setActivities(new ArrayList<>());
+        eventRepository.delete(toDelete);
+        return ResponseEntity.ok(toDelete);
+
     }
 }
