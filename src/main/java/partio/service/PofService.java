@@ -87,7 +87,7 @@ public class PofService extends RestTemplate {
         List<JsonNode> taskGroups = pofOfAge.findValues("tasks");
         //lets cut size if age contains dev in it
         if (age.contains("dev")) {
-            int newSize = taskGroups.size() / 8;
+            int newSize = taskGroups.size() / 10;
             taskGroups = taskGroups.subList(taskGroups.size()-newSize, taskGroups.size()-1);
         }
         //here goes into forloop and visits every url of each task
@@ -151,7 +151,10 @@ public class PofService extends RestTemplate {
         activity.set("guid", task.findValue("guid"));
         activity.set("title", task.findValue("title"));
         activity.set("content", task.findValue("content"));
-        if (task.findValue("tags").findValue("pakollisuus").asText().equals("pakollisuus")) {
+        System.out.print(task.findValue("pakollisuus").findValue("name").toString() + " - ");
+        System.out.print(task.findValue("pakollisuus").findValue("name").asText().toLowerCase() + " - ");
+        System.out.println(task.findValue("pakollisuus").findValue("name").asText().toLowerCase().equals("pakollinen"));
+        if (task.findValue("pakollisuus").findValue("name").asText().toLowerCase().equals("pakollinen")) {
             activity.put("mandatory", true);
         } else {
             activity.put("mandatory", false);

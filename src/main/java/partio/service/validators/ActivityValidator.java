@@ -64,7 +64,7 @@ public class ActivityValidator extends Validator<Activity> {
            if (bufferInDb == null) {
                errors.add("buffer of activity is not found in db.");
            } else if (bufferInDb.getActivities() != null &&
-                   bufferInDb.getActivities().size() > ActivityBuffer.BUFFER_SIZE) {                  
+                   bufferInDb.getActivities().size() >= ActivityBuffer.BUFFER_SIZE) {                  
                 errors.add("buffer is full.");
            }
            if (t.getEvent() != null) {
