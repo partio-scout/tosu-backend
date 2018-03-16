@@ -36,7 +36,6 @@ public class ActivitySerializer extends StdSerializer<Activity> {
         } else {
             jgen.writeNumberField("bufferZoneId", null);
         }
-        //buffer added if needed in debugging
         jgen.writeEndObject();
     }
         

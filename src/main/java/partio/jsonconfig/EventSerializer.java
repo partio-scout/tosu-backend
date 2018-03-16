@@ -50,21 +50,13 @@ public class EventSerializer extends StdSerializer<Event> {
             jgen.writeNumberField("groupId", null);
         }
 
+        jgen.writeArrayFieldStart("activities");
         if (event.getActivities() != null) {
-
-            jgen.writeArrayFieldStart("activities");
-
             for (Activity activity : event.getActivities()) {
-                jgen.writeStartObject();
-                jgen.writeNumberField("id", activity.getId());
-                jgen.writeStringField("guid", activity.getGuid());
-                jgen.writeEndObject();
+                jgen.writeObject(activity);
             }
-
-            jgen.writeEndArray();
-        } else {
-            jgen.writeStringField("activities", null);
         }
+        jgen.writeEndArray();
 
         jgen.writeEndObject(); // }
 

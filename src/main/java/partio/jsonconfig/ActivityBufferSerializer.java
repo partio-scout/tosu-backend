@@ -30,12 +30,8 @@ public class ActivityBufferSerializer extends StdSerializer<ActivityBuffer> {
         jgen.writeArrayFieldStart("activities");
 
         if (buffer.getActivities() != null) {
-
-            for (Activity activity : buffer.getActivities()) {
-                jgen.writeStartObject();
-                jgen.writeNumberField("id", activity.getId());
-                jgen.writeStringField("guid", activity.getGuid());
-                jgen.writeEndObject();
+            for (Activity activity : buffer.getActivities()) {                
+                jgen.writeObject(activity);
             }
         }
         jgen.writeEndArray();
