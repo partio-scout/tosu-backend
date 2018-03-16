@@ -101,6 +101,9 @@ public class ActivityService {
         if (from == null || from.getActivities() == null || !from.getActivities().contains(activity)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+        if (to == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
 
         activity.setBuffer(null);
         activity.setEvent(to);//it already exists so no need to validate

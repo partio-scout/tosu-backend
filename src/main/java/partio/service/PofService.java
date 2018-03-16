@@ -151,9 +151,6 @@ public class PofService extends RestTemplate {
         activity.set("guid", task.findValue("guid"));
         activity.set("title", task.findValue("title"));
         activity.set("content", task.findValue("content"));
-        System.out.print(task.findValue("pakollisuus").findValue("name").toString() + " - ");
-        System.out.print(task.findValue("pakollisuus").findValue("name").asText().toLowerCase() + " - ");
-        System.out.println(task.findValue("pakollisuus").findValue("name").asText().toLowerCase().equals("pakollinen"));
         if (task.findValue("pakollisuus").findValue("name").asText().toLowerCase().equals("pakollinen")) {
             activity.put("mandatory", true);
         } else {
