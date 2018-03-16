@@ -102,15 +102,7 @@ public class ActivityService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         if (to == null) {
-            String body = "activityId:" + activityId + " bufferId" + activityBufferId + " toEventId" + eventId + "\n";
-            List<Event> all = eventRepository.findAll();
-            for (Event event : all) {
-                body += event.getId() + " ";
-            }
-            body += "\n";
-            body += "activityIsNull:" + (activity == null) + " bufferIsNull" + (from == null) + " eventIsNull" + (to == null);
-
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
         activity.setBuffer(null);
