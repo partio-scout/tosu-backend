@@ -89,7 +89,8 @@ public class ActivityService {
         return ResponseEntity.ok(activity);
     }
 
-    public ResponseEntity<Object> moveActivityFromBufferToEvent(Long activityId, Long activityBufferId, Long eventId) {
+    public ResponseEntity<Object> moveActivityFromBufferToEvent(Long activityId, Long eventId, Long activityBufferId) {
+    //                                                   .moveActivityFromBufferToEvent(id, eventId, bufferId);
         Activity activity = activityRepository.findOne(activityId);
         if (activity == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
