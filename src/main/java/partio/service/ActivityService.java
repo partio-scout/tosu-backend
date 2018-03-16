@@ -66,10 +66,9 @@ public class ActivityService {
     }
 
     //new stuff from here
-   
     public ResponseEntity<Object> moveActivityFromEventToBuffer(Long activityId, Long eventId, Long activityBufferId) {
         Activity activity = activityRepository.findOne(activityId);
-           if (activity == null) {
+        if (activity == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         Event from = eventRepository.findOne(eventId);
@@ -102,7 +101,15 @@ public class ActivityService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         if (to == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            String body = "activityId:" + activityId + " bufferId" + activityBufferId + " toEventId" + eventId + "\n";
+            List<Event> all = eventRepository.findAll();
+            for (Event event : all) {
+                body += event.getId() + " ";
+            }
+            body += "\n";
+            body += "activityIsNull:" + (activity == null) + " bufferIsNull" + (from == null) + " eventIsNull" + (to == null);
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
         }
 
         activity.setBuffer(null);
@@ -111,7 +118,7 @@ public class ActivityService {
 
         return ResponseEntity.ok(activity);
     }
-    
+
     public ResponseEntity<Object> moveActivityFromEventToOtherEvent(Long activityId, Long eventIdFrom, Long eventIdTo) {
         Activity activity = activityRepository.findOne(activityId);
         if (activity == null) {
