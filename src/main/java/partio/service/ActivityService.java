@@ -78,8 +78,9 @@ public class ActivityService {
         }
 
         if (to.getActivities() != null && to.getActivities().size() >= ActivityBuffer.BUFFER_SIZE) {
-            activityRepository.delete(activity);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(activity);
+            ArrayList<String> errors = new ArrayList<>();
+            errors.add("filter is full");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
 
         activity.setBuffer(to);
@@ -90,7 +91,7 @@ public class ActivityService {
     }
 
     public ResponseEntity<Object> moveActivityFromBufferToEvent(Long activityId, Long eventId, Long activityBufferId) {
-    //                                                   .moveActivityFromBufferToEvent(id, eventId, bufferId);
+        //                                                   .moveActivityFromBufferToEvent(id, eventId, bufferId);
         Activity activity = activityRepository.findOne(activityId);
         if (activity == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -102,7 +103,7 @@ public class ActivityService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         if (to == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
         activity.setBuffer(null);

@@ -75,13 +75,18 @@ public class EventService {
         if (toDelete == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+        List<Activity> notEnoughSpaceFor = new ArrayList<>();
         List<Activity> eventActivitys = toDelete.getActivities();
         if (eventActivitys != null) {
+
             eventActivitys.forEach((eventActivity) -> {
-                activityService.moveActivityFromEventToBuffer(eventActivity.getId(), eventId, 0l);
+                ResponseEntity<Object> res = activityService.moveActivityFromEventToBuffer(eventActivity.getId(), eventId, 0l);
+                if (res.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                    notEnoughSpaceFor.add(eventActivity);
+                }
             });
         }
-        toDelete.setActivities(new ArrayList<>());
+        toDelete.setActivities(notEnoughSpaceFor);
         eventRepository.delete(toDelete);
         return ResponseEntity.ok(toDelete);
 
