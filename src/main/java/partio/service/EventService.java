@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Event;
+import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
 import partio.service.validators.EventValidator;
@@ -27,6 +28,8 @@ public class EventService {
     private EventRepository eventRepository;
     @Autowired
     private ActivityRepository activityRepository;
+    @Autowired
+    private ActivityBufferRepository bufferRepository;
     @Autowired
     private ActivityBufferService bufferService;
     @Autowired
@@ -75,20 +78,33 @@ public class EventService {
         if (toDelete == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        List<Activity> notEnoughSpaceFor = new ArrayList<>();
-        List<Activity> eventActivitys = toDelete.getActivities();
-        if (eventActivitys != null) {
+        ActivityBuffer buffer = bufferService.findBuffer(0l);
+        Event deleted = moveEventActivitysToBuffer(toDelete, buffer);
 
-            eventActivitys.forEach((eventActivity) -> {
-                ResponseEntity<Object> res = activityService.moveActivityFromEventToBuffer(eventActivity.getId(), eventId, 0l);
-                if (res.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                    notEnoughSpaceFor.add(eventActivity);
-                }
-            });
+        //event in domain has delete cascade so empty before removing or 
+        //it will remove activitys too fom db
+        deleted.setActivities(new ArrayList<>());
+        eventRepository.delete(deleted);
+        return ResponseEntity.ok(deleted);
+
+    }
+
+    private Event moveEventActivitysToBuffer(Event event, ActivityBuffer buffer) {
+        List<Activity> eventActivitys = event.getActivities();
+
+        if (eventActivitys == null || eventActivitys.isEmpty()) {
+            return event; //nothin to momve
         }
-        toDelete.setActivities(notEnoughSpaceFor);
-        eventRepository.delete(toDelete);
-        return ResponseEntity.ok(toDelete);
+        System.out.println("proceed to move");
+        if (buffer.getActivities() == null) {
+            buffer.setActivities(new ArrayList<>());
+        }
+        for (Activity eventActivity : eventActivitys) {
+            eventActivity.setBuffer(buffer);
+            eventActivity.setEvent(null);
+        }
+        activityRepository.save(eventActivitys);
 
+        return event;
     }
 }
