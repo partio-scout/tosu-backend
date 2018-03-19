@@ -44,8 +44,9 @@ public class ActivityControllerTest {
         event = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
         helper = new TestHelper();
         
-        eventRepo.deleteAll();
         activityRepo.deleteAll();
+        eventRepo.deleteAll();
+        
     }
 
     @Test

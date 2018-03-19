@@ -51,13 +51,13 @@ public class Event extends AbstractPersistable<Long> {
     @Column(length = 10000)
     private String information;
     
-    @JsonBackReference   
-    @ManyToOne(fetch = FetchType.EAGER)
+    
+    @ManyToOne
     @JoinColumn    
     private EventGroup groupId;   
    
-    @JsonManagedReference
-    @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference           //should be moved to buffer and not deleted anymore
+    @OneToMany(mappedBy = "event"/*, cascade = CascadeType.REMOVE, orphanRemoval = true*/)
     private List<Activity> activities;
 
     public Event(String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String type, String information) {
@@ -71,8 +71,6 @@ public class Event extends AbstractPersistable<Long> {
         this.groupId = null;
         this.activities = new ArrayList<>();
     }
-    
-    
     
     public void setVariables(Event event) {
         this.title = event.title;

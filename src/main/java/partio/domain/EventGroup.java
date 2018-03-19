@@ -12,12 +12,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
+@ToString(exclude = {"events"})
 @JsonSerialize(using = EventGroupSerializer.class)
 public class EventGroup extends AbstractPersistable<Long> {
    // @JsonManagedReference
@@ -41,7 +43,6 @@ public class EventGroup extends AbstractPersistable<Long> {
         }
         EventGroup otherGroup = (EventGroup) other;
         return this.getId() == otherGroup.getId();
-    }
-    
+    }    
 
 }
