@@ -10,7 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-//import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import partio.jsonconfig.ActivitySerializer;
@@ -19,30 +18,30 @@ import partio.jsonconfig.ActivitySerializer;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-//@EqualsAndHashCode(callSuper = false)
 @JsonSerialize(using = ActivitySerializer.class)
 public class Activity extends AbstractPersistable<Long> {
+
     @ManyToOne
     @JoinColumn
     private Event event;
-    
+
     @ManyToOne
-    @JoinColumn    
+    @JoinColumn
     private ActivityBuffer buffer;
     //pof backend id
-    @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE, orphanRemoval = true)    
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Plan> plans;
-    
+
     private String guid;
-    
+
     public Activity(String guid) {
-	this.guid = guid;
-    }
-    
-    //tests need this constructor
-    public Activity(Event event,String guid) {
         this.guid = guid;
-        this.event=event;
+    }
+
+    //tests need this constructor
+    public Activity(Event event, String guid) {
+        this.guid = guid;
+        this.event = event;
     }
 
     @Override
@@ -56,10 +55,10 @@ public class Activity extends AbstractPersistable<Long> {
         }
         return false;
     }
-    
+
     @Override
     public String toString() {
-        return "guid: "+guid + " id: " + getId();
+        return "guid: " + guid + " id: " + getId();
     }
 
     @Override
@@ -68,5 +67,5 @@ public class Activity extends AbstractPersistable<Long> {
         hash = 59 * hash + Objects.hashCode(this.guid);
         return hash;
     }
- 
+
 }

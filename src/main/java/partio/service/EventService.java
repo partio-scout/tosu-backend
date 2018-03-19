@@ -1,7 +1,5 @@
 package partio.service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Event;
-import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
+import partio.repository.EventGroupRepository;
 import partio.repository.EventRepository;
 import partio.service.validators.EventValidator;
 
@@ -29,16 +27,13 @@ public class EventService {
     @Autowired
     private ActivityRepository activityRepository;
     @Autowired
-    private ActivityBufferRepository bufferRepository;
+    private EventGroupRepository groupRepository;
     @Autowired
     private ActivityBufferService bufferService;
-    @Autowired
-    private ActivityService activityService;
     @Autowired
     private EventValidator eventValidator;
 
     public List<Event> list() {
-        // List<Event> events = eventRepository.findAll();
         List<Event> events = eventRepository.findAll(orderBy());
         return events;
     }
@@ -81,10 +76,13 @@ public class EventService {
         ActivityBuffer buffer = bufferService.findBuffer(0l);
         Event deleted = moveEventActivitysToBuffer(toDelete, buffer);
 
-        //event in domain has delete cascade so empty before removing or 
-        //it will remove activitys too fom db
-        deleted.setActivities(new ArrayList<>());
-        eventRepository.delete(deleted);
+        //jos on viimeinen eventti joka kuuluu ryhmään niin
+        //poistetaan ryhmä ja cascaden avul se poistaa myös eventin
+        if (deleted.getGroupId() != null && deleted.getGroupId().getEvents().size() == 1) {
+            groupRepository.delete(deleted.getGroupId());
+        } else {
+            eventRepository.delete(deleted);
+        }
         return ResponseEntity.ok(deleted);
 
     }

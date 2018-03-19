@@ -32,12 +32,14 @@ public class PofService extends RestTemplate {
         pofData.put(POF, new ExpirableObject());
 
         this.restTemplate = new RestTemplate();
+        
         try {
-            getPof();
+            updatePofIfNeeded();
             updateageGroupTasksIfNeeded("tarppodev");
         } catch (IOException ex) {
             System.err.println("initializing pofservice failed");
         }
+        
     }
 
     //rawpof
