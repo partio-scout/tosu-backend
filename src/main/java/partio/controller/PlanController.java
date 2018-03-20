@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import partio.domain.Activity;
@@ -19,14 +20,19 @@ public class PlanController {
     @Autowired
     private PlanService planService;
 
-    @GetMapping("/activity/{activityId}/plan")
-    public List<Plan> getPlansForActivity(@PathVariable Long activityId) {
+    @GetMapping("/activity/{activityId}/plans")
+    public ResponseEntity<Object> getPlansForActivity(@PathVariable Long activityId) {
         return planService.list(activityId);
     }
 
     @PostMapping("/activity/{activityId}/plans")
     public ResponseEntity<Object> addPlanForActivity(@PathVariable Long activityId, @RequestBody Plan jsonPlan) {
         return planService.addPlan(activityId, jsonPlan);
+    }
+    
+    @PutMapping("/plans/{planId}")
+    public ResponseEntity<Object> modifyPlan(@PathVariable Long planId, @RequestBody Plan jsonPlan) {
+        return planService.modifyPlan(jsonPlan, planId);
     }
 
     @DeleteMapping("/plans/{planId}")

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import partio.domain.Activity;
+import partio.domain.Plan;
 
 public class ActivitySerializer extends StdSerializer<Activity> {
 
@@ -36,6 +37,13 @@ public class ActivitySerializer extends StdSerializer<Activity> {
         } else {
             jgen.writeNumberField("bufferZoneId", null);
         }
+        jgen.writeArrayFieldStart("plans");
+        if (value.getPlans() != null) {
+            for (Plan plan : value.getPlans()) {
+                jgen.writeObject(plan);
+            }
+        }
+        jgen.writeEndArray();
         jgen.writeEndObject();
     }
         
