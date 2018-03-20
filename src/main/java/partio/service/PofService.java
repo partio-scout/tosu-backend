@@ -32,14 +32,14 @@ public class PofService extends RestTemplate {
         pofData.put(POF, new ExpirableObject());
 
         this.restTemplate = new RestTemplate();
-        
+
         try {
             updatePofIfNeeded();
             updateageGroupTasksIfNeeded("tarppodev");
         } catch (IOException ex) {
             System.err.println("initializing pofservice failed");
         }
-        
+
     }
 
     //rawpof
@@ -90,7 +90,7 @@ public class PofService extends RestTemplate {
         //lets cut size if age contains dev in it
         if (age.contains("dev")) {
             int newSize = taskGroups.size() / 10;
-            taskGroups = taskGroups.subList(taskGroups.size()-newSize, taskGroups.size()-1);
+            taskGroups = taskGroups.subList(taskGroups.size() - newSize, taskGroups.size() - 1);
         }
         //here goes into forloop and visits every url of each task
         //to create our custom activity for frontend easy to read
@@ -169,13 +169,22 @@ public class PofService extends RestTemplate {
         if (task.findValue("taitoalueet") != null) {
             skillArray.addAll(task.findValue("taitoalueet").findValues("name"));
         }
+        //suggestions
         ArrayNode suggestionArray = activity.putArray("suggestions");
         if (task.findValue("suggestions_details").findValue("details") != null) {
             URI detailUrl = URI.create(task.findValue("suggestions_details").findValue("details").asText());
-            JsonNode suggestionsIn = restTemplate.getForObject(detailUrl, JsonNode.class);         
-            suggestionArray.addAll(suggestionsIn.findValue("items").findValues("content"));
+            JsonNode pofSuggestionJson = restTemplate.getForObject(detailUrl, JsonNode.class);
+            pofSuggestionJson = pofSuggestionJson.findValue("items");
+
+            for (JsonNode suggestionItem : pofSuggestionJson) {
+                ObjectNode customSuggestion = mapper.createObjectNode();
+                customSuggestion.set("title", suggestionItem.findValue("title"));
+                customSuggestion.set("content", suggestionItem.findValue("content"));
+                suggestionArray.add(customSuggestion);
+            }
         }
-        activity.set("originUrl", task.findValue("languages").findValue("details"));
+        //source url
+        activity.set("originUrl", task.findValue("languages").findValue("details").get(0));
 
         return activity;
     }
