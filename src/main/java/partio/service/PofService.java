@@ -35,7 +35,7 @@ public class PofService extends RestTemplate {
 
         try {
             updatePofIfNeeded();
-           // updateageGroupTasksIfNeeded("tarppodev");
+            // updateageGroupTasksIfNeeded("tarppodev");
         } catch (IOException ex) {
             System.err.println("initializing pofservice failed");
         }
@@ -158,11 +158,20 @@ public class PofService extends RestTemplate {
         } else {
             activity.put("mandatory", false);
         }
-        activity.set("place", task.findValue("paikka").findValue("name"));
+        activity.set("ingress", task.findValue("ingress"));
+        activity.set("leader_tasks", task.findValue("leader_tasks"));
         activity.set("duration", task.findValue("suoritus_kesto").findValue("name"));
         activity.set("task_term", task.findValue("task_term").findValue("name"));
 
+        ArrayNode placeArray = activity.putArray("place");
+        if (task.findValue("paikka") != null) {
+            placeArray.addAll(task.findValue("paikka").findValues("name"));
+        }
         //lists are made like this into objectnode
+        ArrayNode leaderArray = activity.putArray("johtamistaito");
+        if (task.findValue("johtamistaito") != null) {
+            leaderArray.addAll(task.findValue("johtamistaito").findValues("name"));
+        }
         ArrayNode growthArray = activity.putArray("kasvatustavoitteet");
         growthArray.addAll(task.findValue("kasvatustavoitteet").findValues("name"));
         ArrayNode skillArray = activity.putArray("taitoalueet");
