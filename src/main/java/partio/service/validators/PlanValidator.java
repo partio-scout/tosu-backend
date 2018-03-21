@@ -13,14 +13,16 @@ import partio.repository.PlanRepository;
 public class PlanValidator extends Validator<Plan> {
 
     @Autowired
-    private ActivityRepository acitvityRepository;
-
-    @Autowired
     private PlanRepository planRepository;
 
     @Override
     public List<String> validateNew(Plan plan) {
         List<String> errors = validateNewAndOld(plan);
+        if (plan.getGuid() != null) {
+            if (planRepository.findByGuidAndActivity(plan.getGuid(), plan.getActivity()) != null) {
+                errors.add(("activity already has plan with this guid"));
+            }
+        }
         return errors;
     }
 
@@ -52,7 +54,7 @@ public class PlanValidator extends Validator<Plan> {
         if (!validateStringNotOnlySpaces(plan.getContent(), Validator.NOT_NULL)) {
             errors.add("Content cannot be null or spaces only");
         }
-        
+
         return errors;
     }
 }

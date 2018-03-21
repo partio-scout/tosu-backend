@@ -57,6 +57,7 @@ public class PlanService {
         return ResponseEntity.ok(plan);
     }
 
+    //maybe remove guid when modifying as a sign of custom plan
     public ResponseEntity<Object> modifyPlan(Plan plan, Long planId) {
         if (plan == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

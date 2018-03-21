@@ -32,14 +32,15 @@ public class PofService extends RestTemplate {
         pofData.put(POF, new ExpirableObject());
 
         this.restTemplate = new RestTemplate();
-//
-//        try {
-//            //updatePofIfNeeded();
-//            // updateageGroupTasksIfNeeded("tarppodev");
-//        } catch (IOException ex) {
-//            System.err.println("initializing pofservice failed");
-//        }
 
+/*
+        try {
+            updatePofIfNeeded();
+            updateageGroupTasksIfNeeded("tarppodev");
+        } catch (IOException ex) {
+            System.err.println("initializing pofservice failed");
+        }
+*/
     }
 
     //rawpof
@@ -137,7 +138,7 @@ public class PofService extends RestTemplate {
         try {
             URI detailUrl = URI.create(taskShallowDescription.findValue("languages").findValue("details").asText());
             JsonNode task = restTemplate.getForObject(detailUrl, JsonNode.class);
-
+            System.out.println("writing");
             return writeCustomActivity(task);
         } catch (IOException ex) {
             ex.printStackTrace();
