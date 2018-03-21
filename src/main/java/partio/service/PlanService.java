@@ -29,17 +29,17 @@ public class PlanService {
         if (toDelete == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        
+
         planRepository.delete(toDelete);
         return ResponseEntity.ok(toDelete);
     }
 
     public ResponseEntity<Object> addPlan(Long activityId, Plan plan) {
         Activity activity = activityRepository.findOne(activityId);
-        if (activity == null) {    
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        if (activity == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        
+
         //set defaults if empty..ask customer more about it. If defaults are fine can remove validation later.
         if (plan.getContent() == null || plan.getContent().trim().isEmpty()) {
             plan.setContent("Tyhjä suunnitelma");
@@ -48,24 +48,24 @@ public class PlanService {
             plan.setTitle("Tyhjä otsikko");
         }
         plan.setActivity(activity);
-        
+
         List<String> errors = validator.validateNew(plan);
         if (!errors.isEmpty()) {
-             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
         planRepository.save(plan);
         return ResponseEntity.ok(plan);
     }
-    
+
     public ResponseEntity<Object> modifyPlan(Plan plan, Long planId) {
-        if (plan == null) {    
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        if (plan == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        
-        Plan original = planRepository.findOne(planId);    
+
+        Plan original = planRepository.findOne(planId);
         List<String> errors = validator.validateChanges(original, plan);
         if (!errors.isEmpty()) {
-             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
         original.setContent(plan.getContent());
         original.setTitle(plan.getTitle());
@@ -75,8 +75,8 @@ public class PlanService {
 
     public ResponseEntity<Object> list(Long activityId) {
         Activity activity = activityRepository.findOne(activityId);
-        if (activity == null) {    
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        if (activity == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         return ResponseEntity.ok(activity.getPlans());
     }
