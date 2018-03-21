@@ -32,6 +32,7 @@ public class PofService extends RestTemplate {
         pofData.put(POF, new ExpirableObject());
 
         this.restTemplate = new RestTemplate();
+
 /*
         try {
             updatePofIfNeeded();
@@ -123,6 +124,7 @@ public class PofService extends RestTemplate {
                 JsonNode task = createFrontEndActivity(taskShallowDescription);
                 if (task != null) {
                     activities.add(task);
+                    
                 }
             }
         }
@@ -189,6 +191,7 @@ public class PofService extends RestTemplate {
                 ObjectNode customSuggestion = mapper.createObjectNode();
                 customSuggestion.set("title", suggestionItem.findValue("title"));
                 customSuggestion.set("content", suggestionItem.findValue("content"));
+                customSuggestion.set("guid", suggestionItem.findValue("guid"));
                 suggestionArray.add(customSuggestion);
             }
         }
