@@ -1,6 +1,7 @@
 package partio.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,5 +23,6 @@ public class Plan extends AbstractPersistable<Long> {
     private Activity activity;
     
     private String title;
+    @Column(length = 10000)
     private String content;
 }
