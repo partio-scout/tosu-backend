@@ -17,7 +17,12 @@ public class PlanValidator extends Validator<Plan> {
 
     @Override
     public List<String> validateNew(Plan plan) {
-        List<String> errors = validateNewAndOld(plan);
+        List<String> errors = new ArrayList<>();
+        if (plan == null) {
+            errors.add("plan cannot be null");
+            return errors;
+        }
+        errors = validateNewAndOld(plan);
         if (plan.getGuid() != null) {
             if (planRepository.findByGuidAndActivity(plan.getGuid(), plan.getActivity()) != null) {
                 errors.add(("activity already has plan with this guid"));
@@ -28,11 +33,12 @@ public class PlanValidator extends Validator<Plan> {
 
     @Override
     public List<String> validateChanges(Plan original, Plan changes) {
-        List<String> errors = validateNewAndOld(changes);
+        List<String> errors = new ArrayList<>();
         if (original == null || changes == null) {
             errors.add("plan or original plan is null");
             return errors;
         }
+        errors = validateNewAndOld(changes);
         if (original.getId() == null) {
             errors.add("id not found from original plan");
         } else if (planRepository.findOne(original.getId()) == null) {
@@ -44,10 +50,7 @@ public class PlanValidator extends Validator<Plan> {
     @Override
     protected List<String> validateNewAndOld(Plan plan) {
         List<String> errors = new ArrayList<>();
-        if (plan == null) {
-            errors.add("plan cannot be null");
-            return errors;
-        }
+
         if (!validateStringNotOnlySpaces(plan.getTitle(), Validator.NOT_NULL)) {
             errors.add("Title cannot be null or spaces only");
         }

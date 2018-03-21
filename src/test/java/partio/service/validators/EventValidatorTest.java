@@ -15,6 +15,7 @@ import partio.domain.Event;
 import partio.domain.EventGroup;
 import partio.repository.EventGroupRepository;
 import partio.repository.EventRepository;
+import static partio.service.validators.TestHelper.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -33,31 +34,6 @@ public class EventValidatorTest {
         this.preEvent = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information");
         groupRepository.deleteAll();
         eventRepository.deleteAll();
-    }
-
-//helpers
-    public LocalDate DateNowPlusAmount(int years, int months, int days) {
-        LocalDate date = LocalDate.now();
-        date = date.plusDays(days);
-        date = date.plusMonths(months);
-        date = date.plusYears(years);
-        return date;
-    }
-
-    // watch out for goin over midnight
-    public LocalTime TimeNowPlusAmount(int hours, int minutes) {
-        LocalTime time = LocalTime.now();
-        time = time.plusMinutes(minutes);
-        time = time.plusHours(hours);
-        return time;
-    }
-
-    public String makeStringLengthOf(int length, char toAppend) {
-        StringBuilder sb = new StringBuilder(Math.max(length, 0));
-        for (int i = 0; i < length; i++) {
-            sb.append(toAppend);
-        }
-        return sb.toString();
     }
 
     //TEST NEW
@@ -421,6 +397,19 @@ public class EventValidatorTest {
         eventRepository.save(stubs);
         Assert.assertFalse(validator.validateNew(stubs.get(0)).isEmpty());
         Assert.assertTrue(eventRepository.countByGroupId(group) == EventValidator.GROUP_LIMIT);
+
+    }
+
+    @Test
+    public void nullTests() {
+        Assert.assertTrue(validator.validateChanges(null, preEvent).toString(),
+                0 != validator.validateChanges(null, preEvent).size());
+        Assert.assertTrue(validator.validateChanges(preEvent, null).toString(),
+                0 != validator.validateChanges(preEvent, null).size());
+        Assert.assertTrue(validator.validateChanges(null, null).toString(),
+                0 != validator.validateChanges(null, null).size());
+        Assert.assertTrue(validator.validateNew(null).toString(),
+                0 != validator.validateNew(null).size());
 
     }
 

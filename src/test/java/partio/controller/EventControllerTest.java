@@ -38,14 +38,14 @@ public class EventControllerTest {
     private MockMvc mockMvc;
     private Event validStub;
     private Event invalidStub;
-    private TestHelper helper;
+    private TestHelperJson helper;
 
     @Before
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
         validStub = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
         invalidStub = new Event("", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, " ", " ");
-        helper = new TestHelper();
+        helper = new TestHelperJson();
         eventRepo.deleteAll();
         groupRepo.deleteAll();
     }

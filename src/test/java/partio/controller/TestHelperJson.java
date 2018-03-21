@@ -6,11 +6,11 @@ import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Event;
 
-public class TestHelper {
+public class TestHelperJson {
 
     private StringBuilder sb;
 
-    public TestHelper() {
+    public TestHelperJson() {
         sb = new StringBuilder();
     }
 

@@ -36,13 +36,13 @@ public class ActivityControllerTest {
 
     private MockMvc mockMvc;
     private Event event;
-    private TestHelper helper;
+    private TestHelperJson helper;
 
     @Before
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
         event = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
-        helper = new TestHelper();
+        helper = new TestHelperJson();
         
         activityRepo.deleteAll();
         eventRepo.deleteAll();

@@ -42,13 +42,13 @@ public class ActivityBufferControllerTest {
     private MockMvc mockMvc;
     private Activity activity;
     private ActivityBuffer buffer;
-    private TestHelper helper;
+    private TestHelperJson helper;
 
     @Before
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
         activity = new Activity();
-        helper = new TestHelper();
+        helper = new TestHelperJson();
         buffer = new ActivityBuffer();
         activity.setGuid("rwer");
 

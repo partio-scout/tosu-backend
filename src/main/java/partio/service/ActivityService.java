@@ -33,17 +33,13 @@ public class ActivityService {
         if (event == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+        activity.setEvent(event);
         List<String> errors = validator.validateNew(activity);
-        //for when we move onto next step (right now only uniq activities are allowed)
-        //another suggestion would be adding if activity is not finished 
-        //can add same acitivity
-        //  if (event.getActivities().contains(guid)) {
-        //    errors.add("Event can't have same activity more than once.");
-        //  }
+
         if (!errors.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
-        activity.setEvent(event);
+        
         List<Plan> plans = new ArrayList<>();
         activity.setPlans(plans);
         activityRepository.save(activity);
