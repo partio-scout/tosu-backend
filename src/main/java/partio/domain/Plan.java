@@ -23,6 +23,7 @@ public class Plan extends AbstractPersistable<Long> {
     private Activity activity;
     
     private String title;
+    private String guid;
     @Column(length = 10000)
     private String content;
 }

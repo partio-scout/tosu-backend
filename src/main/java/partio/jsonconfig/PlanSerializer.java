@@ -25,6 +25,7 @@ public class PlanSerializer extends StdSerializer<Plan> {
         jgen.writeStartObject();
 
         jgen.writeNumberField("id", value.getId());
+        jgen.writeStringField("guid", value.getGuid());
         jgen.writeStringField("title", value.getTitle());
         jgen.writeStringField("content", value.getContent());
         if (value.getActivity() != null) {
