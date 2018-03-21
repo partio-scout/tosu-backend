@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import partio.jsonconfig.ActivitySerializer;
 
@@ -18,6 +20,7 @@ import partio.jsonconfig.ActivitySerializer;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"buffer", "activity"})
 @JsonSerialize(using = ActivitySerializer.class)
 public class Activity extends AbstractPersistable<Long> {
 
@@ -29,7 +32,7 @@ public class Activity extends AbstractPersistable<Long> {
     @JoinColumn
     private ActivityBuffer buffer;
     //pof backend id
-    @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Plan> plans;
 
     private String guid;
@@ -54,11 +57,6 @@ public class Activity extends AbstractPersistable<Long> {
             return this.guid.equals(obj.guid);
         }
         return false;
-    }
-
-    @Override
-    public String toString() {
-        return "guid: " + guid + " id: " + getId();
     }
 
     @Override
