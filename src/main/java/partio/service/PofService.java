@@ -123,6 +123,7 @@ public class PofService extends RestTemplate {
                 JsonNode task = createFrontEndActivity(taskShallowDescription);
                 if (task != null) {
                     activities.add(task);
+                    return activities;
                 }
             }
         }
@@ -189,6 +190,7 @@ public class PofService extends RestTemplate {
                 ObjectNode customSuggestion = mapper.createObjectNode();
                 customSuggestion.set("title", suggestionItem.findValue("title"));
                 customSuggestion.set("content", suggestionItem.findValue("content"));
+                customSuggestion.set("guid", suggestionItem.findValue("guid"));
                 suggestionArray.add(customSuggestion);
             }
         }
