@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +57,13 @@ public class ActivityControllerTest {
         eventRepo.deleteAll();
         bufferRepo.deleteAll();
 
+    }
+    
+    @After
+    public void clean() {
+         activityRepo.deleteAll();
+        eventRepo.deleteAll();
+        bufferRepo.deleteAll();
     }
 
     @Test

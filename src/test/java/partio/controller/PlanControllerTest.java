@@ -3,6 +3,7 @@ package partio.controller;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,13 +48,19 @@ public class PlanControllerTest {
         helper = new TestHelperJson();
     }
 
+    @After
+    public void clean() {
+        planRepo.deleteAll();
+        activityRepo.deleteAll();
+    }
+
     @Test
     public void validPost() throws Exception {
         Activity activity = new Activity("huehue");
         activityRepo.save(activity);
         Plan plan = new Plan(null, "title", "guid", "content");
         System.out.println(helper.planToJson(plan));
-        mockMvc.perform(MockMvcRequestBuilders.post("/activity/"+activity.getId()+"/plans")
+        mockMvc.perform(MockMvcRequestBuilders.post("/activity/" + activity.getId() + "/plans")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.planToJson(plan)))
                 .andExpect(status().isOk());
@@ -65,47 +72,47 @@ public class PlanControllerTest {
         Assert.assertTrue(savedindb.getTitle().equals(plan.getTitle()));
         Assert.assertTrue(savedindb.getContent().equals(plan.getContent()));
     }
-    
+
     @Test
     public void invalidPost() throws Exception {
         Activity activity = new Activity("huehue");
         activityRepo.save(activity);
         Plan plan = new Plan(null, "title", "guid", "content");
-        mockMvc.perform(MockMvcRequestBuilders.post("/activity/"+activity.getId()+"/plans")
+        mockMvc.perform(MockMvcRequestBuilders.post("/activity/" + activity.getId() + "/plans")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.planToJson(plan)))
                 .andExpect(status().isOk());
-        
+
         plan = new Plan(null, "title", "guid", "content");
-        mockMvc.perform(MockMvcRequestBuilders.post("/activity/"+activity.getId()+"/plans")
+        mockMvc.perform(MockMvcRequestBuilders.post("/activity/" + activity.getId() + "/plans")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.planToJson(plan)))
                 .andExpect(status().isBadRequest());
 
     }
-    
+
     @Test
     public void validDelete() throws Exception {
         Activity activity = new Activity("huehue");
         activityRepo.save(activity);
         Plan plan = new Plan(activity, "title", "guid", "content");
         planRepo.save(plan);
-        
-        mockMvc.perform(MockMvcRequestBuilders.delete("/plans/"+plan.getId())
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/plans/" + plan.getId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
         Assert.assertTrue(planRepo.findAll().isEmpty());
     }
-    
+
     @Test
     public void invalidDelete() throws Exception {
         Activity activity = new Activity("huehue");
         activityRepo.save(activity);
         Plan plan = new Plan(activity, "title", "guid", "content");
         planRepo.save(plan);
-        
-        mockMvc.perform(MockMvcRequestBuilders.delete("/plans/"+(plan.getId()+1))
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/plans/" + (plan.getId() + 1))
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
 

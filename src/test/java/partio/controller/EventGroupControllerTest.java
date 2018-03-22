@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +53,13 @@ public class EventGroupControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
         event = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
         helper = new TestHelperJson();
+        eventRepo.deleteAll();
+        groupRepo.deleteAll();
+    }
+    
+    @After
+    public void clean() {
+        activityRepo.deleteAll();
         eventRepo.deleteAll();
         groupRepo.deleteAll();
     }
