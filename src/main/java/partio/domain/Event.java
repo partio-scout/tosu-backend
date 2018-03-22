@@ -21,6 +21,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import org.hibernate.annotations.Proxy;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import partio.jsonconfig.EventSerializer;
 
@@ -31,7 +32,7 @@ import partio.jsonconfig.EventSerializer;
 @Entity
 @JsonDeserialize(using = EventDeserializer.class)
 @JsonSerialize(using = EventSerializer.class)
-
+@Proxy(lazy=false)
 //format is for reading date, serializer still has to write correct format
 public class Event extends AbstractPersistable<Long> {
 //event=kokous, sisältää aktiviteettejä
@@ -56,8 +57,8 @@ public class Event extends AbstractPersistable<Long> {
     @JoinColumn    
     private EventGroup groupId;   
    
-    @JsonManagedReference           //should be moved to buffer and not deleted anymore
-    @OneToMany(mappedBy = "event"/*, cascade = CascadeType.REMOVE, orphanRemoval = true*/)
+  //  @JsonManagedReference           //should be moved to buffer and not deleted anymore
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER/*, cascade = CascadeType.REMOVE, orphanRemoval = true*/)
     private List<Activity> activities;
 
     public Event(String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String type, String information) {

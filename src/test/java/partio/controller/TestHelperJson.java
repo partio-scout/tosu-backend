@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Event;
+import partio.domain.Plan;
 
 public class TestHelperJson {
 
@@ -31,6 +32,20 @@ public class TestHelperJson {
         }
 
         json += "\"information\":\"" + event.getInformation() + "\"}";
+        return json;
+    }
+
+    public String planToJson(Plan plan) {
+        String json = "{ \"title\":\"" + plan.getTitle() + "\", "
+                + "\"id\":\"" + plan.getId() + "\","
+                + "\"guid\":\"" + plan.getGuid() + "\",";
+                
+
+        if (plan.getActivity() != null) {
+            json += "\"activityId\":\"" + plan.getActivity().getId() + "\",";
+        }
+        json += "\"content\":\"" + plan.getContent() + "\"}";
+
         return json;
     }
 
@@ -81,8 +96,8 @@ public class TestHelperJson {
     }
 
     public String bufferToJson(ActivityBuffer buffer) {
-        return "\"id\":\""+buffer.getId()+"\","
-                + "\"activities\": []";                
+        return "\"id\":\"" + buffer.getId() + "\","
+                + "\"activities\": []";
     }
 
 }

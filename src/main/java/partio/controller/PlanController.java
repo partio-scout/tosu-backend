@@ -20,10 +20,11 @@ public class PlanController {
     @Autowired
     private PlanService planService;
 
-    @GetMapping("/activity/{activityId}/plans")
-    public ResponseEntity<Object> getPlansForActivity(@PathVariable Long activityId) {
-        return planService.list(activityId);
-    }
+    //FOR INSPECTING NO REAL USE
+   // @GetMapping("/activity/{activityId}/plans")
+    //public ResponseEntity<Object> getPlansForActivity(@PathVariable Long activityId) {
+     //   return planService.list(activityId);
+    //}
 
     @PostMapping("/activity/{activityId}/plans")
     public ResponseEntity<Object> addPlanForActivity(@PathVariable Long activityId, @RequestBody Plan jsonPlan) {

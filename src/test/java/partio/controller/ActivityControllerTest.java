@@ -19,7 +19,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import partio.domain.Activity;
+import partio.domain.ActivityBuffer;
 import partio.domain.Event;
+import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
 
@@ -32,21 +34,28 @@ public class ActivityControllerTest {
     @Autowired
     private EventRepository eventRepo;
     @Autowired
+    private ActivityBufferRepository bufferRepo;
+    @Autowired
     private ActivityRepository activityRepo;
 
     private MockMvc mockMvc;
     private Event event;
+    private Event event2;
+    private ActivityBuffer buffer;
     private TestHelperJson helper;
 
     @Before
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
         event = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
+        buffer = new ActivityBuffer();
+        event2 = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
         helper = new TestHelperJson();
-        
+
         activityRepo.deleteAll();
         eventRepo.deleteAll();
-        
+        bufferRepo.deleteAll();
+
     }
 
     @Test
@@ -104,7 +113,7 @@ public class ActivityControllerTest {
 
         Assert.assertTrue(activityRepo.findAll().isEmpty());
     }
-    
+
     @Test
     public void validDelete() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/events")
@@ -134,6 +143,56 @@ public class ActivityControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
         Assert.assertTrue(activityRepo.findAll().isEmpty());
+    }
+
+    @Test
+    public void testFromEventToBuffer() throws Exception {
+        eventRepo.save(event);//save first so ids dont match
+        eventRepo.save(event2);
+        Activity stub = new Activity(event2, "this is a valid stub");
+        activityRepo.save(stub);
+        bufferRepo.save(buffer);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/activity/" + stub.getId() + "/fromevent/" + event2.getId() + "/tobuffer/" + buffer.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+        Activity savedStub = activityRepo.findOne(stub.getId());
+        Assert.assertTrue(Objects.equals(savedStub.getBuffer().getId(), buffer.getId()));
+        Assert.assertTrue(savedStub.getEvent() == null);
+    }
+    
+    @Test
+    public void testFromEventToOtherEvent() throws Exception {
+        eventRepo.save(event);//save first so ids dont match
+        eventRepo.save(event2);
+        Activity stub = new Activity(event2, "this is a valid stub");
+        activityRepo.save(stub);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/activity/" + stub.getId() + "/fromevent/" + event2.getId() + "/toevent/" + event.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+        Activity savedStub = activityRepo.findOne(stub.getId());
+        Assert.assertTrue(Objects.equals(savedStub.getEvent().getId(), event.getId()));
+        Assert.assertTrue(savedStub.getBuffer()== null);
+    }
+    
+    @Test
+    public void testFromBufferToEvent() throws Exception {
+        eventRepo.save(event);//save first so ids dont match
+        eventRepo.save(event2);
+        bufferRepo.save(buffer);
+        Activity stub = new Activity(null, buffer, null, "ayaaa");
+        activityRepo.save(stub);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/activity/" + stub.getId() + "/frombuffer/" + buffer.getId() + "/toevent/" + event2.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+        Activity savedStub = activityRepo.findOne(stub.getId());
+        Assert.assertTrue(Objects.equals(savedStub.getEvent().getId(), event2.getId()));
+        Assert.assertTrue(savedStub.getBuffer() == null);
     }
 
 }

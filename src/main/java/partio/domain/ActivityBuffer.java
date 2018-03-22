@@ -11,6 +11,7 @@ import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Proxy;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import partio.jsonconfig.ActivityBufferSerializer;
 
@@ -18,6 +19,7 @@ import partio.jsonconfig.ActivityBufferSerializer;
 @AllArgsConstructor
 @Data
 @Entity
+@Proxy(lazy=false)
 @JsonSerialize(using = ActivityBufferSerializer.class)
 public class ActivityBuffer extends AbstractPersistable<Long> {
     public static final int BUFFER_SIZE = 5;

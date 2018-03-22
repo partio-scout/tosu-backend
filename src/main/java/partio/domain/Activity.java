@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Proxy;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import partio.jsonconfig.ActivitySerializer;
 
@@ -22,13 +23,14 @@ import partio.jsonconfig.ActivitySerializer;
 @AllArgsConstructor
 @ToString(exclude = {"buffer", "activity"})
 @JsonSerialize(using = ActivitySerializer.class)
+@Proxy(lazy=false)
 public class Activity extends AbstractPersistable<Long> {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private Event event;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private ActivityBuffer buffer;
     //pof backend id
