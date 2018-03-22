@@ -18,8 +18,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import partio.domain.Activity;
 import partio.domain.Event;
 import partio.domain.EventGroup;
+import partio.repository.ActivityBufferRepository;
+import partio.repository.ActivityRepository;
 import partio.repository.EventGroupRepository;
 import partio.repository.EventRepository;
 
@@ -34,20 +37,27 @@ public class EventControllerTest {
     private EventRepository eventRepo;
     @Autowired
     private EventGroupRepository groupRepo;
+    @Autowired
+    private ActivityBufferRepository bufferRepo;
+    @Autowired
+    private ActivityRepository activityRepo;
 
     private MockMvc mockMvc;
     private Event validStub;
     private Event invalidStub;
-    private TestHelper helper;
+    private TestHelperJson helper;
 
     @Before
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
         validStub = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
         invalidStub = new Event("", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, " ", " ");
-        helper = new TestHelper();
-        eventRepo.deleteAll();
+        helper = new TestHelperJson();
+        activityRepo.deleteAll();
         groupRepo.deleteAll();
+        bufferRepo.deleteAll();
+        eventRepo.deleteAll();
+        
     }
 
     @Test
@@ -147,6 +157,29 @@ public class EventControllerTest {
                 .andExpect(status().isOk());
 
         Assert.assertTrue(eventRepo.findOne(id) == null);
+    }
+    @Test
+    public void validDeletePutsActivityToBuffer() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/events")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(helper.eventToJson(validStub)))
+                .andExpect(status().isOk());
+
+        long id = eventRepo.findAll().get(0).getId();
+        mockMvc.perform(MockMvcRequestBuilders.post("/events/"+ id + "/activities")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(helper.activityToJson(new Activity("activityguid"))))
+                .andExpect(status().isOk());
+        Assert.assertTrue(activityRepo.findAll().get(0).getEvent().getId() == id);
+        ResultActions res = mockMvc.perform(MockMvcRequestBuilders.delete("/events/" + id)
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+        Assert.assertTrue(eventRepo.findOne(id) == null);
+        Assert.assertTrue(activityRepo.findAll().get(0).getBuffer() != null);
+        
+        activityRepo.deleteAll();
+        bufferRepo.deleteAll();
     }
 
     @Test

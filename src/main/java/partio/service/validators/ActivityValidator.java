@@ -25,7 +25,12 @@ public class ActivityValidator extends Validator<Activity> {
 
     @Override
     public List<String> validateNew(Activity activity) {
-        List<String> errors = validateNewAndOld(activity);
+        List<String> errors = new ArrayList<>();
+        if (activity == null) {
+            errors.add("passed null activity");
+            return errors;
+        }
+        errors = validateNewAndOld(activity);
 
         if (!validateStringLength(activity.getGuid(), MIN_GUID_LENGTH, MAX_GUID_LENGTH, NOT_NULL)) {
             errors.add("guid length has to be between " + MIN_GUID_LENGTH + "-" + MAX_GUID_LENGTH);
@@ -44,34 +49,44 @@ public class ActivityValidator extends Validator<Activity> {
 
     @Override
     public List<String> validateChanges(Activity original, Activity changes) {
-        List<String> errors = validateNewAndOld(changes);
+        List<String> errors = new ArrayList<>();
+        if (original == null || changes == null) {
+            errors.add("passed null activity");
+            return errors;
+        }
+        errors = validateNewAndOld(changes);
         if (original.getGuid().equals(changes.getGuid()) == false) {
             errors.add("guid is not allowed to change");
         }
-          return errors;
+        return errors;
     }
 
     @Override
     protected List<String> validateNewAndOld(Activity t) {
         List<String> errors = new ArrayList<>();
+
+        if (t.getEvent() == null && t.getBuffer() == null) {
+            errors.add("activity must belong to buffer or event");
+        }
+
         if (t.getEvent() != null) {
-           if (eventRepository.exists(t.getEvent().getId()) == false) {
-               errors.add("event of activity is not found in db.");
-           }
+            if (eventRepository.exists(t.getEvent().getId()) == false) {
+                errors.add("event of activity is not found in db.");
+            }
         }
-        if (t.getBuffer()!= null) {
+        if (t.getBuffer() != null) {
             ActivityBuffer bufferInDb = bufferRepository.findOne(t.getBuffer().getId());
-           if (bufferInDb == null) {
-               errors.add("buffer of activity is not found in db.");
-           } else if (bufferInDb.getActivities() != null &&
-                   bufferInDb.getActivities().size() >= ActivityBuffer.BUFFER_SIZE) {                  
+            if (bufferInDb == null) {
+                errors.add("buffer of activity is not found in db.");
+            } else if (bufferInDb.getActivities() != null
+                    && bufferInDb.getActivities().size() >= ActivityBuffer.BUFFER_SIZE) {
                 errors.add("buffer is full.");
-           }
-           if (t.getEvent() != null) {
-               errors.add("Activity can exist only in event OR in buffer");
-           }
+            }
+            if (t.getEvent() != null) {
+                errors.add("Activity can exist only in event OR in buffer");
+            }
         }
-                
+
         return errors;
     }
 

@@ -8,6 +8,8 @@ import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.Proxy;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import partio.jsonconfig.PlanSerializer;
 
@@ -15,6 +17,8 @@ import partio.jsonconfig.PlanSerializer;
 @AllArgsConstructor
 @Data
 @Entity
+@ToString(exclude = {"activity"})
+@Proxy(lazy=false)
 @JsonSerialize(using = PlanSerializer.class)
 public class Plan extends AbstractPersistable<Long> {
     

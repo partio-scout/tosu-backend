@@ -42,13 +42,13 @@ public class ActivityBufferControllerTest {
     private MockMvc mockMvc;
     private Activity activity;
     private ActivityBuffer buffer;
-    private TestHelper helper;
+    private TestHelperJson helper;
 
     @Before
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
         activity = new Activity();
-        helper = new TestHelper();
+        helper = new TestHelperJson();
         buffer = new ActivityBuffer();
         activity.setGuid("rwer");
 
@@ -62,16 +62,30 @@ public class ActivityBufferControllerTest {
         mockMvc.perform(get("/activitybuffer/1"))
                 .andExpect(status().isOk());
     }
-//
-//    @Test
-//    public void testAddActivityToBuffer() throws Exception {
-//        
-//        mockMvc.perform(MockMvcRequestBuilders.post("/activitybuffer/{id}/activities/", buffer.getId())
-//                .contentType(MediaType.APPLICATION_JSON_UTF8)
-//                .content(helper.activityToJson(activity)))
-//                .andDo(print())
-//                .andExpect(status().isOk());
-//        
-//        assertEquals(buffer, activity.getBuffer());
-//    }
+
+    @Test
+    public void testAddActivityToBuffer() throws Exception {      
+        mockMvc.perform(MockMvcRequestBuilders.post("/activitybuffer/{id}/activities/", buffer.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(helper.activityToJson(activity)))
+                .andExpect(status().isOk());
+        
+        Activity savedindb = activityRepo.findAll().get(0);        
+        assertEquals(buffer.getId(), savedindb.getBuffer().getId());
+        buffer = bufferRepository.findAll().get(0);
+        assertEquals(buffer.getActivities().get(0).getGuid(), savedindb.getGuid());
+        assertEquals(null, savedindb.getEvent());
+    }
+    
+    @Test
+    public void testAddActivityToBufferFail() throws Exception {     
+        activity.setGuid("");
+        mockMvc.perform(MockMvcRequestBuilders.post("/activitybuffer/{id}/activities/", buffer.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(helper.activityToJson(activity)))
+                .andExpect(status().isBadRequest());
+        
+        assertEquals(activityRepo.count(), 0);
+    }
+
 }

@@ -10,15 +10,16 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Proxy;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
+@Proxy(lazy=false)
 @ToString(exclude = {"events"})
 @JsonSerialize(using = EventGroupSerializer.class)
 public class EventGroup extends AbstractPersistable<Long> {
