@@ -20,9 +20,9 @@ import org.springframework.web.client.RestTemplate;
 @Transactional
 public class PofService extends RestTemplate {
 
-    private final String POF = "rawpofData", TARPPO = "tarppo", TARPPODEV = "tarppodev";
+    private static final String POF = "rawpofData", TARPPO = "tarppo", TARPPODEV = "tarppodev";
     private RestTemplate restTemplate;
-    private Map<String, ExpirableObject> pofData;
+    private static Map<String, ExpirableObject> pofData;
 
     //   all/old pof
     public PofService() {
