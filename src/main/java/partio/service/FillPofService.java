@@ -64,15 +64,12 @@ public class FillPofService {
 
     private JsonNode fill(JsonNode ageGroupNode, boolean dev) {
         ObjectMapper mapper = new ObjectMapper();
-        ObjectNode filledPof = mapper.createObjectNode();
         System.out.println("enter");
 
         List<JsonNode> tasklists = ageGroupNode.findValues("tasks");
         if (dev) {
             tasklists = tasklists.subList(0, 5);
         }
-        ArrayNode taskGroups = filledPof.putArray("agegroup");
-        taskGroups.addAll(tasklists);
 
         int i = 0;
         for (JsonNode tasks : tasklists) {
@@ -105,6 +102,6 @@ public class FillPofService {
             System.out.println(++i + "/" + tasklists.size() + " done");
         }
         System.out.println("exit");
-        return filledPof;
+        return ageGroupNode;
     }
 }
