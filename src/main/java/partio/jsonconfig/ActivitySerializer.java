@@ -37,13 +37,13 @@ public class ActivitySerializer extends StdSerializer<Activity> {
         } else {
             jgen.writeNumberField("bufferZoneId", null);
         }
-//        jgen.writeArrayFieldStart("plans");
-//        if (value.getPlans() != null) {
-//            for (Plan plan : value.getPlans()) {
-//                jgen.writeObject(plan);
-//            }
-//        }
-//        jgen.writeEndArray();
+        jgen.writeArrayFieldStart("plans");
+        if (value.getPlans() != null) {
+            for (Plan plan : value.getPlans()) {
+                jgen.writeObject(plan);
+            }
+        }
+        jgen.writeEndArray();
         jgen.writeEndObject();
     }
         

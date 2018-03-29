@@ -91,6 +91,7 @@ public class FillPofService {
                 } else {
                     detailedNode.set("suggestions_details", null);
                 }
+                
 
                 //replace old data with extracted data
                 ObjectNode shallowNode = (ObjectNode) shallowDescription;
