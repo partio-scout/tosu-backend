@@ -91,6 +91,8 @@ public class FillPofService {
                 } else {
                     detailedNode.set("suggestions_details", null);
                 }
+                
+                //add key and value that treesearch uses
 
                 //replace old data with extracted data
                 ObjectNode shallowNode = (ObjectNode) shallowDescription;
