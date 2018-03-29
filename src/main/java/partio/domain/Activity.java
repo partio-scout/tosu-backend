@@ -23,7 +23,7 @@ import partio.jsonconfig.ActivitySerializer;
 @AllArgsConstructor
 @ToString(exclude = {"buffer", "activity"})
 @JsonSerialize(using = ActivitySerializer.class)
-@Proxy(lazy=false)
+//@Proxy(lazy=false)
 public class Activity extends AbstractPersistable<Long> {
 
     @ManyToOne(fetch = FetchType.EAGER)

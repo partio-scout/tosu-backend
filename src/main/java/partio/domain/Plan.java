@@ -18,7 +18,7 @@ import partio.jsonconfig.PlanSerializer;
 @Data
 @Entity
 @ToString(exclude = {"activity"})
-@Proxy(lazy=false)
+//@Proxy(lazy=false)
 @JsonSerialize(using = PlanSerializer.class)
 public class Plan extends AbstractPersistable<Long> {
     

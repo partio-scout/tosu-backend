@@ -19,7 +19,7 @@ import partio.jsonconfig.ActivityBufferSerializer;
 @AllArgsConstructor
 @Data
 @Entity
-@Proxy(lazy=false)
+//@Proxy(lazy=false)
 @JsonSerialize(using = ActivityBufferSerializer.class)
 public class ActivityBuffer extends AbstractPersistable<Long> {
     public static final int BUFFER_SIZE = 5;
