@@ -32,7 +32,7 @@ import partio.jsonconfig.EventSerializer;
 @Entity
 @JsonDeserialize(using = EventDeserializer.class)
 @JsonSerialize(using = EventSerializer.class)
-@Proxy(lazy=false)
+//@Proxy(lazy=false)
 //format is for reading date, serializer still has to write correct format
 public class Event extends AbstractPersistable<Long> {
 //event=kokous, sisältää aktiviteettejä

@@ -19,7 +19,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @AllArgsConstructor
 @Data
 @Entity
-@Proxy(lazy=false)
+//@Proxy(lazy=false)
 @ToString(exclude = {"events"})
 @JsonSerialize(using = EventGroupSerializer.class)
 public class EventGroup extends AbstractPersistable<Long> {
