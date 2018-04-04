@@ -1,0 +1,58 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.0.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+plugins {
+    id 'io.franzbecker.gradle-lombok' version '1.11'
+    id 'java'
+}
+lombok {
+    version = "1.16.20" 
+    sha256 = ""
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'application'
+
+mainClassName='partio.Application'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+jar {
+    baseName = 'tosu-pof-service'
+    version =  '0.5.1'
+    manifest {
+        attributes 'Main-Class': 'partio.Application'
+    }
+}
+
+run {
+    standardInput = System.in
+}
+bootRun {
+    systemProperties System.properties
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile('org.springframework.boot:spring-boot-starter-data-rest')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	runtime('org.springframework.boot:spring-boot-devtools')
+	compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
