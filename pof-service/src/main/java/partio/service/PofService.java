@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -23,7 +24,7 @@ public class PofService extends RestTemplate {
     private static final String POF = "rawpofData", TARPPO = "tarppo", TARPPODEV = "tarppodev";
     private RestTemplate restTemplate;
     private static Map<String, ExpirableObject> pofData;
-
+    private FillPofService filledPof;
 
     public PofService() {
         pofData = new HashMap<>();
@@ -31,6 +32,7 @@ public class PofService extends RestTemplate {
         pofData.put(TARPPODEV, new ExpirableObject());
         pofData.put(POF, new ExpirableObject());
         this.restTemplate = new RestTemplate();
+        filledPof = new FillPofService();
     }
 
     //rawpof
@@ -190,5 +192,11 @@ public class PofService extends RestTemplate {
         activity.set("originUrl", task.findValue("languages").findValue("details"));
 
         return activity;
+    }
+//    @Scheduled(fixedRate=5000)
+    @Scheduled(cron = "0 0 2 * * *",  zone="Europe/Athens")
+    public void testScheduler() throws IOException {
+        filledPof.getAgeGroup(TARPPO);
+        updateAgeGroupTasksIfNeeded(TARPPO);
     }
 }
