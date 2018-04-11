@@ -36,30 +36,34 @@ import partio.jsonconfig.EventSerializer;
 //format is for reading date, serializer still has to write correct format
 public class Event extends AbstractPersistable<Long> {
 //event=kokous, sisältää aktiviteettejä
+
     private String title;
-    
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startDate;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
-    private LocalDate endDate;  
-    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate endDate;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime startTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-    private LocalTime endTime; 
-    
+    private LocalTime endTime;
+
     private String type;
     @Column(length = 10000)
     private String information;
-    
-    
+
     @ManyToOne
-    @JoinColumn    
-    private EventGroup groupId;   
-   
-  //  @JsonManagedReference           //should be moved to buffer and not deleted anymore
+    @JoinColumn
+    private EventGroup groupId;
+
+    //  @JsonManagedReference           //should be moved to buffer and not deleted anymore
     @OneToMany(mappedBy = "event", fetch = FetchType.EAGER/*, cascade = CascadeType.REMOVE, orphanRemoval = true*/)
     private List<Activity> activities;
+
+    @ManyToOne
+    @JoinColumn
+    private Scout scout;
 
     public Event(String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String type, String information) {
         this.title = title;
@@ -72,7 +76,19 @@ public class Event extends AbstractPersistable<Long> {
         this.groupId = null;
         this.activities = new ArrayList<>();
     }
-    
+
+    public Event(String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String type, String information, EventGroup groupId, List<Activity> activities) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.type = type;
+        this.information = information;
+        this.groupId = groupId;
+        this.activities = activities;
+    }
+
     public void setVariables(Event event) {
         this.title = event.title;
         this.startDate = event.startDate;
@@ -82,5 +98,5 @@ public class Event extends AbstractPersistable<Long> {
         this.type = event.type;
         this.information = event.information;
     }
-    
+
 }
