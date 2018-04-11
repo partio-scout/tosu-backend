@@ -1,6 +1,7 @@
 package partio.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,5 +22,14 @@ public class ScoutService {
         }
         scoutRepository.save(scout);
         return ResponseEntity.ok(scout);
+    }
+
+    public ResponseEntity<Object> deleteById(Long scoutId) {
+        Scout toDelete = scoutRepository.findOne(scoutId);
+        if (toDelete == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        scoutRepository.delete(toDelete);
+        return ResponseEntity.ok(toDelete);
     }
 }
