@@ -9,10 +9,10 @@ import partio.domain.Plan;
 
 public class TestHelperJson {
 
-    private StringBuilder sb;
+    private StringBuilder stringBuilder;
 
     public TestHelperJson() {
-        sb = new StringBuilder();
+        stringBuilder = new StringBuilder();
     }
 
     public String activityToJson(Activity activity) {
@@ -58,41 +58,37 @@ public class TestHelperJson {
                 + "\"type\":\"" + posted.getType() + "\","
                 + "\"information\":\"" + posted.getInformation() + "\"";
     }
-
-//    public String responseExpectedToContainActivity(Activity posted) {
-//        return "\"guid\":\"" + posted.getGuid() + "\","
-//                + "\"buffer\":\"" + posted.getBuffer() + "\"";
-//    }
+    
     public String eventDateFormat(LocalDate date) {
-        sb.setLength(0); //clear sb
+        stringBuilder.setLength(0); //clear sb
 
-        sb.append(date.getYear()).append('-'); //year
+        stringBuilder.append(date.getYear()).append('-'); //year
 
         if (date.getMonthValue() < 10) {
-            sb.append('0'); //month
+            stringBuilder.append('0'); //month
         }
-        sb.append(date.getMonthValue()).append('-');
+        stringBuilder.append(date.getMonthValue()).append('-');
 
         if (date.getDayOfMonth() < 10) {
-            sb.append('0'); //day
+            stringBuilder.append('0'); //day
         }
-        sb.append(date.getDayOfMonth());
+        stringBuilder.append(date.getDayOfMonth());
 
-        return sb.toString();
+        return stringBuilder.toString();
     }
 
     public String eventTimeFormat(LocalTime time) {
-        sb.setLength(0);
+        stringBuilder.setLength(0);
 
         if (time.getHour() < 10) {
-            sb.append('0');
+            stringBuilder.append('0');
         }
-        sb.append(time.getHour()).append(':');
+        stringBuilder.append(time.getHour()).append(':');
         if (time.getMinute() < 10) {
-            sb.append('0');
+            stringBuilder.append('0');
         }
-        sb.append(time.getMinute());
-        return sb.toString();
+        stringBuilder.append(time.getMinute());
+        return stringBuilder.toString();
     }
 
     public String bufferToJson(ActivityBuffer buffer) {

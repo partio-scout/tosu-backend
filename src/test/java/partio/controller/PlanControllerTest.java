@@ -1,8 +1,5 @@
 package partio.controller;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Objects;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,12 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import partio.domain.Activity;
-import partio.domain.ActivityBuffer;
-import partio.domain.Event;
 import partio.domain.Plan;
-import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
-import partio.repository.EventRepository;
 import partio.repository.PlanRepository;
 
 @RunWith(SpringRunner.class)
@@ -43,8 +36,6 @@ public class PlanControllerTest {
     @Before
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
-        planRepo.deleteAll();
-        activityRepo.deleteAll();
         helper = new TestHelperJson();
     }
 
