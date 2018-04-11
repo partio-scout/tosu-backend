@@ -1,6 +1,7 @@
 package partio.controller;
 
 
+import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -51,10 +51,13 @@ public class ActivityBufferControllerTest {
         helper = new TestHelperJson();
         buffer = new ActivityBuffer();
         activity.setGuid("rwer");
-
+        bufferRepository.save(buffer);
+    }
+    
+    @After
+    public void clean() {
         activityRepo.deleteAll();
         bufferRepository.deleteAll();
-        bufferRepository.save(buffer);
     }
 
     @Test

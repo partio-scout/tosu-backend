@@ -52,16 +52,11 @@ public class ActivityControllerTest {
         buffer = new ActivityBuffer();
         event2 = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
         helper = new TestHelperJson();
-
-        activityRepo.deleteAll();
-        eventRepo.deleteAll();
-        bufferRepo.deleteAll();
-
     }
-    
+
     @After
     public void clean() {
-         activityRepo.deleteAll();
+        activityRepo.deleteAll();
         eventRepo.deleteAll();
         bufferRepo.deleteAll();
     }
@@ -169,7 +164,7 @@ public class ActivityControllerTest {
         Assert.assertTrue(Objects.equals(savedStub.getBuffer().getId(), buffer.getId()));
         Assert.assertTrue(savedStub.getEvent() == null);
     }
-    
+
     @Test
     public void testFromEventToOtherEvent() throws Exception {
         eventRepo.save(event);//save first so ids dont match
@@ -183,9 +178,9 @@ public class ActivityControllerTest {
 
         Activity savedStub = activityRepo.findOne(stub.getId());
         Assert.assertTrue(Objects.equals(savedStub.getEvent().getId(), event.getId()));
-        Assert.assertTrue(savedStub.getBuffer()== null);
+        Assert.assertTrue(savedStub.getBuffer() == null);
     }
-    
+
     @Test
     public void testFromBufferToEvent() throws Exception {
         eventRepo.save(event);//save first so ids dont match

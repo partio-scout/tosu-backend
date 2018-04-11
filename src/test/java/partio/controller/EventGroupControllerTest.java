@@ -1,6 +1,5 @@
 package partio.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDate;
@@ -53,8 +52,6 @@ public class EventGroupControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
         event = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
         helper = new TestHelperJson();
-        eventRepo.deleteAll();
-        groupRepo.deleteAll();
     }
     
     @After

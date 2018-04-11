@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,11 +54,14 @@ public class EventControllerTest {
         validStub = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
         invalidStub = new Event("", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, " ", " ");
         helper = new TestHelperJson();
+    }
+    
+    @After
+    public void clean() {
         activityRepo.deleteAll();
         groupRepo.deleteAll();
         bufferRepo.deleteAll();
         eventRepo.deleteAll();
-        
     }
 
     @Test
@@ -177,9 +181,6 @@ public class EventControllerTest {
 
         Assert.assertTrue(eventRepo.findOne(id) == null);
         Assert.assertTrue(activityRepo.findAll().get(0).getBuffer() != null);
-        
-        activityRepo.deleteAll();
-        bufferRepo.deleteAll();
     }
 
     @Test

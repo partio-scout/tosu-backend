@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Assert;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,10 @@ public class EventValidatorTest {
     @Before
     public void makePreEvent() {
         this.preEvent = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information");
+        
+    }
+    @After
+    public void clean() {
         groupRepository.deleteAll();
         eventRepository.deleteAll();
     }
