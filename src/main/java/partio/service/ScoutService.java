@@ -1,5 +1,10 @@
 package partio.service;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import java.util.Arrays;
+import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,21 +20,49 @@ public class ScoutService {
     @Autowired
     private ScoutRepository scoutRepository;
 
-    public ResponseEntity<Object> addNewScout(Scout scout) {
-        Scout existingScout = scoutRepository.findByGoogleId(scout.getGoogleId());
-        if (existingScout != null) { //If scout allready exist, don't add same scout twice.
+    public ResponseEntity<Object> findOrCreateScout(GoogleIdToken idToken) {
+        Payload payload = idToken.getPayload();
+
+        String userId = payload.getUserId();
+        Scout existingScout = scoutRepository.findByGoogleId(userId);
+       
+        if (existingScout == null) { //If scout allready exist, don't add same scout twice.
             return ResponseEntity.ok(existingScout);
         }
+         
+        
+        Scout scout = new Scout();
+        scout.setGoogleId(userId);
+        scout.setName((String) payload.get("name"));
+        
+        
         scoutRepository.save(scout);
         return ResponseEntity.ok(scout);
     }
 
-    public ResponseEntity<Object> deleteById(Long scoutId) {
-        Scout toDelete = scoutRepository.findOne(scoutId);
-        if (toDelete == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    public ResponseEntity<Object> deleteById(Long scoutId, GoogleIdToken idToken) {
+
+        if (idToken != null) {
+            Payload payload = idToken.getPayload();
+
+            String userId = payload.getUserId();
+            Scout scout = scoutRepository.findByGoogleId(userId);
+
+            Scout toDelete = scoutRepository.findOne(scoutId);
+
+            if (toDelete == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            if (toDelete.getGoogleId() == null ? scout.getGoogleId() != null : !toDelete.getGoogleId().equals(scout.getGoogleId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+            }
+
+            scoutRepository.delete(toDelete);
+            return ResponseEntity.ok(toDelete);
         }
-        scoutRepository.delete(toDelete);
-        return ResponseEntity.ok(toDelete);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
+
 }
