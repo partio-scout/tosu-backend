@@ -20,7 +20,7 @@ public class ScoutService {
     @Autowired
     private ScoutRepository scoutRepository;
 
-    public ResponseEntity<Object> addNewScout(GoogleIdToken idToken) {
+    public ResponseEntity<Object> findOrCreateScout(GoogleIdToken idToken) {
         Payload payload = idToken.getPayload();
 
         String userId = payload.getUserId();
@@ -29,7 +29,7 @@ public class ScoutService {
         if (existingScout == null) { //If scout allready exist, don't add same scout twice.
             return ResponseEntity.ok(existingScout);
         }
-        
+         
         
         Scout scout = new Scout();
         scout.setGoogleId(userId);
