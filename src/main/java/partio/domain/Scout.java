@@ -19,4 +19,5 @@ public class Scout extends AbstractPersistable<Long> {
     String googleId;
     @OneToMany(mappedBy = "scout", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Event> events;
+    String name;
 }
