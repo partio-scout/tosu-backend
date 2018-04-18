@@ -1,7 +1,11 @@
 package partio.controller;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,13 +30,25 @@ public class EventController {
     private ScoutService scoutService;
 
     @GetMapping("/events")
-    public List<Event> getEvents(@RequestHeader GoogleIdToken idToken) {
+    public List<Event> getEvents(@RequestHeader String idTokenString) {
+        GoogleIdToken idToken = null;
+        try {
+            idToken = scoutService.verifyId(idTokenString);
+        } catch (GeneralSecurityException | IOException ex) {
+            Logger.getLogger(ScoutController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         List<Event> events = eventService.list(idToken);
         return events;
     }
 
     @PostMapping("/events")
-    public ResponseEntity<Object> postEvent(@RequestBody Event event, @RequestHeader GoogleIdToken idToken) {   
+    public ResponseEntity<Object> postEvent(@RequestBody Event event, @RequestHeader String idTokenString) {
+        GoogleIdToken idToken = null;
+        try {
+            idToken = scoutService.verifyId(idTokenString);
+        } catch (GeneralSecurityException | IOException ex) {
+            Logger.getLogger(ScoutController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         Scout scout = scoutService.findScoutByGoogleId(idToken);
         event.setScout(scout);
         ResponseEntity<Object> newEvent = eventService.add(event);
@@ -40,12 +56,24 @@ public class EventController {
     }
 
     @PutMapping("/events/{eventId}")
-    public ResponseEntity<Object> editEvent(@PathVariable Long eventId, @RequestBody Event event, @RequestHeader GoogleIdToken idToken) {
-        return eventService.edit(eventId, event);
+    public ResponseEntity<Object> editEvent(@PathVariable Long eventId, @RequestBody Event event, @RequestHeader String idTokenString) {
+        GoogleIdToken idToken = null;
+        try {
+            idToken = scoutService.verifyId(idTokenString);
+        } catch (GeneralSecurityException | IOException ex) {
+            Logger.getLogger(ScoutController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return eventService.edit(eventId, event, idToken);
     }
 
     @DeleteMapping("/events/{eventId}")
-    public ResponseEntity<Object> deleteEvent(@PathVariable Long eventId, @RequestHeader GoogleIdToken idToken) {
+    public ResponseEntity<Object> deleteEvent(@PathVariable Long eventId, @RequestHeader String idTokenString) {
+        GoogleIdToken idToken = null;
+        try {
+            idToken = scoutService.verifyId(idTokenString);
+        } catch (GeneralSecurityException | IOException ex) {
+            Logger.getLogger(ScoutController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return eventService.deleteById(eventId, idToken);
     }
 }

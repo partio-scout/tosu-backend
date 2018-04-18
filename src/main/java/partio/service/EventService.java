@@ -51,7 +51,15 @@ public class EventService {
     }
 // group id cannot be changed, activities changed by activitycontroller
 
-    public ResponseEntity<Object> edit(Long eventId, Event editedEvent) {
+    public ResponseEntity<Object> edit(Long eventId, Event editedEvent, GoogleIdToken idToken) {
+        Scout scout = scoutService.findScoutByGoogleId(idToken);
+
+        Event toEdit = eventRepository.findOne(eventId);
+
+        if (toEdit.getScout().getGoogleId() == null ? scout.getGoogleId() != null : !toEdit.getScout().getGoogleId().equals(scout.getGoogleId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        } //can't edit someone else events
+
         Event original = eventRepository.findOne(eventId);
         List<String> errors = eventValidator.validateChanges(original, editedEvent);
 
@@ -66,17 +74,17 @@ public class EventService {
 
     public ResponseEntity<Object> deleteById(Long eventId, GoogleIdToken idToken) {
         Scout scout = scoutService.findScoutByGoogleId(idToken);
-        
+
         Event toDelete = eventRepository.findOne(eventId);
-        
+
         if (toDelete == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        
-        if(toDelete.getScout().getGoogleId() == null ? scout.getGoogleId() != null : !toDelete.getScout().getGoogleId().equals(scout.getGoogleId())) {
+
+        if (toDelete.getScout().getGoogleId() == null ? scout.getGoogleId() != null : !toDelete.getScout().getGoogleId().equals(scout.getGoogleId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         } //can't remove someone else events
-        
+
         ActivityBuffer buffer = bufferService.findBuffer(0l);
         Event deleted = moveEventActivitysToBuffer(toDelete, buffer);
 
