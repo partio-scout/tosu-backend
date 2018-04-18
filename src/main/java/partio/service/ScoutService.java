@@ -1,8 +1,14 @@
 package partio.service;
 
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.apache.ApacheHttpTransport;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,17 +31,15 @@ public class ScoutService {
 
         String userId = payload.getUserId();
         Scout existingScout = scoutRepository.findByGoogleId(userId);
-       
+
         if (existingScout == null) { //If scout allready exist, don't add same scout twice.
             return ResponseEntity.ok(existingScout);
         }
-         
-        
+
         Scout scout = new Scout();
         scout.setGoogleId(userId);
         scout.setName((String) payload.get("name"));
-        
-        
+
         scoutRepository.save(scout);
         return ResponseEntity.ok(scout);
     }
@@ -63,6 +67,40 @@ public class ScoutService {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    public Scout findScoutByGoogleId(GoogleIdToken idToken) {
+        if (idToken != null) {
+            Payload payload = idToken.getPayload();
+
+            String userId = payload.getUserId();
+            Scout scout = scoutRepository.findByGoogleId(userId);
+            if (scout != null) {
+                return scout;
+            }
+        }
+        return null;
+    }
+
+    public GoogleIdToken verifyId(String idTokenString) throws GeneralSecurityException, IOException {
+
+        JacksonFactory jacksonFactory = new JacksonFactory();
+        HttpTransport transport = new ApacheHttpTransport();
+        
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jacksonFactory)
+                // Specify the CLIENT_ID of the app that accesses the backend:
+                .setAudience(Collections.singletonList("7360124073-8f1bq4mul415hr3kdm154vq3c65lp36d.apps.googleusercontent.com"))
+                // Or, if multiple clients access the backend:
+                //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
+                .build();
+        
+        GoogleIdToken idToken = verifier.verify(idTokenString);
+        if (idToken != null) {
+            return idToken;
+        }
+
+        return null;
+
     }
 
 }
