@@ -64,5 +64,18 @@ public class ScoutService {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
+    
+    public Scout findScoutByGoogleId(GoogleIdToken idToken){
+        if (idToken != null) {
+            Payload payload = idToken.getPayload();
+
+            String userId = payload.getUserId();
+            Scout scout = scoutRepository.findByGoogleId(userId);
+            if(scout != null){
+                return scout;
+            }
+        }
+        return null;
+    }
 
 }
