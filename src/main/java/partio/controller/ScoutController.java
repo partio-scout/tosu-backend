@@ -23,16 +23,14 @@ public class ScoutController {
 
     @PostMapping("/scout") //this is supposed to do only when user logs in first time
     public ResponseEntity<Object> registerOrLoginScout(@RequestHeader String idTokenString, HttpServletRequest request, HttpSession session) {
-        System.out.println("enter");
-        try {
+       try {
             GoogleIdToken idToken = scoutService.verifyId(idTokenString);
             ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
 
             session.invalidate();
             HttpSession newSession = request.getSession();
             
-            newSession.setAttribute("le session", idToken.getPayload().getSubject());
-            System.out.println(idToken.getPayload().getSubject());
+            newSession.setAttribute("scout", idToken.getPayload().getSubject());
             return newScout;
         } catch (GeneralSecurityException | IOException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
