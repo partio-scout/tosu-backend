@@ -10,8 +10,9 @@ import partio.service.ScoutService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
@@ -20,28 +21,34 @@ public class ScoutController {
     @Autowired
     private ScoutService scoutService;
 
-    @PostMapping("/newscout") //this is supposed to do only when user logs in first time
-    public ResponseEntity<Object> addNewScout(@RequestHeader String idTokenString) {
-        GoogleIdToken idToken = null;
+    @PostMapping("/scout") //this is supposed to do only when user logs in first time
+    public ResponseEntity<Object> registerOrLoginScout(@RequestHeader String idTokenString, HttpServletRequest request, HttpSession session) {
+        System.out.println("enter");
         try {
-            idToken = scoutService.verifyId(idTokenString);
+            GoogleIdToken idToken = scoutService.verifyId(idTokenString);
+            ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
+
+            session.invalidate();
+            HttpSession newSession = request.getSession();
+            
+            newSession.setAttribute("le session", idToken.getPayload().getSubject());
+            System.out.println(idToken.getPayload().getSubject());
+            return newScout;
         } catch (GeneralSecurityException | IOException ex) {
-            Logger.getLogger(ScoutController.class.getName()).log(Level.SEVERE, null, ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
         }
-        ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
-        return newScout;
+
     }
 
-
     @DeleteMapping("/scouts/{scoutId}")
-    public ResponseEntity<Object> deleteScout(@PathVariable Long scoutId, @RequestHeader String idTokenString) {
-        GoogleIdToken idToken = null;
+    public ResponseEntity<Object> deleteScout(@RequestHeader String idTokenString) {
         try {
-            idToken = scoutService.verifyId(idTokenString);
+            GoogleIdToken idToken = scoutService.verifyId(idTokenString);
+            return scoutService.deleteById(idToken);
         } catch (GeneralSecurityException | IOException ex) {
-            Logger.getLogger(ScoutController.class.getName()).log(Level.SEVERE, null, ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
         }
-        return scoutService.deleteById(scoutId, idToken);
+
     }
 
 }

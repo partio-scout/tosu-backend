@@ -23,12 +23,6 @@ public class PofController {
         return pof.getPof();
     }
 
-    //tarppo= all tarppo, tarppoDev= sample from tarppo (faster but less data)
-    @GetMapping("/pofdata/{ageGroup}")
-    public Object getPofActivities(@PathVariable String ageGroup) throws IOException {
-        return pof.getTasks(ageGroup);
-    }
-
     @GetMapping("/filledpof/{ageGroup}")
     public Object getFilledPofActivities(@PathVariable String ageGroup) throws IOException {
         try {//tarppo, tarppodev valid
@@ -36,5 +30,11 @@ public class PofController {
         } catch (IllegalArgumentException e) {// too lazy to type url correctly
             return filledPof.getAgeGroup(FillPofService.TARPPODEV);
         }
+    }
+    
+    @GetMapping("reloadPof")
+    public Object forceupdateAllOfPof() throws IOException {
+       pof.reload();
+       return "reloaded";
     }
 }

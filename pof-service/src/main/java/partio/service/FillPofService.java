@@ -91,9 +91,8 @@ public class FillPofService {
                 } else {
                     detailedNode.set("suggestions_details", null);
                 }
-                
-                //add key and value that treesearch uses
 
+                //add key and value that treesearch uses
                 //replace old data with extracted data
                 ObjectNode shallowNode = (ObjectNode) shallowDescription;
                 shallowNode.removeAll();
@@ -105,5 +104,10 @@ public class FillPofService {
         }
         System.out.println("exit");
         return ageGroupNode;
+    }
+
+    public void reload() throws IOException {
+        JsonNode filledAgeGroupNode = getTaskGroupsOfAge(TARPPO, pofService.getPof());
+        filledPofData.get(TARPPO).setContent(filledAgeGroupNode);
     }
 }
