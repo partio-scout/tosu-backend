@@ -42,6 +42,7 @@ public class ScoutController {
 
     @DeleteMapping("/scouts/{scoutId}")
     public ResponseEntity<Object> deleteScout(@RequestHeader String idTokenString) {
+        
         try {
             GoogleIdToken idToken = scoutService.verifyId(idTokenString);
             return scoutService.deleteById(idToken);
