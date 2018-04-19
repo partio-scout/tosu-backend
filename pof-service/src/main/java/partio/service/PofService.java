@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +17,12 @@ public class PofService extends RestTemplate {
 
     private final RestTemplate restTemplate;
     private ExpirableObject<ObjectNode> pof;
+    @Autowired
     private FillPofService filledPof;
 
     public PofService() {
         pof = new ExpirableObject<>();
         this.restTemplate = new RestTemplate();
-        filledPof = new FillPofService();
     }
 
     //rawpof
