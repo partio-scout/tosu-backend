@@ -3,6 +3,7 @@ package partio.controller;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import partio.domain.Event;
+import partio.domain.Scout;
 import partio.repository.ScoutRepository;
 import partio.service.EventService;
 
@@ -31,7 +33,11 @@ public class EventController {
 
     @PostMapping("/events")
     public ResponseEntity<Object> postEvent(@RequestBody Event event, HttpSession session) {
-        event.setScout(scoutRepository.findByGoogleId((String) session.getAttribute("scout")));
+        Scout loggedInScout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
+        if (loggedInScout == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
+        }
+        event.setScout(loggedInScout);
         ResponseEntity<Object> newEvent = eventService.add(event);
         System.out.println("end even post");
         return newEvent;
