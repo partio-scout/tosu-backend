@@ -17,6 +17,8 @@ public class VerifyScoutService {
     private ActivityRepository activityRepository;
     @Autowired
     private ScoutRepository scoutRepository;
+    @Autowired
+    private EventGroupRepository groupRepository;
     
     // user is logged in
     public boolean isLoggedIn(Scout scout){
@@ -39,5 +41,10 @@ public class VerifyScoutService {
     // is activity.event.scout == scout
     public boolean isOwnerForActivity(Long activityId, Scout scout){
         return scoutRepository.findOne(scout.getId())==activityRepository.getOne(activityId).getEvent().getScout();
+    }
+    
+    //is eventGroup.scout == scout
+    public boolean isOwnerForEventGroup(Long groupId, Scout scout) {
+        return scoutRepository.findOne(scout.getId())==groupRepository.getOne(groupId).getScout();   
     }
 }

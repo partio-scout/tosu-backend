@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import partio.domain.Activity;
 import partio.domain.EventGroup;
+import partio.domain.Scout;
 import partio.repository.ActivityRepository;
 import partio.repository.EventGroupRepository;
 
@@ -25,8 +26,9 @@ public class EventGroupService {
     }
 
     //no events are accepted, this one creates a pure group
-    public ResponseEntity<Object> createEventGroup() {
+    public ResponseEntity<Object> createEventGroup(Scout scout) {
         EventGroup group = new EventGroup();
+        group.setScout(scout);
         groupRepository.save(group);
         return ResponseEntity.ok(group);
     }

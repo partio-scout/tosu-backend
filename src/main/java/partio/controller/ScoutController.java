@@ -22,9 +22,9 @@ public class ScoutController {
     private ScoutService scoutService;
 
     @PostMapping("/scout") //this is supposed to do only when user logs in first time
-    public ResponseEntity<Object> registerOrLoginScout(@RequestHeader String idTokenString, HttpServletRequest request, HttpSession session) {
+    public ResponseEntity<Object> registerOrLoginScout(@RequestHeader String Authorization, HttpServletRequest request, HttpSession session) {
        try {
-            GoogleIdToken idToken = scoutService.verifyId(idTokenString);
+            GoogleIdToken idToken = scoutService.verifyId(Authorization);
             ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
 
             session.invalidate();

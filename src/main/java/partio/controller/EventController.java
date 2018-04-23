@@ -51,7 +51,7 @@ public class EventController {
     public ResponseEntity<Object> editEvent(@PathVariable Long eventId, @RequestBody Event event, HttpSession session) {
         Scout loggedInScout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
         if (verifyScoutService.isOwnerForEvent(eventId, loggedInScout)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner for this event!");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event!");
         }
         return eventService.edit(eventId, event);
     }
@@ -60,7 +60,7 @@ public class EventController {
     public ResponseEntity<Object> deleteEvent(@PathVariable Long eventId, HttpSession session) {
         Scout loggedInScout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
         if (verifyScoutService.isOwnerForEvent(eventId, loggedInScout)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner for this event!");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event!");
         }
         return eventService.deleteById(eventId);
     }
