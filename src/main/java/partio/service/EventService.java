@@ -56,7 +56,7 @@ public class EventService {
     }
 // group id cannot be changed, activities changed by activitycontroller
 
-    public ResponseEntity<Object> edit(Long eventId, Event editedEvent, Scout scout) {
+    public ResponseEntity<Object> edit(Long eventId, Event editedEvent) {
         Event original = eventRepository.findOne(eventId);
         List<String> errors = eventValidator.validateChanges(original, editedEvent);
 
@@ -69,7 +69,7 @@ public class EventService {
         }
     }
 
-    public ResponseEntity<Object> deleteById(Long eventId, Scout scout) {
+    public ResponseEntity<Object> deleteById(Long eventId) {
         Event toDelete = eventRepository.findOne(eventId);
         if (toDelete == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
