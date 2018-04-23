@@ -31,7 +31,7 @@ public class ScoutService {
         String userId = payload.getUserId();
         Scout existingScout = scoutRepository.findByGoogleId(userId);
 
-        if (existingScout == null) { //If scout allready exist, don't add same scout twice.
+        if (existingScout != null) { //If scout already exists, don't add same scout twice.
             return ResponseEntity.ok(existingScout);
         }
 

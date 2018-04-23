@@ -34,6 +34,11 @@ public class EventSerializer extends StdSerializer<Event> {
         if (event.getId() != null) {
             jgen.writeNumberField("id", event.getId());
         }
+        if (event.getScout()!= null) {
+            jgen.writeNumberField("scoutId", event.getScout().getId());
+        } else {
+            jgen.writeNullField("scoutId");
+        }
         jgen.writeStringField("title", event.getTitle());
 
         jgen.writeObjectField("startDate", eventDateFormat(event.getStartDate()));
