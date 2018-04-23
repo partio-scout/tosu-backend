@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Event;
+import partio.domain.Scout;
 import partio.repository.ActivityRepository;
 import partio.repository.EventGroupRepository;
 import partio.repository.EventRepository;
@@ -55,7 +56,7 @@ public class EventService {
     }
 // group id cannot be changed, activities changed by activitycontroller
 
-    public ResponseEntity<Object> edit(Long eventId, Event editedEvent) {
+    public ResponseEntity<Object> edit(Long eventId, Event editedEvent, Scout scout) {
         Event original = eventRepository.findOne(eventId);
         List<String> errors = eventValidator.validateChanges(original, editedEvent);
 
@@ -68,7 +69,7 @@ public class EventService {
         }
     }
 
-    public ResponseEntity<Object> deleteById(Long eventId) {
+    public ResponseEntity<Object> deleteById(Long eventId, Scout scout) {
         Event toDelete = eventRepository.findOne(eventId);
         if (toDelete == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -104,5 +105,10 @@ public class EventService {
         activityRepository.save(eventActivitys);
 
         return event;
+    }
+
+    public List<Event> listScoutsEvents(Scout scout) {
+        List<Event> events = eventRepository.findByScout(scout);
+        return events;
     }
 }

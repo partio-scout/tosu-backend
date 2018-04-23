@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import partio.domain.Event;
+import partio.domain.Scout;
 import partio.repository.ScoutRepository;
 import partio.service.EventService;
 
@@ -24,8 +25,9 @@ public class EventController {
     private ScoutRepository scoutRepository;
 
     @GetMapping("/events")
-    public List<Event> getEvents() {
-        List<Event> events = eventService.list();
+    public List<Event> getEvents(HttpSession session) {
+        Scout scout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
+        List<Event> events = eventService.listScoutsEvents(scout);
         return events;
     }
 
@@ -38,12 +40,14 @@ public class EventController {
     }
 
     @PutMapping("/events/{eventId}")
-    public ResponseEntity<Object> editEvent(@PathVariable Long eventId, @RequestBody Event event) {
-        return eventService.edit(eventId, event);
+    public ResponseEntity<Object> editEvent(@PathVariable Long eventId, @RequestBody Event event, HttpSession session) {
+        Scout scout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
+        return eventService.edit(eventId, event, scout);
     }
 
     @DeleteMapping("/events/{eventId}")
-    public ResponseEntity<Object> deleteEvent(@PathVariable Long eventId) {
-        return eventService.deleteById(eventId);
+    public ResponseEntity<Object> deleteEvent(@PathVariable Long eventId, HttpSession session) {        
+        Scout scout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));           
+        return eventService.deleteById(eventId, scout);
     }
 }
