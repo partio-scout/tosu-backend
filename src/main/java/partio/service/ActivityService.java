@@ -28,6 +28,9 @@ public class ActivityService {
     @Autowired
     private ActivityBufferService bufferService;
 
+    /*
+    Add new activiy to event.
+     */
     public ResponseEntity<Object> addActivity(Long eventId, Activity activity) {
         Event event = eventRepository.findOne(eventId);
         if (event == null) {
@@ -39,7 +42,7 @@ public class ActivityService {
         if (!errors.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
-        
+
         List<Plan> plans = new ArrayList<>();
         activity.setPlans(plans);
         activityRepository.save(activity);
@@ -48,6 +51,9 @@ public class ActivityService {
         return ResponseEntity.ok(activity);
     }
 
+    /*
+    Remove activity from event.
+     */
     public ResponseEntity<Object> removeActivity(Long activityId) {
         Activity toDelete = activityRepository.findOne(activityId);
         if (toDelete == null) {
@@ -61,7 +67,9 @@ public class ActivityService {
         return activityRepository.findAll();
     }
 
-    //new stuff from here
+    /*
+    Change position of activity from event to activitybuffer.
+     */
     public ResponseEntity<Object> moveActivityFromEventToBuffer(Long activityId, Long eventId, Long activityBufferId) {
         Activity activity = activityRepository.findOne(activityId);
         if (activity == null) {
@@ -86,6 +94,9 @@ public class ActivityService {
         return ResponseEntity.ok(activity);
     }
 
+    /*
+    Change position of activity from activitybuffer to event.
+     */
     public ResponseEntity<Object> moveActivityFromBufferToEvent(Long activityId, Long eventId, Long activityBufferId) {
         //                                                   .moveActivityFromBufferToEvent(id, eventId, bufferId);
         Activity activity = activityRepository.findOne(activityId);
@@ -109,6 +120,9 @@ public class ActivityService {
         return ResponseEntity.ok(activity);
     }
 
+    /*
+    Change position of activity from event to other event.
+     */
     public ResponseEntity<Object> moveActivityFromEventToOtherEvent(Long activityId, Long eventIdFrom, Long eventIdTo) {
         Activity activity = activityRepository.findOne(activityId);
         if (activity == null) {

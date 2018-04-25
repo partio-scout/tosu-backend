@@ -25,6 +25,9 @@ public class ScoutService {
     @Autowired
     private ScoutRepository scoutRepository;
 
+    /*
+    If user isn't in scoutRepository, he will be added. Return created or found scout.
+    */
     public ResponseEntity<Object> findOrCreateScout(GoogleIdToken idToken) {
         Payload payload = idToken.getPayload();
 
@@ -42,7 +45,9 @@ public class ScoutService {
         scoutRepository.save(scout);
         return ResponseEntity.ok(scout);
     }
-
+    /*
+    Here user can remove his account.
+    */
     public ResponseEntity<Object> deleteById(GoogleIdToken idToken) {
         //delete activities from events
         if (idToken != null) {
@@ -60,7 +65,10 @@ public class ScoutService {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
-
+    
+    /*
+    Help-method to find uer by googleId.
+    */
     public Scout findScoutByGoogleId(GoogleIdToken idToken) {
         if (idToken != null) {
             Payload payload = idToken.getPayload();
@@ -74,6 +82,9 @@ public class ScoutService {
         return null;
     }
 
+    /*
+    Google idToken verifier, https://developers.google.com/identity/sign-in/web/backend-auth
+    */
     public GoogleIdToken verifyId(String idTokenString) throws GeneralSecurityException, IOException {
 
         JacksonFactory jacksonFactory = new JacksonFactory();
