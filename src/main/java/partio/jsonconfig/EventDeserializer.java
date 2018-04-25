@@ -13,9 +13,10 @@ import java.util.List;
 import partio.domain.Activity;
 import partio.domain.Event;
 import partio.domain.EventGroup;
+import partio.domain.Scout;
 
 public class EventDeserializer extends StdDeserializer<Event> {
-
+    
     public EventDeserializer() {
         this(null);
     }
@@ -52,7 +53,11 @@ public class EventDeserializer extends StdDeserializer<Event> {
         if (node.get("groupId") != null) {
             groupId = mapper.readValue(node.get("groupId").asText(), EventGroup.class);
         }
-        return new Event(title, startDate, endDate, startTime, endTime, type, information, groupId, activities);
+        Scout scout = null;
+        if (node.get("scoutId") != null) {
+            scout = mapper.readValue(node.get("scoutId").asText(), Scout.class);
+        }
+        return new Event(title, startDate, endDate, startTime, endTime, type, information, groupId, activities, scout);
     }
 
 }

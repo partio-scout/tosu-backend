@@ -22,10 +22,12 @@ import org.springframework.web.context.WebApplicationContext;
 import partio.domain.Activity;
 import partio.domain.Event;
 import partio.domain.EventGroup;
+import partio.domain.Scout;
 import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
 import partio.repository.EventGroupRepository;
 import partio.repository.EventRepository;
+import partio.repository.ScoutRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -42,6 +44,8 @@ public class EventControllerTest {
     private ActivityBufferRepository bufferRepo;
     @Autowired
     private ActivityRepository activityRepo;
+    @Autowired ScoutRepository scoutRepo;
+    private Scout scout;
 
     private MockMvc mockMvc;
     private Event validStub;
@@ -50,9 +54,11 @@ public class EventControllerTest {
 
     @Before
     public void setUp() {
+        scout = new Scout("mockid", null, "scout");
+        scoutRepo.save(scout);
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
-        validStub = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
-        invalidStub = new Event("", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, " ", " ");
+        validStub = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub", scout);
+        invalidStub = new Event("", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, " ", " ", scout);
         helper = new TestHelperJson();
     }
     
@@ -62,6 +68,7 @@ public class EventControllerTest {
         groupRepo.deleteAll();
         bufferRepo.deleteAll();
         eventRepo.deleteAll();
+        scoutRepo.deleteAll();
     }
 
     @Test

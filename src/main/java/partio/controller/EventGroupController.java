@@ -31,7 +31,7 @@ public class EventGroupController {
     //creates a new group without params since it's only made of ids
     @PostMapping("/eventgroup")
     public ResponseEntity<Object> postEventGroup(HttpSession session) throws IOException {
-        Scout loggedInScout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
+        Scout loggedInScout = (Scout) session.getAttribute("scout");
         if (verifyScoutService.isLoggedIn(loggedInScout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
@@ -42,7 +42,7 @@ public class EventGroupController {
     //(logging is not yet needed so this will do)
     @DeleteMapping("/eventgroup/{groupId}")
     public ResponseEntity<Object> delete(@PathVariable Long groupId, HttpSession session) throws IOException {
-        Scout loggedInScout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
+        Scout loggedInScout = (Scout) session.getAttribute("scout");
         if (verifyScoutService.isOwnerForEventGroup(groupId, loggedInScout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event group!");
         }

@@ -45,7 +45,6 @@ public class EventController {
         }
         event.setScout(loggedInScout);
         ResponseEntity<Object> newEvent = eventService.add(event);
-        System.out.println("end even post");
         return newEvent;
     }
 

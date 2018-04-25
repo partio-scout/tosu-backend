@@ -14,11 +14,13 @@ import javax.servlet.http.HttpSession;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestHeader;
+import partio.repository.ScoutRepository;
 
 @RestController
 @Scope(value = "session")
 public class ScoutController {
-
+    @Autowired
+    private ScoutRepository scoutRepo;
     @Autowired
     private ScoutService scoutService;
 
@@ -28,10 +30,10 @@ public class ScoutController {
             GoogleIdToken idToken = scoutService.verifyId(Authorization);
             ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
 
-            session.invalidate();
-            HttpSession newSession = request.getSession();
+           // session.invalidate();
+           // HttpSession newSession = request.getSession();
             
-            newSession.setAttribute("scout", idToken.getPayload().getSubject());
+            session.setAttribute("scout", scoutRepo.findByGoogleId(idToken.getPayload().getSubject()));
             return newScout;
         } catch (GeneralSecurityException | IOException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
