@@ -27,9 +27,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://localhost:3000",
+                .allowedOrigins(
                         "http://localhost:3000",
                         "https://suunnittelu.partio-ohjelma.fi")
-                .allowedMethods("PUT", "DELETE", "POST", "GET");
+                .allowedMethods("GET")
+                .allowedHeaders("Access-Control-Allow-Origin")
+              //  .exposedHeaders("Access-Control-Allow-Origin")
+                .allowCredentials(true);
     }
 }
