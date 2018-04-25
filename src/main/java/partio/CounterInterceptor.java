@@ -26,8 +26,8 @@ public class CounterInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest hsr, HttpServletResponse hsr1, Object o, ModelAndView mav) throws Exception {
-        HttpSession session = hsr.getSession(true);
-        System.out.println(session.getAttribute("scout").toString());
+       // HttpSession session = hsr.getSession(true);
+       // System.out.println(session.getAttribute("scout").toString());
         
 
     }
