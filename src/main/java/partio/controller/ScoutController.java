@@ -3,7 +3,6 @@ package partio.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import partio.service.ScoutService;
@@ -12,19 +11,21 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
+@Scope(value = "session")
 public class ScoutController {
 
     @Autowired
     private ScoutService scoutService;
 
     @PostMapping("/scout") //this is supposed to do only when user logs in first time
-    public ResponseEntity<Object> registerOrLoginScout(@RequestHeader String idTokenString, HttpServletRequest request, HttpSession session) {
+    public ResponseEntity<Object> registerOrLoginScout(@RequestHeader String Authorization, HttpServletRequest request, HttpSession session) {
        try {
-            GoogleIdToken idToken = scoutService.verifyId(idTokenString);
+            GoogleIdToken idToken = scoutService.verifyId(Authorization);
             ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
 
             session.invalidate();

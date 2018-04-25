@@ -35,6 +35,7 @@ public class EventValidator extends Validator<Event> {
 
     @Override
     public List<String> validateNew(Event event) {
+
         try {
             List<String> errors = validateNewAndOld(event);
 
@@ -44,9 +45,11 @@ public class EventValidator extends Validator<Event> {
             if (event.getGroupId() != null) {
                 if (eventRepository.countByGroupId(event.getGroupId()) >= GROUP_LIMIT) {
                     errors.add("This event group is full. Max capacity:" + GROUP_LIMIT);
-                }
+                }               
             }
-
+            if (event.getScout() == null) {
+                errors.add("This event doesn't have owner!");
+            }
             return errors;
         } catch (Exception e) {
             List<String> err = new ArrayList<>();

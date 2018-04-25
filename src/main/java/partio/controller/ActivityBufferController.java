@@ -1,6 +1,7 @@
 package partio.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,11 +12,13 @@ import partio.domain.Activity;
 import partio.service.ActivityBufferService;
 
 @RestController
+@Scope(value = "session")
 public class ActivityBufferController {
 
     @Autowired
     private ActivityBufferService bufferService;
-
+    
+    
     @PostMapping("/activitybuffer/{id}/activities/")
     public ResponseEntity<Object> postActivity(@PathVariable Long id, @RequestBody Activity activity) {
         return bufferService.addActivity(id, activity);

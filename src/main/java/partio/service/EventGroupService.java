@@ -26,7 +26,7 @@ public class EventGroupService {
 
     //no events are accepted, this one creates a pure group
     public ResponseEntity<Object> createEventGroup() {
-        EventGroup group = new EventGroup();
+        EventGroup group = new EventGroup();       
         groupRepository.save(group);
         return ResponseEntity.ok(group);
     }

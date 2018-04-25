@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Event;
+import partio.domain.Scout;
 import partio.repository.ActivityRepository;
 import partio.repository.EventGroupRepository;
 import partio.repository.EventRepository;
@@ -117,5 +118,10 @@ public class EventService {
         activityRepository.save(eventActivitys);
 
         return event;
+    }
+
+    public List<Event> listScoutsEvents(Scout scout) {
+        List<Event> events = eventRepository.findByScout(scout);
+        return events;
     }
 }
