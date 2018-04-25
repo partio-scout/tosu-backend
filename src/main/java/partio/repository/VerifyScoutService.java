@@ -1,9 +1,11 @@
 
 package partio.repository;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import partio.domain.Event;
 import partio.domain.Scout;
 
 
@@ -44,7 +46,11 @@ public class VerifyScoutService {
     }
     
     //is eventGroup.scout == scout
-    public boolean isOwnerForEventGroup(Long groupId, Scout scout) {
-        return scoutRepository.findOne(scout.getId())==groupRepository.getOne(groupId).getScout();   
+    public boolean isOwnerForEventGroup(Long groupId, Scout scout) { 
+        List<Event> events = groupRepository.getOne(groupId).getEvents();
+        if(events.isEmpty() || events ==null ){
+            return false;
+        }
+        return scoutRepository.findOne(scout.getId())==groupRepository.getOne(groupId).getEvents().get(0).getScout();   
     }
 }

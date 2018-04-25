@@ -26,9 +26,8 @@ public class EventGroupService {
     }
 
     //no events are accepted, this one creates a pure group
-    public ResponseEntity<Object> createEventGroup(Scout scout) {
-        EventGroup group = new EventGroup();
-        group.setScout(scout);
+    public ResponseEntity<Object> createEventGroup() {
+        EventGroup group = new EventGroup();       
         groupRepository.save(group);
         return ResponseEntity.ok(group);
     }

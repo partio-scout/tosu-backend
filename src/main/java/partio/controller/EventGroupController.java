@@ -35,7 +35,7 @@ public class EventGroupController {
         if (verifyScoutService.isLoggedIn(loggedInScout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
-        return groupService.createEventGroup(loggedInScout);
+        return groupService.createEventGroup();
     }
 
     //make it so it wont delete events that are completed if loggin is needed 
