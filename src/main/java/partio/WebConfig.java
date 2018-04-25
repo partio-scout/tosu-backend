@@ -24,6 +24,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
+                        "https://cors-anywhere.herokuapp.com",
                         "http://localhost:3000",
                         "https://suunnittelu.partio-ohjelma.fi")         
                 .allowedHeaders("Authorization", "Content-Type", "Access-Control-Allow-Origin")
