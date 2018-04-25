@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import partio.domain.Activity;
 import partio.domain.EventGroup;
-import partio.domain.Scout;
 import partio.repository.ActivityRepository;
 import partio.repository.EventGroupRepository;
 

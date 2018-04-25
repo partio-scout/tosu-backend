@@ -3,6 +3,7 @@ package partio.controller;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,7 @@ import partio.repository.VerifyScoutService;
 import partio.service.EventService;
 
 @RestController
+@Scope(value = "session")
 public class EventController {
 
     @Autowired
