@@ -31,7 +31,7 @@ public class ScoutService {
     public ResponseEntity<Object> findOrCreateScout(GoogleIdToken idToken) {
         Payload payload = idToken.getPayload();
 
-        String userId = payload.getUserId();
+        String userId = payload.getSubject();
         Scout existingScout = scoutRepository.findByGoogleId(userId);
 
         if (existingScout != null) { //If scout already exists, don't add same scout twice.
