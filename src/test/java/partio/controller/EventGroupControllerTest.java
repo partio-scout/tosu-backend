@@ -57,7 +57,7 @@ public class EventGroupControllerTest {
 
     @Before
     public void setUp() {
-        scout = new Scout("mockid", null, "scout");
+        scout = new Scout("mockid", null, null, "scout");
         scoutRepo.save(scout);
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
         event = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub", scout);
@@ -152,11 +152,14 @@ public class EventGroupControllerTest {
     }
 
     @Test
-    public void groupDelete404whenInvalid() throws Exception {
+    public void groupDelete403whenInvalid() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/eventgroup/1")
                 .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isForbidden());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/eventgroup/1")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isForbidden());
 
     }
 

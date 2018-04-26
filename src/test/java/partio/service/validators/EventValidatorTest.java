@@ -36,7 +36,7 @@ public class EventValidatorTest {
 
     @Before
     public void makePreEvent() {
-        scout = new Scout("mockid", null, "scout");
+        scout = new Scout("mockid", null, null, "scout");
         scoutRepository.save(scout);
         
         this.preEvent = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information", scout);

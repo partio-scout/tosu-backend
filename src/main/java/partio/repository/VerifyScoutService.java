@@ -1,6 +1,7 @@
 package partio.repository;
 
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,10 +55,14 @@ public class VerifyScoutService {
         try {
             List<Event> events = groupRepository.getOne(groupId).getEvents();
             if (events.isEmpty() || events == null) {
+                System.out.println("group empty");
                 return false;
             }
-            return scoutRepository.findOne(scout.getId()) == groupRepository.getOne(groupId).getEvents().get(0).getScout();
+            System.out.println(scout + " in verifier");
+            System.out.println(Objects.equals(scout.getId(), groupRepository.getOne(groupId).getEvents().get(0).getScout().getId()));
+            return Objects.equals(scout.getId(), groupRepository.getOne(groupId).getEvents().get(0).getScout().getId());
         } catch (NullPointerException | EntityNotFoundException e) {
+            System.out.println("caught an error");
             return false;
         }
     }

@@ -46,7 +46,7 @@ public class ActivityValidatorTest {
 
     @Before
     public void SetUp() {
-        scout = new Scout("mockid", null, "scout");
+        scout = new Scout("mockid", null, null, "scout");
         scoutRepo.save(scout);
         this.stubEvent1 = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information", scout);
         this.stubEvent2 = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information", scout);

@@ -57,7 +57,7 @@ public class EventControllerTest {
 
     @Before
     public void setUp() {
-        scout = new Scout("mockid", null, "scout");
+        scout = new Scout("mockid", null, null, "scout");
         scoutRepo.save(scout);
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
         validStub = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub", scout);
