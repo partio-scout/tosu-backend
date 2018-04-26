@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import partio.domain.Event;
 import partio.domain.Scout;
+import partio.repository.EventRepository;
 import partio.repository.VerifyScoutService;
 import partio.service.EventService;
 
@@ -25,7 +26,8 @@ public class EventController {
     private EventService eventService;   
     @Autowired
     private VerifyScoutService verifyScoutService;
-
+@Autowired EventRepository er;
+    
     @GetMapping("/events")
     public ResponseEntity<Object> getEvents(HttpSession session) {
         Scout scout = (Scout) session.getAttribute("scout");

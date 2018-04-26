@@ -21,7 +21,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import org.hibernate.annotations.Proxy;
+import lombok.ToString;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import partio.jsonconfig.EventSerializer;
 
@@ -32,7 +32,7 @@ import partio.jsonconfig.EventSerializer;
 @Entity
 @JsonDeserialize(using = EventDeserializer.class)
 @JsonSerialize(using = EventSerializer.class)
-//@Proxy(lazy=false)
+@ToString(exclude = {"activities"})
 //format is for reading date, serializer still has to write correct format
 public class Event extends AbstractPersistable<Long> {
 //event=kokous, sisältää aktiviteettejä

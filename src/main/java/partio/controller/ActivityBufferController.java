@@ -24,24 +24,23 @@ public class ActivityBufferController {
     @Autowired
     private VerifyScoutService verifyScoutService;
 
-    @PostMapping("/activitybuffer/{id}/activities/")
+    @PostMapping("/activitybuffer/{bufferId}/activities/")
     public ResponseEntity<Object> postActivity(@PathVariable Long bufferId, @RequestBody Activity activity, HttpSession session) {
         Scout scout = (Scout) session.getAttribute("scout");
-        if (verifyScoutService.isOwnerForBuffer(bufferId, scout)) {
+        System.out.println(scout + " in controller");
+        if (!verifyScoutService.isOwnerForBuffer(bufferId, scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this buffer!");
         }
-        if (verifyScoutService.isOwnerForActivity(activity.getId(), scout)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this activity!");
-        }
-        return bufferService.addActivity(bufferId, activity, scout);
+        System.out.println("before service");
+        return bufferService.addActivityToBuffer(activity, scout);
     }
 
-    @GetMapping("/activitybuffer/{id}")
+    @GetMapping("/activitybuffer/{id}")//id voi poistaa
     public ResponseEntity<Object> getBufferContent(@PathVariable Long id, HttpSession session) {
         Scout scout = (Scout) session.getAttribute("scout");
         if (verifyScoutService.isLoggedIn(scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
-        return bufferService.getBufferContent(id);
+        return bufferService.getBufferOfScout(scout);
     }
 }

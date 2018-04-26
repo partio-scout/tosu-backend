@@ -86,12 +86,6 @@ public class EventService {
         if (toDelete == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Eventtiä ei löytynyt!");
         }
-        if (toDelete.getScout() == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Eventillä ei ole käyttäjää!");
-        }
-        if (toDelete.getScout().getBuffer() == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Käyttäjän bufferia ei löytynyt!");
-        }
         ActivityBuffer buffer = toDelete.getScout().getBuffer();
         Event deleted = moveEventActivitysToBuffer(toDelete, buffer);
 

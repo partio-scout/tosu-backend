@@ -1,5 +1,6 @@
 package partio.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import partio.domain.ActivityBuffer;
 import partio.domain.Scout;
 import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
+import partio.repository.ScoutRepository;
 import partio.service.validators.ActivityValidator;
 
 @Service
@@ -23,6 +25,8 @@ public class ActivityBufferService {
     private ActivityRepository activityRepository;
     @Autowired
     private ActivityValidator activityValidator;
+    @Autowired 
+    ScoutRepository scoutRepository;
 
     //because we dont have multiuser support yet i made it to create one if one does not exist
     //will always return same one
@@ -36,18 +40,19 @@ public class ActivityBufferService {
 //            return bufferRepository.findOne(id);
 //        }
 //    }
-    public ResponseEntity<Object> getBufferContent(Long id) {
-        ActivityBuffer buffer = bufferRepository.findOne(id);
+    public ResponseEntity<Object> getBufferOfScout(Scout scout) {
+        ActivityBuffer buffer = bufferRepository.findByScout(scout);
         if (buffer == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         return ResponseEntity.ok(buffer);
     }
 
-    public ResponseEntity<Object> addActivity(Long ActivityBufferId, Activity activity, Scout scout) {
-        ActivityBuffer buffer = bufferRepository.findOne(ActivityBufferId);
+    public ResponseEntity<Object> addActivityToBuffer(Activity activity, Scout scout) {
+        ActivityBuffer buffer = bufferRepository.findByScout(scout);
         if (buffer == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            buffer = new ActivityBuffer(new ArrayList(), scout);
+            bufferRepository.save(buffer);
         }
 
         activity.setBuffer(buffer);
