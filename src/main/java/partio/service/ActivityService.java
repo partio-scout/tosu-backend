@@ -12,6 +12,7 @@ import partio.domain.ActivityBuffer;
 import partio.domain.Event;
 import partio.domain.Plan;
 import partio.domain.Scout;
+import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
 import partio.service.validators.ActivityValidator;
@@ -27,7 +28,7 @@ public class ActivityService {
     @Autowired
     private ActivityValidator validator;
     @Autowired
-    private ActivityBufferService bufferService;
+    private ActivityBufferRepository bufferRepository;
 
     /*
     Add new activiy to event.
@@ -77,7 +78,7 @@ public class ActivityService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         Event from = eventRepository.findOne(eventId);
-        ActivityBuffer to = bufferService.findBuffer(eventId);
+        ActivityBuffer to = bufferRepository.findOne(activityBufferId);
         if ((from == null || from.getActivities() == null || !from.getActivities().contains(activity)) || to == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
@@ -105,7 +106,7 @@ public class ActivityService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         Event to = eventRepository.findOne(eventId);
-        ActivityBuffer from = bufferService.findBuffer(eventId);
+        ActivityBuffer from = bufferRepository.findOne(activityBufferId);
 
         if (from == null || from.getActivities() == null || !from.getActivities().contains(activity)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
