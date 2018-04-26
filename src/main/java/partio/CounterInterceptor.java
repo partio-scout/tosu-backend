@@ -19,6 +19,9 @@ public class CounterInterceptor implements HandlerInterceptor {
         if (session.getAttribute("scout") == null) {
           //  session.setAttribute("scout", new Scout("???????", null, "???"));
             System.out.println("new session created");
+          
+        } else {
+            System.out.println("scout found in session");
         }
 
         return true;

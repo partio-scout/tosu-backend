@@ -13,9 +13,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Event;
+import partio.domain.Scout;
 import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
+import partio.repository.ScoutRepository;
 import static partio.service.validators.TestHelper.*;
 
 @RunWith(SpringRunner.class)
@@ -30,6 +32,8 @@ public class ActivityValidatorTest {
     private ActivityRepository activityRepo;
     @Autowired
     private ActivityBufferRepository bufferRepo;
+    @Autowired ScoutRepository scoutRepo;
+    private Scout scout;
 
     private Event stubEvent1;
     private Event stubEvent2;
@@ -42,8 +46,10 @@ public class ActivityValidatorTest {
 
     @Before
     public void SetUp() {
-        this.stubEvent1 = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information");
-        this.stubEvent2 = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information");
+        scout = new Scout("mockid", null, "scout");
+        scoutRepo.save(scout);
+        this.stubEvent1 = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information", scout);
+        this.stubEvent2 = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information", scout);
         this.stubBuffer = new ActivityBuffer();
         eventRepo.save(stubEvent1);
         eventRepo.save(stubEvent2);
@@ -57,6 +63,7 @@ public class ActivityValidatorTest {
         activityRepo.deleteAll();
         bufferRepo.deleteAll();
         eventRepo.deleteAll();
+        scoutRepo.deleteAll();
     }
 
     //new activity

@@ -74,6 +74,7 @@ public class EventService {
             eventRepository.save(original);
             return ResponseEntity.ok(original);
         } else {
+            System.out.println("\n\n\n" + "bad req: " +errors.toString() + "\n\n\n\n");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
         }
     }

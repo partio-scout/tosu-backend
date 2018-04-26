@@ -21,7 +21,7 @@ import partio.jsonconfig.ActivitySerializer;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"buffer", "activity"})
+@ToString(exclude = {"buffer"})
 @JsonSerialize(using = ActivitySerializer.class)
 //@Proxy(lazy=false)
 public class Activity extends AbstractPersistable<Long> {

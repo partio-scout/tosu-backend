@@ -65,7 +65,7 @@ public class Event extends AbstractPersistable<Long> {
     @JoinColumn
     private Scout scout;
 
-    public Event(String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String type, String information) {
+    public Event(String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String type, String information, Scout scout) {
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -75,18 +75,7 @@ public class Event extends AbstractPersistable<Long> {
         this.information = information;
         this.groupId = null;
         this.activities = new ArrayList<>();
-    }
-
-    public Event(String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String type, String information, EventGroup groupId, List<Activity> activities) {
-        this.title = title;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.type = type;
-        this.information = information;
-        this.groupId = groupId;
-        this.activities = activities;
+        this.scout = scout;
     }
 
     public void setVariables(Event event) {

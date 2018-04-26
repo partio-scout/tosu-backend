@@ -41,20 +41,21 @@ public class EventController {
 
     @PostMapping("/events")
     public ResponseEntity<Object> postEvent(@RequestBody Event event, HttpSession session) {
-        Scout loggedInScout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
-        if (verifyScoutService.isLoggedIn(loggedInScout)) {
+        Scout scout = (Scout) session.getAttribute("scout");
+        if (verifyScoutService.isLoggedIn(scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
-        event.setScout(loggedInScout);
+        event.setScout(scout);
         ResponseEntity<Object> newEvent = eventService.add(event);
-        System.out.println("end even post");
         return newEvent;
     }
 
     @PutMapping("/events/{eventId}")
     public ResponseEntity<Object> editEvent(@PathVariable Long eventId, @RequestBody Event event, HttpSession session) {
-        Scout loggedInScout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
-        if (verifyScoutService.isOwnerForEvent(eventId, loggedInScout)) {
+        
+        
+        Scout scout = (Scout) session.getAttribute("scout");
+        if (!verifyScoutService.isOwnerForEvent(eventId, scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event!");
         }
         return eventService.edit(eventId, event);
@@ -62,8 +63,8 @@ public class EventController {
 
     @DeleteMapping("/events/{eventId}")
     public ResponseEntity<Object> deleteEvent(@PathVariable Long eventId, HttpSession session) {
-        Scout loggedInScout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
-        if (verifyScoutService.isOwnerForEvent(eventId, loggedInScout)) {
+        Scout scout = (Scout) session.getAttribute("scout");
+        if (!verifyScoutService.isOwnerForEvent(eventId, scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event!");
         }
         return eventService.deleteById(eventId);
