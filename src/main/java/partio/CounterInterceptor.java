@@ -14,15 +14,14 @@ public class CounterInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        HttpSession session = request.getSession(true);
-
-        if (session.getAttribute("scout") == null) {
-          //  session.setAttribute("scout", new Scout("???????", null, "???"));
-            System.out.println("new session created");
-          
-        } else {
-            System.out.println("scout found in session");
-        }
+//        HttpSession session = request.getSession(true);
+//
+//        if (session.getAttribute("scout") == null) {
+//            System.out.println("new session created");
+//          
+//        } else {
+//            System.out.println("scout found in session");
+//        }
 
         return true;
     }

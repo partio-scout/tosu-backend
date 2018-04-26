@@ -53,11 +53,11 @@ public class EventController {
     @PutMapping("/events/{eventId}")
     public ResponseEntity<Object> editEvent(@PathVariable Long eventId, @RequestBody Event event, HttpSession session) {
         
-        
-        Scout scout = (Scout) session.getAttribute("scout");
+        Scout scout = (Scout) session.getAttribute("scout");     
         if (!verifyScoutService.isOwnerForEvent(eventId, scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event!");
         }
+        event.setScout(scout);
         return eventService.edit(eventId, event);
     }
 

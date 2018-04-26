@@ -200,6 +200,7 @@ public class EventControllerTest {
                 .andExpect(status().isOk());
         Assert.assertTrue(activityRepo.findAll().get(0).getEvent().getId() == id);
         ResultActions res = mockMvc.perform(MockMvcRequestBuilders.delete("/events/" + id)
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 

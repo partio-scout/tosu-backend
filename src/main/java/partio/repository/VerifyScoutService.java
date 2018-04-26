@@ -41,6 +41,7 @@ public class VerifyScoutService {
 
     // is activity.event.scout == scout
     public boolean isOwnerForActivity(Long activityId, Scout scout) {
+        System.out.println(scout);
         try {
             return scoutRepository.findOne(scout.getId()) == activityRepository.getOne(activityId).getEvent().getScout();
         } catch (NullPointerException | EntityNotFoundException e) {

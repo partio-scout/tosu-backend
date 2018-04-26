@@ -86,7 +86,7 @@ public class EventGroupControllerTest {
 
         Assert.assertTrue(groupRepo.findAll().size() == 1);
     }
-/*
+
     @Test
     public void groupDeleteDeletesEventsToo() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/eventgroup")
@@ -98,11 +98,13 @@ public class EventGroupControllerTest {
         event.setGroupId(group);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/events")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(event)))
                 .andExpect(status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/eventgroup/" + group.getId())
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
@@ -157,5 +159,5 @@ public class EventGroupControllerTest {
                 .andExpect(status().isNotFound());
 
     }
-*/
+
 }
