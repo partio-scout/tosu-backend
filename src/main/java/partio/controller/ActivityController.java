@@ -32,8 +32,8 @@ public class ActivityController {
 
     @DeleteMapping("/activities/{activityId}")
     public ResponseEntity<Object> deleteActivity(@PathVariable Long activityId, HttpSession session) {
-        Scout loggedInScout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
-        if (verifyScoutService.isOwnerForActivity(activityId, loggedInScout)) {
+        Scout scout = (Scout) session.getAttribute("scout");
+        if (verifyScoutService.isOwnerForActivity(activityId, scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this activity!");
         }
         return activityService.removeActivity(activityId);
@@ -41,8 +41,8 @@ public class ActivityController {
 
     @PostMapping("/events/{eventId}/activities")
     public ResponseEntity<Object> postActivity(@PathVariable Long eventId, @RequestBody Activity jsonActivity, HttpSession session) {
-        Scout loggedInScout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
-        if (verifyScoutService.isLoggedIn(loggedInScout)) {
+        Scout scout = (Scout) session.getAttribute("scout");
+        if (verifyScoutService.isLoggedIn(scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
         return activityService.addActivity(eventId, jsonActivity);

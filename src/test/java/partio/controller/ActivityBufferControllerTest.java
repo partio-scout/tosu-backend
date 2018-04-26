@@ -65,7 +65,7 @@ public class ActivityBufferControllerTest {
         mockMvc.perform(get("/activitybuffer/1"))
                 .andExpect(status().isOk());
     }
-
+/*
     @Test
     public void testAddActivityToBuffer() throws Exception {      
         mockMvc.perform(MockMvcRequestBuilders.post("/activitybuffer/{id}/activities/", buffer.getId())
@@ -90,5 +90,5 @@ public class ActivityBufferControllerTest {
         
         assertEquals(activityRepo.count(), 0);
     }
-
+*/
 }

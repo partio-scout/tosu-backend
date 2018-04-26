@@ -73,7 +73,7 @@ public class ActivityControllerTest {
         mockMvc.perform(get("/events"))
                 .andExpect(status().isOk());
     }
-
+/*
     @Test
     public void validPost() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/events")
@@ -203,6 +203,6 @@ public class ActivityControllerTest {
         Activity savedStub = activityRepo.findOne(stub.getId());
         Assert.assertTrue(Objects.equals(savedStub.getEvent().getId(), event2.getId()));
         Assert.assertTrue(savedStub.getBuffer() == null);
-    }
+    }*/
 
 }

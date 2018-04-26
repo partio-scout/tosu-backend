@@ -32,26 +32,28 @@ public class EventController {
 
     @GetMapping("/events")
     public List<Event> getEvents(HttpSession session) {
-        Scout scout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
+        Scout scout = (Scout) session.getAttribute("scout");
         List<Event> events = eventService.listScoutsEvents(scout);
         return events;
     }
 
     @PostMapping("/events")
     public ResponseEntity<Object> postEvent(@RequestBody Event event, HttpSession session) {
-        Scout loggedInScout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
-        if (verifyScoutService.isLoggedIn(loggedInScout)) {
+        Scout scout = (Scout) session.getAttribute("scout");
+        if (verifyScoutService.isLoggedIn(scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
-        event.setScout(loggedInScout);
+        event.setScout(scout);
         ResponseEntity<Object> newEvent = eventService.add(event);
         return newEvent;
     }
 
     @PutMapping("/events/{eventId}")
     public ResponseEntity<Object> editEvent(@PathVariable Long eventId, @RequestBody Event event, HttpSession session) {
-        Scout loggedInScout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
-        if (verifyScoutService.isOwnerForEvent(eventId, loggedInScout)) {
+        
+        
+        Scout scout = (Scout) session.getAttribute("scout");
+        if (!verifyScoutService.isOwnerForEvent(eventId, scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event!");
         }
         return eventService.edit(eventId, event);
@@ -59,8 +61,8 @@ public class EventController {
 
     @DeleteMapping("/events/{eventId}")
     public ResponseEntity<Object> deleteEvent(@PathVariable Long eventId, HttpSession session) {
-        Scout loggedInScout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
-        if (verifyScoutService.isOwnerForEvent(eventId, loggedInScout)) {
+        Scout scout = (Scout) session.getAttribute("scout");
+        if (!verifyScoutService.isOwnerForEvent(eventId, scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event!");
         }
         return eventService.deleteById(eventId);
