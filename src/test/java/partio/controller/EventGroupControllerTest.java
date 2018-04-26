@@ -88,7 +88,7 @@ public class EventGroupControllerTest {
 
         Assert.assertTrue(groupRepo.findAll().size() == 1);
     }
-/*
+
     @Test
     public void groupDeleteDeletesEventsToo() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/eventgroup")
@@ -164,5 +164,5 @@ public class EventGroupControllerTest {
                 .andExpect(status().isForbidden());
 
     }
-*/
+
 }

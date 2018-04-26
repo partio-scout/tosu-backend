@@ -40,7 +40,7 @@ public class ActivityService {
         }
         activity.setEvent(event);
         List<String> errors = validator.validateNew(activity);
-
+        errors.addAll(validator.validateUnique(activity, event.getScout().getId()));
         if (!errors.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }

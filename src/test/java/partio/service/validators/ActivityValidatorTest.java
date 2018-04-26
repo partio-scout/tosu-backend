@@ -50,7 +50,7 @@ public class ActivityValidatorTest {
         scoutRepo.save(scout);
         this.stubEvent1 = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information", scout);
         this.stubEvent2 = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information", scout);
-        this.stubBuffer = new ActivityBuffer();
+        this.stubBuffer = new ActivityBuffer(null, scout);
         eventRepo.save(stubEvent1);
         eventRepo.save(stubEvent2);
         bufferRepo.save(stubBuffer);
@@ -104,10 +104,24 @@ public class ActivityValidatorTest {
     
 
     @Test
-    public void duplicateTest() {
+    public void duplicateTestInEvent() {
         activityRepo.save(stubActivity);
         this.stubActivity = new Activity(stubEvent1, null, null, "mock");
-        Assert.assertTrue(SHOULD_NOT_BE_EMPTY, 0 != validator.validateNew(stubActivity).size());
+        Assert.assertTrue(SHOULD_NOT_BE_EMPTY, 0 != validator.validateUnique(stubActivity, scout.getId()).size());
+    }
+    @Test
+    public void duplicateTestInEventAndBuffer() {
+        activityRepo.save(stubActivity);
+        this.stubActivity = new Activity(null, stubBuffer, null, "mock");
+        Assert.assertTrue(SHOULD_NOT_BE_EMPTY, 0 != validator.validateUnique(stubActivity, scout.getId()).size());
+    }
+    @Test
+    public void duplicateTestInBuffer() {
+        stubActivity.setEvent(null);
+        stubActivity.setBuffer(stubBuffer);
+        activityRepo.save(stubActivity);
+        this.stubActivity = new Activity(null, stubBuffer, null, "mock");
+        Assert.assertTrue(SHOULD_NOT_BE_EMPTY, 0 != validator.validateUnique(stubActivity, scout.getId()).size());
     }
 
     //mod activity

@@ -29,7 +29,7 @@ public class ActivityController {
     @DeleteMapping("/activities/{activityId}")
     public ResponseEntity<Object> deleteActivity(@PathVariable Long activityId, HttpSession session) {
         Scout scout = (Scout) session.getAttribute("scout");
-        if (verifyScoutService.isOwnerForActivity(activityId, scout)) {
+        if (!verifyScoutService.isOwnerForActivity(activityId, scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this activity!");
         }
         return activityService.removeActivity(activityId);
@@ -38,7 +38,7 @@ public class ActivityController {
     @PostMapping("/events/{eventId}/activities")
     public ResponseEntity<Object> postActivity(@PathVariable Long eventId, @RequestBody Activity jsonActivity, HttpSession session) {
         Scout scout = (Scout) session.getAttribute("scout");
-        if (verifyScoutService.isLoggedIn(scout)) {
+        if (!verifyScoutService.isLoggedIn(scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
         return activityService.addActivity(eventId, jsonActivity);
@@ -47,12 +47,14 @@ public class ActivityController {
     @GetMapping("/activities")
     public ResponseEntity<Object> getActivity(HttpSession session) {
         Scout user = (Scout) session.getAttribute("scout");
-        if (verifyScoutService.isLoggedIn(user)) {
+        if (!verifyScoutService.isLoggedIn(user)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
         return ResponseEntity.ok(activityService.listActivitiesForUser(user));        
     }
 
+    //add tests to these
+    
     //new stuff from here
     @PutMapping("/activity/{id}/fromevent/{eventId}/tobuffer/{bufferId}")
     public ResponseEntity<Object> moveActivityFromEventToBuffer(@PathVariable Long id,

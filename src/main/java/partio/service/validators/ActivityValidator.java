@@ -24,6 +24,17 @@ public class ActivityValidator extends Validator<Activity> {
     @Autowired
     private ActivityBufferRepository bufferRepository;
 
+    public List<String> validateUnique(Activity activity, Long scoutId) {
+        List<String> errors = new ArrayList<>();
+        if (!acitvityRepository.findByScoutEvents(activity.getGuid(), scoutId).isEmpty()) {
+            errors.add("player already has this activity");
+        }
+        if (!acitvityRepository.findByScoutBuffer(activity.getGuid(), scoutId).isEmpty()) {
+            errors.add("player already has this activity");
+        }
+        return errors;
+    }
+
     @Override
     public List<String> validateNew(Activity activity) {
         List<String> errors = new ArrayList<>();
@@ -39,10 +50,6 @@ public class ActivityValidator extends Validator<Activity> {
         //not only space in strings 
         if (!validateStringNotOnlySpaces(activity.getGuid(), NOT_NULL)) {
             errors.add("guid cannot be whitespace only");
-        }
-
-        if (scoutHasSameActivityTwice(activity)) {
-            errors.add("User already has activity with same guid!");
         }
 
         return errors;
@@ -90,33 +97,4 @@ public class ActivityValidator extends Validator<Activity> {
 
         return errors;
     }
-
-    private boolean activityWithSameGuidExists(String guid) {
-        if (acitvityRepository.findByGuid(guid) == null) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean scoutHasSameActivityTwice(Activity activity) {
-        Scout scout = null;
-        if(activity.getEvent()!=null) {
-            scout = activity.getEvent().getScout();
-        } else if(activity.getBuffer()!=null){
-            scout = activity.getBuffer().getScout();
-        }
-        
-        if(scout==null){
-            return false; //activity has no event or buffer.
-        }
-        
-        String guid = activity.getGuid();
-        List<Activity> activities = new ArrayList<>();
-        
-        scout.getEvents().forEach(event -> activities.addAll(event.getActivities()));
-        activities.addAll(scout.getBuffer().getActivities());
-        
-        return activities.stream().anyMatch((act) -> (act.getGuid().equals(guid)));
-    }
-
 }

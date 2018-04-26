@@ -44,7 +44,7 @@ public class PlanControllerTest {
         planRepo.deleteAll();
         activityRepo.deleteAll();
     }
-/*
+
     @Test
     public void validPost() throws Exception {
         Activity activity = new Activity("huehue");
@@ -95,7 +95,7 @@ public class PlanControllerTest {
 
         Assert.assertTrue(planRepo.findAll().isEmpty());
     }
-*/
+
     @Test
     public void invalidDelete() throws Exception {
         Activity activity = new Activity("huehue");

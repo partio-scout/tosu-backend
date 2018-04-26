@@ -82,10 +82,11 @@ public class EventControllerTest {
 
     @Test
     public void statusOk() throws Exception {
-        mockMvc.perform(get("/events"))
+        mockMvc.perform(get("/events")
+        .sessionAttrs(sessionAttrs))
                 .andExpect(status().isOk());
     }
-/*
+
     @Test
     public void validPost() throws Exception {
         ResultActions res = mockMvc.perform(MockMvcRequestBuilders.post("/events")
@@ -114,8 +115,6 @@ public class EventControllerTest {
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isOk());
 
-        System.out.println("expexted---\n        " + helper.responseExpectedToContain(validStub) + "<-expexted");
-        System.out.println("received--\n" + res.andReturn().getResponse().getContentAsString() + "<-received");
         String responseBody = res.andReturn().getResponse().getContentAsString();
         Assert.assertTrue(responseBody.contains(helper.responseExpectedToContain(validStub)));
         Assert.assertTrue(responseBody.contains("\"groupId\":" + group.getId()));
@@ -182,7 +181,6 @@ public class EventControllerTest {
 
         Assert.assertTrue(eventRepo.findAll().isEmpty() == false);
         long id = eventRepo.findAll().get(0).getId();
-        System.out.println(".-----");
         System.out.println(eventRepo.findAll().get(0).getScout().getId());
         System.out.println(scout.getId());
         ResultActions res = mockMvc.perform(MockMvcRequestBuilders.delete("/events/" + id)
@@ -201,7 +199,9 @@ public class EventControllerTest {
                 .andExpect(status().isOk());
 
         long id = eventRepo.findAll().get(0).getId();
+        System.out.println("id of the postred event to del: " + eventRepo.findOne(id));
         mockMvc.perform(MockMvcRequestBuilders.post("/events/"+ id + "/activities")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.activityToJson(new Activity("activityguid"))))
                 .andExpect(status().isOk());
@@ -223,5 +223,5 @@ public class EventControllerTest {
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isForbidden());
     }
-*/
+
 }

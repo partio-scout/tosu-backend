@@ -38,7 +38,7 @@ public class ActivityBufferController {
     @GetMapping("/activitybuffer/{id}")//id voi poistaa
     public ResponseEntity<Object> getBufferContent(@PathVariable Long id, HttpSession session) {
         Scout scout = (Scout) session.getAttribute("scout");
-        if (verifyScoutService.isLoggedIn(scout)) {
+        if (!verifyScoutService.isLoggedIn(scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
         return bufferService.getBufferOfScout(scout);

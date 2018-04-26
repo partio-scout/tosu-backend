@@ -28,18 +28,6 @@ public class ActivityBufferService {
     @Autowired 
     ScoutRepository scoutRepository;
 
-    //because we dont have multiuser support yet i made it to create one if one does not exist
-    //will always return same one
-//    public ActivityBuffer findBuffer(Long id) {
-//        if (bufferRepository.count() == 0) {
-//            ActivityBuffer buffer = new ActivityBuffer();
-//            bufferRepository.save(buffer);
-//            return buffer;
-//
-//        } else {
-//            return bufferRepository.findOne(id);
-//        }
-//    }
     public ResponseEntity<Object> getBufferOfScout(Scout scout) {
         ActivityBuffer buffer = bufferRepository.findByScout(scout);
         if (buffer == null) {
@@ -58,6 +46,7 @@ public class ActivityBufferService {
         activity.setBuffer(buffer);
 
         List<String> errors = activityValidator.validateNew(activity);
+        errors.addAll(activityValidator.validateUnique(activity, scout.getId()));
         if (!errors.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }

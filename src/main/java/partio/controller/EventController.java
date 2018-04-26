@@ -25,13 +25,15 @@ public class EventController {
     @Autowired
     private EventService eventService;   
     @Autowired
+    private EventRepository eventRepo;
+    @Autowired
     private VerifyScoutService verifyScoutService;
 @Autowired EventRepository er;
     
     @GetMapping("/events")
     public ResponseEntity<Object> getEvents(HttpSession session) {
         Scout scout = (Scout) session.getAttribute("scout");
-        if (verifyScoutService.isLoggedIn(scout)) {
+        if (!verifyScoutService.isLoggedIn(scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
         return ResponseEntity.ok(eventService.listScoutsEvents(scout));
@@ -40,7 +42,7 @@ public class EventController {
     @PostMapping("/events")
     public ResponseEntity<Object> postEvent(@RequestBody Event event, HttpSession session) {
         Scout scout = (Scout) session.getAttribute("scout");
-        if (verifyScoutService.isLoggedIn(scout)) {
+        if (!verifyScoutService.isLoggedIn(scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
         event.setScout(scout);
@@ -63,8 +65,10 @@ public class EventController {
     public ResponseEntity<Object> deleteEvent(@PathVariable Long eventId, HttpSession session) {
         Scout scout = (Scout) session.getAttribute("scout");
         if (!verifyScoutService.isOwnerForEvent(eventId, scout)) {
+          //  System.out.println(scout.getId() + " " + " you are not owner of this event!" + eventRepo.findOne(eventId).getScout().getId());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event!");
         }
+        System.out.println("you are the owner of event");
         return eventService.deleteById(eventId);
     }
 }

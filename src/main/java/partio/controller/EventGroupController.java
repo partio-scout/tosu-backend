@@ -32,7 +32,7 @@ public class EventGroupController {
     @PostMapping("/eventgroup")
     public ResponseEntity<Object> postEventGroup(HttpSession session) throws IOException {
         Scout loggedInScout = (Scout) session.getAttribute("scout");
-        if (verifyScoutService.isLoggedIn(loggedInScout)) {
+        if (!verifyScoutService.isLoggedIn(loggedInScout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
         return groupService.createEventGroup();

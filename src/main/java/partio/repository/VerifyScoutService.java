@@ -27,7 +27,7 @@ public class VerifyScoutService {
     // user is logged in
     public boolean isLoggedIn(Scout scout) {
         try {
-            return scoutRepository.findOne(scout.getId()) == null;
+            return scoutRepository.findOne(scout.getId()) != null;
         } catch (NullPointerException | EntityNotFoundException e) {
             return false;
         }
