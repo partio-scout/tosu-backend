@@ -18,9 +18,9 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 public class Scout extends AbstractPersistable<Long> {
 
     String googleId;
-    @OneToMany(mappedBy = "scout", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)   
+    @OneToMany(mappedBy = "scout", cascade = CascadeType.REMOVE, orphanRemoval = true)   
     private List<Event> events;   
-//    @OneToOne(mappedBy = "scout")
+    @OneToOne(mappedBy = "scout", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private ActivityBuffer buffer;
     String name;
     

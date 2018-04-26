@@ -16,6 +16,8 @@ public class VerifyScoutService {
     @Autowired
     private EventRepository eventRepository;
     @Autowired
+    private ActivityBufferRepository bufferRepository;
+    @Autowired
     private ActivityRepository activityRepository;
     @Autowired
     private ScoutRepository scoutRepository;
@@ -35,6 +37,14 @@ public class VerifyScoutService {
     public boolean isOwnerForEvent(Long eventId, Scout scout) {
         try {
             return scoutRepository.findOne(scout.getId()) == eventRepository.getOne(eventId).getScout();
+        } catch (NullPointerException | EntityNotFoundException e) {
+            return false;
+        }
+    }
+    
+    public boolean isOwnerForBuffer(Long bufferId, Scout scout) {
+        try {
+            return Objects.equals(scout.getId(), bufferRepository.getOne(bufferId).getScout().getId());
         } catch (NullPointerException | EntityNotFoundException e) {
             return false;
         }

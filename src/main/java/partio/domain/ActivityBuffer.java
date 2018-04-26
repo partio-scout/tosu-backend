@@ -30,8 +30,7 @@ public class ActivityBuffer extends AbstractPersistable<Long> {
     @OneToMany(mappedBy = "buffer", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Activity> activities;
     
-//    @OneToOne(mappedBy = "buffer")
-//    @Fetch(value = FetchMode.SUBSELECT)
+    @OneToOne
     private Scout scout;
 
     @Override
@@ -41,12 +40,13 @@ public class ActivityBuffer extends AbstractPersistable<Long> {
         return hash;
     }
 
+    @Override
     public boolean equals(Object other) {
         if (other.getClass() != ActivityBuffer.class) {
             return false;
         }
         ActivityBuffer otherGroup = (ActivityBuffer) other;
-        return this.getId() == otherGroup.getId();
+        return Objects.equals(this.getId(), otherGroup.getId());
     }
 
 }

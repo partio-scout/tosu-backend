@@ -34,7 +34,7 @@ public class Activity extends AbstractPersistable<Long> {
     @JoinColumn
     private ActivityBuffer buffer;
     //pof backend id
-    @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE, orphanRemoval = true/*, fetch = FetchType.EAGER*/)
     private List<Plan> plans;
 
     private String guid;
