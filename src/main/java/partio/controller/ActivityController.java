@@ -1,6 +1,5 @@
 package partio.controller;
 
-import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import partio.domain.Activity;
 import partio.domain.Scout;
-import partio.repository.ScoutRepository;
 import partio.repository.VerifyScoutService;
 import partio.service.ActivityService;
 
@@ -24,9 +22,7 @@ import partio.service.ActivityService;
 public class ActivityController {
 
     @Autowired
-    private ActivityService activityService;
-    @Autowired
-    private ScoutRepository scoutRepository;
+    private ActivityService activityService;  
     @Autowired
     private VerifyScoutService verifyScoutService;
 
@@ -50,7 +46,7 @@ public class ActivityController {
 
     @GetMapping("/activities")
     public ResponseEntity<Object> getActivity(HttpSession session) {
-        Scout user = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
+        Scout user = (Scout) session.getAttribute("scout");
         if (verifyScoutService.isLoggedIn(user)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }

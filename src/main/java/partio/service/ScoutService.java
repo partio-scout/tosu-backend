@@ -24,6 +24,8 @@ public class ScoutService {
 
     @Autowired
     private ScoutRepository scoutRepository;
+    @Autowired
+    private ActivityBufferService bufferService;
 
     /*
     If user isn't in scoutRepository, he will be added. Return created or found scout.
@@ -41,6 +43,7 @@ public class ScoutService {
         Scout scout = new Scout();
         scout.setGoogleId(userId);
         scout.setName((String) payload.get("name"));
+        scout.setBuffer(bufferService.newBuffer(scout));
 
         scoutRepository.save(scout);
         return ResponseEntity.ok(scout);

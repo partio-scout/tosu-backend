@@ -36,7 +36,7 @@ public class EventService {
 
     /*
     List all events from database. Needed only at tests.
-    */
+     */
     public List<Event> list() {
         List<Event> events = eventRepository.findAll(orderBy());
         return events;
@@ -47,10 +47,10 @@ public class EventService {
                 new Order(Direction.ASC, "startDate"),
                 new Order(Direction.ASC, "startTime"));
     }
-    
+
     /*
     Add new event.
-    */
+     */
     public ResponseEntity<Object> add(Event event) {
         List<String> errors = eventValidator.validateNew(event);
         if (errors.isEmpty()) {
@@ -61,10 +61,10 @@ public class EventService {
         }
     }
 // group id cannot be changed, activities changed by activitycontroller
-    
+
     /*
     Edit event.
-    */
+     */
     public ResponseEntity<Object> edit(Long eventId, Event editedEvent) {
         Event original = eventRepository.findOne(eventId);
         List<String> errors = eventValidator.validateChanges(original, editedEvent);
@@ -80,13 +80,19 @@ public class EventService {
 
     /*
     Delete event.
-    */
+     */
     public ResponseEntity<Object> deleteById(Long eventId) {
         Event toDelete = eventRepository.findOne(eventId);
         if (toDelete == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Eventtiä ei löytynyt!");
         }
-        ActivityBuffer buffer = bufferService.findBuffer(0l);
+        if (toDelete.getScout() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Eventillä ei ole käyttäjää!");
+        }
+        if (toDelete.getScout().getBuffer() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Käyttäjän bufferia ei löytynyt!");
+        }
+        ActivityBuffer buffer = toDelete.getScout().getBuffer();
         Event deleted = moveEventActivitysToBuffer(toDelete, buffer);
 
         if (deleted.getGroupId() != null && deleted.getGroupId().getEvents().size() == 1) {
@@ -97,10 +103,10 @@ public class EventService {
         return ResponseEntity.ok(deleted);
 
     }
-    
+
     /*
     When event is deleted move all its activities to bufferzone.
-    */
+     */
     private Event moveEventActivitysToBuffer(Event event, ActivityBuffer buffer) {
         List<Activity> eventActivitys = event.getActivities();
 

@@ -23,12 +23,11 @@ public class ActivityBufferController {
     
     @PostMapping("/activitybuffer/{id}/activities/")
     public ResponseEntity<Object> postActivity(@PathVariable Long id, @RequestBody Activity activity, HttpSession session) {
-       Scout scout = (Scout) session.getAttribute("scout");
-        return bufferService.addActivity(id, activity);
+        Scout scout = (Scout) session.getAttribute("scout");
+        return bufferService.addActivity(id, activity, scout);
     }
 
     @GetMapping("/activitybuffer/{id}")
-     
     public ResponseEntity<Object> getBufferContent(@PathVariable Long id, HttpSession session) {
         Scout scout = (Scout) session.getAttribute("scout");
         return bufferService.getBufferContent(id);
