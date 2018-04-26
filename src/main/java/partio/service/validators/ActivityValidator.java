@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
+import partio.domain.Scout;
 import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
@@ -40,8 +41,8 @@ public class ActivityValidator extends Validator<Activity> {
             errors.add("guid cannot be whitespace only");
         }
 
-        if (activityWithSameGuidExists((activity.getGuid()))) {
-            errors.add("activity with same guid already exists");
+        if (scoutHasSameActivityTwice(activity)) {
+            errors.add("User already has activity with same guid!");
         }
 
         return errors;
@@ -95,6 +96,27 @@ public class ActivityValidator extends Validator<Activity> {
             return false;
         }
         return true;
+    }
+
+    private boolean scoutHasSameActivityTwice(Activity activity) {
+        Scout scout = null;
+        if(activity.getEvent()!=null) {
+            scout = activity.getEvent().getScout();
+        } else if(activity.getBuffer()!=null){
+            scout = activity.getBuffer().getScout();
+        }
+        
+        if(scout==null){
+            return false; //activity has no event or buffer.
+        }
+        
+        String guid = activity.getGuid();
+        List<Activity> activities = new ArrayList<>();
+        
+        scout.getEvents().forEach(event -> activities.addAll(event.getActivities()));
+        activities.addAll(scout.getBuffer().getActivities());
+        
+        return activities.stream().anyMatch((act) -> (act.getGuid().equals(guid)));
     }
 
 }
