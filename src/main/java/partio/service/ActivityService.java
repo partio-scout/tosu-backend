@@ -11,6 +11,7 @@ import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Event;
 import partio.domain.Plan;
+import partio.domain.Scout;
 import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
 import partio.service.validators.ActivityValidator;
@@ -138,6 +139,22 @@ public class ActivityService {
         activity.setEvent(to);//it already exists so no need to validate
         activityRepository.save(activity);
         return ResponseEntity.ok(activity);
+    }
+
+    /*
+    List current user's activities.
+     */
+    public List<Activity> listActivitiesForUser(Scout user) {
+        List<Activity> activitiesOfUser = new ArrayList<>();
+        if (!user.getEvents().isEmpty()) {
+            user.getEvents().forEach(event -> {
+                if (!event.getActivities().isEmpty()) {
+                    activitiesOfUser.addAll(event.getActivities());
+                }
+            });
+        }
+
+        return activitiesOfUser;
     }
 
 }

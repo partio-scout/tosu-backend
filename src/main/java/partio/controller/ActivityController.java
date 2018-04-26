@@ -49,8 +49,12 @@ public class ActivityController {
     }
 
     @GetMapping("/activities")
-    public List<Activity> getActivity() {
-        return activityService.list();
+    public ResponseEntity<Object> getActivity(HttpSession session) {
+        Scout user = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
+        if (verifyScoutService.isLoggedIn(user)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
+        }
+        return ResponseEntity.ok(activityService.listActivitiesForUser(user));        
     }
 
     //new stuff from here

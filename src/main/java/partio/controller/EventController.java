@@ -31,10 +31,12 @@ public class EventController {
     private VerifyScoutService verifyScoutService;
 
     @GetMapping("/events")
-    public List<Event> getEvents(HttpSession session) {
+    public ResponseEntity<Object> getEvents(HttpSession session) {
         Scout scout = scoutRepository.findByGoogleId((String) session.getAttribute("scout"));
-        List<Event> events = eventService.listScoutsEvents(scout);
-        return events;
+        if (verifyScoutService.isLoggedIn(scout)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
+        }
+        return ResponseEntity.ok(eventService.listScoutsEvents(scout));
     }
 
     @PostMapping("/events")
