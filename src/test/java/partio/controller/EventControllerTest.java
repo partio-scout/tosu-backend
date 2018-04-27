@@ -181,8 +181,6 @@ public class EventControllerTest {
 
         Assert.assertTrue(eventRepo.findAll().isEmpty() == false);
         long id = eventRepo.findAll().get(0).getId();
-        System.out.println(eventRepo.findAll().get(0).getScout().getId());
-        System.out.println(scout.getId());
         ResultActions res = mockMvc.perform(MockMvcRequestBuilders.delete("/events/" + id)
                 .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -199,7 +197,6 @@ public class EventControllerTest {
                 .andExpect(status().isOk());
 
         long id = eventRepo.findAll().get(0).getId();
-        System.out.println("id of the postred event to del: " + eventRepo.findOne(id));
         mockMvc.perform(MockMvcRequestBuilders.post("/events/"+ id + "/activities")
                 .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)

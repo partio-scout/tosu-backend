@@ -6,7 +6,9 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import partio.domain.Activity;
 import partio.domain.Event;
+import partio.domain.Plan;
 import partio.domain.Scout;
 
 @Service
@@ -19,6 +21,8 @@ public class VerifyScoutService {
     private ActivityBufferRepository bufferRepository;
     @Autowired
     private ActivityRepository activityRepository;
+    @Autowired
+    private PlanRepository planRepository;
     @Autowired
     private ScoutRepository scoutRepository;
     @Autowired
@@ -41,7 +45,7 @@ public class VerifyScoutService {
             return false;
         }
     }
-    
+
     public boolean isOwnerForBuffer(Long bufferId, Scout scout) {
         try {
             return Objects.equals(scout.getId(), bufferRepository.getOne(bufferId).getScout().getId());
@@ -51,10 +55,34 @@ public class VerifyScoutService {
     }
 
     // is activity.event.scout == scout
+    //keep in mind activity can be either in event OR in buffer
     public boolean isOwnerForActivity(Long activityId, Scout scout) {
-        System.out.println(scout);
+
         try {
-            return scoutRepository.findOne(scout.getId()) == activityRepository.getOne(activityId).getEvent().getScout();
+            scout = scoutRepository.findOne(scout.getId());
+            Activity activity = activityRepository.getOne(activityId);
+            if (activity.getBuffer() != null) {
+                return Objects.equals(scout.getId(), activityRepository.getOne(activityId).getBuffer().getScout().getId());
+            } else {
+                return Objects.equals(scout.getId(), activityRepository.getOne(activityId).getEvent().getScout().getId());
+            }
+        } catch (NullPointerException | EntityNotFoundException e) {
+            System.out.println("exce");
+            return false;
+        }
+    }
+
+    // is plan.activity.event.scout == scout
+    //keep in mind plan's parent activity can be either in event OR in buffer
+    public boolean isOwnerForPlan(Long planId, Scout scout) {
+        try {
+            scout = scoutRepository.findOne(scout.getId());
+            Plan plan = planRepository.getOne(planId);
+            if (plan.getActivity().getBuffer() != null) {
+                return Objects.equals(scout.getId(), planRepository.getOne(planId).getActivity().getBuffer().getScout().getId());
+            } else {
+                return Objects.equals(scout.getId(), planRepository.getOne(planId).getActivity().getEvent().getScout().getId());
+            }
         } catch (NullPointerException | EntityNotFoundException e) {
             return false;
         }
@@ -64,15 +92,8 @@ public class VerifyScoutService {
     public boolean isOwnerForEventGroup(Long groupId, Scout scout) {
         try {
             List<Event> events = groupRepository.getOne(groupId).getEvents();
-            if (events.isEmpty() || events == null) {
-                System.out.println("group empty");
-                return false;
-            }
-            System.out.println(scout + " in verifier");
-            System.out.println(Objects.equals(scout.getId(), groupRepository.getOne(groupId).getEvents().get(0).getScout().getId()));
             return Objects.equals(scout.getId(), groupRepository.getOne(groupId).getEvents().get(0).getScout().getId());
         } catch (NullPointerException | EntityNotFoundException e) {
-            System.out.println("caught an error");
             return false;
         }
     }

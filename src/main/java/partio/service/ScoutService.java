@@ -51,22 +51,12 @@ public class ScoutService {
     /*
     Here user can remove his account.
     */
-    public ResponseEntity<Object> deleteById(GoogleIdToken idToken) {
-        //delete activities from events
-        if (idToken != null) {
-            Payload payload = idToken.getPayload();
-
-            String userId = payload.getUserId();
-            Scout toDelete = scoutRepository.findByGoogleId(userId);
-
-            if (toDelete == null) {
+    public ResponseEntity<Object> deleteById(Scout scout) {
+            if (!scoutRepository.exists(scout.getId())) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
-            scoutRepository.delete(toDelete);
-            return ResponseEntity.ok(toDelete);
-        }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            scoutRepository.delete(scout);
+            return ResponseEntity.ok(scout);
     }
     
     /*

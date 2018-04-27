@@ -191,15 +191,15 @@ public class ActivityControllerTest {
     public void testFromEventToOtherEvent() throws Exception {
         eventRepo.save(event);//save first so ids dont match
         eventRepo.save(event2);
-        Activity stub = new Activity(event2, "this is a valid stub");
-        activityRepo.save(stub);
+        Activity activityOfEvent2 = new Activity(event2, "this is a valid stub");
+        activityRepo.save(activityOfEvent2);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/activity/" + stub.getId() + "/fromevent/" + event2.getId() + "/toevent/" + event.getId())
+        mockMvc.perform(MockMvcRequestBuilders.put("/activity/" + activityOfEvent2.getId() + "/fromevent/" + event2.getId() + "/toevent/" + event.getId())
                 .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
-        Activity savedStub = activityRepo.findOne(stub.getId());
+        Activity savedStub = activityRepo.findOne(activityOfEvent2.getId());
         Assert.assertTrue(Objects.equals(savedStub.getEvent().getId(), event.getId()));
         Assert.assertTrue(savedStub.getBuffer() == null);
     }

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestHeader;
+import partio.domain.Scout;
 import partio.repository.ScoutRepository;
 
 @RestController
@@ -42,15 +43,10 @@ public class ScoutController {
     }
 
     @DeleteMapping("/scouts/{scoutId}")
-    public ResponseEntity<Object> deleteScout(@RequestHeader String idTokenString) {
-        
-        try {
-            GoogleIdToken idToken = scoutService.verifyId(idTokenString);
-            return scoutService.deleteById(idToken);
-        } catch (GeneralSecurityException | IOException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
-        }
-
+    public ResponseEntity<Object> deleteScout(HttpSession session) {
+            ResponseEntity result = scoutService.deleteById((Scout) session.getAttribute("scout"));
+            session.invalidate();
+            return result;
     }
 
 }

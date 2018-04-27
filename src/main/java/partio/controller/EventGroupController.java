@@ -43,9 +43,7 @@ public class EventGroupController {
     @DeleteMapping("/eventgroup/{groupId}")
     public ResponseEntity<Object> delete(@PathVariable Long groupId, HttpSession session) throws IOException {
         Scout scout = (Scout) session.getAttribute("scout");
-        System.out.println(scout + " in controller");
         if (!verifyScoutService.isOwnerForEventGroup(groupId, scout)) {
-            System.out.println("not owner");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event group!");
         }
         return groupService.delete(groupId);

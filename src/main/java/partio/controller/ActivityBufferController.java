@@ -27,11 +27,10 @@ public class ActivityBufferController {
     @PostMapping("/activitybuffer/{bufferId}/activities/")
     public ResponseEntity<Object> postActivity(@PathVariable Long bufferId, @RequestBody Activity activity, HttpSession session) {
         Scout scout = (Scout) session.getAttribute("scout");
-        System.out.println(scout + " in controller");
         if (!verifyScoutService.isOwnerForBuffer(bufferId, scout)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this buffer!");
         }
-        System.out.println("before service");
+        
         return bufferService.addActivityToBuffer(activity, scout);
     }
 

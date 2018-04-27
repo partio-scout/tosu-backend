@@ -35,8 +35,6 @@ public class ActivityBufferControllerTest {
     @Autowired
     private ActivityBufferService bufferService; //
     @Autowired
-    private EventRepository eventRepo;
-    @Autowired
     private ActivityRepository activityRepo;
     @Autowired
     private ActivityBufferRepository bufferRepository;

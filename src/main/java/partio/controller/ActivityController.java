@@ -22,7 +22,7 @@ import partio.service.ActivityService;
 public class ActivityController {
 
     @Autowired
-    private ActivityService activityService;  
+    private ActivityService activityService;
     @Autowired
     private VerifyScoutService verifyScoutService;
 
@@ -50,33 +50,57 @@ public class ActivityController {
         if (!verifyScoutService.isLoggedIn(user)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
-        return ResponseEntity.ok(activityService.listActivitiesForUser(user));        
+        return ResponseEntity.ok(activityService.listActivitiesForUser(user));
     }
 
     //add tests to these
-    
     //new stuff from here
-    @PutMapping("/activity/{id}/fromevent/{eventId}/tobuffer/{bufferId}")
-    public ResponseEntity<Object> moveActivityFromEventToBuffer(@PathVariable Long id,
-            @PathVariable Long eventId,
-            @PathVariable Long bufferId) {
+    @PutMapping("/activity/{activityId}/fromevent/{eventId}/tobuffer/{bufferId}")
+    public ResponseEntity<Object> moveActivityFromEventToBuffer(@PathVariable Long activityId,
+            @PathVariable Long eventId, @PathVariable Long bufferId,
+            HttpSession session) {
+        
+        Scout scout = (Scout) session.getAttribute("scout");
 
-        return activityService.moveActivityFromEventToBuffer(id, eventId, bufferId);
+        if (!verifyScoutService.isOwnerForActivity(activityId, scout)
+                && !verifyScoutService.isOwnerForEvent(eventId, scout)
+                && !verifyScoutService.isOwnerForBuffer(bufferId, scout)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of these!");
+        }
+
+        return activityService.moveActivityFromEventToBuffer(activityId, eventId, bufferId);
     }
 
-    @PutMapping("/activity/{id}/frombuffer/{bufferId}/toevent/{eventId}")
-    public ResponseEntity<Object> moveActivityFromBufferToEvent(@PathVariable Long id,
-            @PathVariable Long bufferId,
-            @PathVariable Long eventId) {
+    @PutMapping("/activity/{activityId}/frombuffer/{bufferId}/toevent/{eventId}")
+    public ResponseEntity<Object> moveActivityFromBufferToEvent(@PathVariable Long activityId,
+            @PathVariable Long bufferId, @PathVariable Long eventId,
+            HttpSession session) {
+    
+        Scout scout = (Scout) session.getAttribute("scout");
 
-        return activityService.moveActivityFromBufferToEvent(id, eventId, bufferId);
+        if (!verifyScoutService.isOwnerForActivity(activityId, scout)
+                && !verifyScoutService.isOwnerForEvent(eventId, scout)
+                && !verifyScoutService.isOwnerForBuffer(bufferId, scout)) {
+            
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of these!");
+        }
+
+        return activityService.moveActivityFromBufferToEvent(activityId, eventId, bufferId);
     }
 
-    @PutMapping("/activity/{id}/fromevent/{fromId}/toevent/{toId}")
-    public ResponseEntity<Object> moveActivityFromEventToOtherEvent(@PathVariable Long id,
+    @PutMapping("/activity/{activityId}/fromevent/{fromId}/toevent/{toId}")
+    public ResponseEntity<Object> moveActivityFromEventToOtherEvent(@PathVariable Long activityId,
             @PathVariable Long fromId,
-            @PathVariable Long toId) {
+            @PathVariable Long toId,
+            HttpSession session) {
+           
+        Scout scout = (Scout) session.getAttribute("scout");
 
-        return activityService.moveActivityFromEventToOtherEvent(id, fromId, toId);
+        if (!verifyScoutService.isOwnerForActivity(activityId, scout)
+                && !verifyScoutService.isOwnerForEvent(fromId, scout)
+                && !verifyScoutService.isOwnerForEvent(toId, scout)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of these!");
+        }
+        return activityService.moveActivityFromEventToOtherEvent(activityId, fromId, toId);
     }
 }

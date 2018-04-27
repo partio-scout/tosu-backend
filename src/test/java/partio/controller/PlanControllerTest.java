@@ -1,5 +1,7 @@
 package partio.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,9 +17,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import partio.domain.Activity;
+import partio.domain.ActivityBuffer;
 import partio.domain.Plan;
+import partio.domain.Scout;
+import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
 import partio.repository.PlanRepository;
+import partio.repository.ScoutRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -30,28 +36,47 @@ public class PlanControllerTest {
     @Autowired
     private PlanRepository planRepo;
     private TestHelperJson helper;
-
     private MockMvc mockMvc;
+    @Autowired ScoutRepository scoutRepo;
+    @Autowired ActivityBufferRepository bufferRepo;
+    private Scout scout;
+    Map<String, Object> sessionAttrs;
+    
+    private Activity activity;
+    private ActivityBuffer buffer;
 
     @Before
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
         helper = new TestHelperJson();
+        
+        scout = new Scout("mockid", null, null, "scout");
+        scoutRepo.save(scout);
+        buffer = new ActivityBuffer(null, scout);
+        bufferRepo.save(buffer);
+        activity = new Activity(null, buffer, null, "huehue");
+        activityRepo.save(activity);
+        
+        
+        sessionAttrs = new HashMap<>();
+        sessionAttrs.put("scout", scout);
     }
 
     @After
     public void clean() {
         planRepo.deleteAll();
         activityRepo.deleteAll();
+        bufferRepo.deleteAll();
+        scoutRepo.deleteAll();
+        
     }
 
     @Test
     public void validPost() throws Exception {
-        Activity activity = new Activity("huehue");
-        activityRepo.save(activity);
+        
         Plan plan = new Plan(null, "title", "guid", "content");
-        System.out.println(helper.planToJson(plan));
         mockMvc.perform(MockMvcRequestBuilders.post("/activity/" + activity.getId() + "/plans")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.planToJson(plan)))
                 .andExpect(status().isOk());
@@ -66,16 +91,16 @@ public class PlanControllerTest {
 
     @Test
     public void invalidPost() throws Exception {
-        Activity activity = new Activity("huehue");
-        activityRepo.save(activity);
-        Plan plan = new Plan(null, "title", "guid", "content");
+        Plan plan = new Plan(null, "title", "guid", "content");// 1st plan
         mockMvc.perform(MockMvcRequestBuilders.post("/activity/" + activity.getId() + "/plans")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.planToJson(plan)))
                 .andExpect(status().isOk());
 
-        plan = new Plan(null, "title", "guid", "content");
+        plan = new Plan(null, "title", "guid", "content"); //duplicate plan
         mockMvc.perform(MockMvcRequestBuilders.post("/activity/" + activity.getId() + "/plans")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.planToJson(plan)))
                 .andExpect(status().isBadRequest());
@@ -84,12 +109,11 @@ public class PlanControllerTest {
 
     @Test
     public void validDelete() throws Exception {
-        Activity activity = new Activity("huehue");
-        activityRepo.save(activity);
         Plan plan = new Plan(activity, "title", "guid", "content");
         planRepo.save(plan);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/plans/" + plan.getId())
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
@@ -98,14 +122,13 @@ public class PlanControllerTest {
 
     @Test
     public void invalidDelete() throws Exception {
-        Activity activity = new Activity("huehue");
-        activityRepo.save(activity);
         Plan plan = new Plan(activity, "title", "guid", "content");
         planRepo.save(plan);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/plans/" + (plan.getId() + 1))
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isForbidden());
 
         Assert.assertTrue(planRepo.findAll().isEmpty() == false);
     }
