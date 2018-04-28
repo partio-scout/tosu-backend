@@ -35,6 +35,7 @@ public class EventValidator extends Validator<Event> {
 
     @Override
     public List<String> validateNew(Event event) {
+
         try {
             List<String> errors = validateNewAndOld(event);
 
@@ -122,6 +123,9 @@ public class EventValidator extends Validator<Event> {
 
         if (!ifHasGroupItIsKnown(event)) {
             errors.add("this group id is unknown!");
+        }
+        if (event.getScout() == null) {
+            errors.add("This event doesn't have owner!");
         }
 
         return errors;

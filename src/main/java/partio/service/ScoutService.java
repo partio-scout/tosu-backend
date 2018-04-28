@@ -24,43 +24,44 @@ public class ScoutService {
 
     @Autowired
     private ScoutRepository scoutRepository;
+    @Autowired
+    private ActivityBufferService bufferService;
 
+    /*
+    If user isn't in scoutRepository, he will be added. Return created or found scout.
+    */
     public ResponseEntity<Object> findOrCreateScout(GoogleIdToken idToken) {
         Payload payload = idToken.getPayload();
 
-        String userId = payload.getUserId();
+        String userId = payload.getSubject();
         Scout existingScout = scoutRepository.findByGoogleId(userId);
 
-        if (existingScout == null) { //If scout allready exist, don't add same scout twice.
+        if (existingScout != null) { //If scout already exists, don't add same scout twice.
             return ResponseEntity.ok(existingScout);
         }
 
         Scout scout = new Scout();
         scout.setGoogleId(userId);
         scout.setName((String) payload.get("name"));
+        scout.setBuffer(bufferService.newBuffer(scout));
 
         scoutRepository.save(scout);
         return ResponseEntity.ok(scout);
     }
-
-    public ResponseEntity<Object> deleteById(GoogleIdToken idToken) {
-        //delete activities from events
-        if (idToken != null) {
-            Payload payload = idToken.getPayload();
-
-            String userId = payload.getUserId();
-            Scout toDelete = scoutRepository.findByGoogleId(userId);
-
-            if (toDelete == null) {
+    /*
+    Here user can remove his account.
+    */
+    public ResponseEntity<Object> deleteById(Scout scout) {
+            if (!scoutRepository.exists(scout.getId())) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
-            scoutRepository.delete(toDelete);
-            return ResponseEntity.ok(toDelete);
-        }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            scoutRepository.delete(scout);
+            return ResponseEntity.ok(scout);
     }
-
+    
+    /*
+    Help-method to find uer by googleId.
+    */
     public Scout findScoutByGoogleId(GoogleIdToken idToken) {
         if (idToken != null) {
             Payload payload = idToken.getPayload();
@@ -74,6 +75,9 @@ public class ScoutService {
         return null;
     }
 
+    /*
+    Google idToken verifier, https://developers.google.com/identity/sign-in/web/backend-auth
+    */
     public GoogleIdToken verifyId(String idTokenString) throws GeneralSecurityException, IOException {
 
         JacksonFactory jacksonFactory = new JacksonFactory();

@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import org.junit.After;
 import org.junit.Assert;
@@ -22,9 +24,11 @@ import org.springframework.web.context.WebApplicationContext;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Event;
+import partio.domain.Scout;
 import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
+import partio.repository.ScoutRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -38,7 +42,9 @@ public class ActivityControllerTest {
     private ActivityBufferRepository bufferRepo;
     @Autowired
     private ActivityRepository activityRepo;
-
+    @Autowired ScoutRepository scoutRepo;
+    private Scout scout;
+    Map<String, Object> sessionAttrs;
     private MockMvc mockMvc;
     private Event event;
     private Event event2;
@@ -47,11 +53,15 @@ public class ActivityControllerTest {
 
     @Before
     public void setUp() {
+        scout = new Scout("mockid", null, null, "scout");
+        scoutRepo.save(scout);
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
-        event = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
-        buffer = new ActivityBuffer();
-        event2 = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
+        event = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub", scout);
+        buffer = new ActivityBuffer(null, scout);
+        event2 = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub", scout);
         helper = new TestHelperJson();
+        sessionAttrs = new HashMap<>();
+        sessionAttrs.put("scout", scout);
     }
 
     @After
@@ -59,17 +69,20 @@ public class ActivityControllerTest {
         activityRepo.deleteAll();
         eventRepo.deleteAll();
         bufferRepo.deleteAll();
+        scoutRepo.deleteAll();
     }
 
     @Test
     public void statusOk() throws Exception {
-        mockMvc.perform(get("/events"))
+        mockMvc.perform(get("/events")
+        .sessionAttrs(sessionAttrs))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void validPost() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/events")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(event)))
                 .andExpect(status().isOk());
@@ -78,6 +91,7 @@ public class ActivityControllerTest {
         Activity stub = new Activity(indbEvent, "this is a valid stub");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/events/" + indbEvent.getId() + "/activities")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.activityToJson(stub)))
                 .andExpect(status().isOk());
@@ -91,6 +105,7 @@ public class ActivityControllerTest {
     @Test
     public void invalidPostWithValidEvent() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/events")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(event)))
                 .andExpect(status().isOk());
@@ -99,6 +114,7 @@ public class ActivityControllerTest {
         Activity stub = new Activity(null, " ");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/events/" + indbEvent.getId() + "/activities")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.activityToJson(stub)))
                 .andExpect(status().isBadRequest());
@@ -110,6 +126,7 @@ public class ActivityControllerTest {
     public void invalidPostWithoutEvent() throws Exception {
         Activity stub = new Activity(null, "this is a stub");
         mockMvc.perform(MockMvcRequestBuilders.post("/events/" + 2 + "/activities")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.activityToJson(stub)))
                 .andExpect(status().isNotFound());
@@ -120,6 +137,7 @@ public class ActivityControllerTest {
     @Test
     public void validDelete() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/events")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(event)))
                 .andExpect(status().isOk());
@@ -128,6 +146,7 @@ public class ActivityControllerTest {
         Activity stub = new Activity(indbEvent, "this is a valid stub");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/events/" + indbEvent.getId() + "/activities")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.activityToJson(stub)))
                 .andExpect(status().isOk());
@@ -135,6 +154,7 @@ public class ActivityControllerTest {
         Activity savedindb = activityRepo.findAll().get(0);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/activities/" + savedindb.getId())
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
         Assert.assertTrue(activityRepo.findAll().isEmpty());
@@ -143,8 +163,9 @@ public class ActivityControllerTest {
     @Test
     public void deleteNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/activities/1")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isForbidden());
         Assert.assertTrue(activityRepo.findAll().isEmpty());
     }
 
@@ -157,6 +178,7 @@ public class ActivityControllerTest {
         bufferRepo.save(buffer);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/activity/" + stub.getId() + "/fromevent/" + event2.getId() + "/tobuffer/" + buffer.getId())
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
@@ -169,14 +191,15 @@ public class ActivityControllerTest {
     public void testFromEventToOtherEvent() throws Exception {
         eventRepo.save(event);//save first so ids dont match
         eventRepo.save(event2);
-        Activity stub = new Activity(event2, "this is a valid stub");
-        activityRepo.save(stub);
+        Activity activityOfEvent2 = new Activity(event2, "this is a valid stub");
+        activityRepo.save(activityOfEvent2);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/activity/" + stub.getId() + "/fromevent/" + event2.getId() + "/toevent/" + event.getId())
+        mockMvc.perform(MockMvcRequestBuilders.put("/activity/" + activityOfEvent2.getId() + "/fromevent/" + event2.getId() + "/toevent/" + event.getId())
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
-        Activity savedStub = activityRepo.findOne(stub.getId());
+        Activity savedStub = activityRepo.findOne(activityOfEvent2.getId());
         Assert.assertTrue(Objects.equals(savedStub.getEvent().getId(), event.getId()));
         Assert.assertTrue(savedStub.getBuffer() == null);
     }
@@ -190,6 +213,7 @@ public class ActivityControllerTest {
         activityRepo.save(stub);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/activity/" + stub.getId() + "/frombuffer/" + buffer.getId() + "/toevent/" + event2.getId())
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 

@@ -36,11 +36,11 @@ public class EventGroupService {
         if (toDelete == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        
+
         List<Activity> list = activityRepository.findByEventGroupId(toDelete.getId());
 
         for (Activity activity : list) {
-            activity.setBuffer(bufferService.findBuffer(0l));
+            activity.setBuffer(activity.getEvent().getScout().getBuffer());
             activity.setEvent(null);
         }
         activityRepository.save(list);

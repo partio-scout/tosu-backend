@@ -13,9 +13,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Event;
+import partio.domain.Scout;
 import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
+import partio.repository.ScoutRepository;
 import static partio.service.validators.TestHelper.*;
 
 @RunWith(SpringRunner.class)
@@ -30,6 +32,8 @@ public class ActivityValidatorTest {
     private ActivityRepository activityRepo;
     @Autowired
     private ActivityBufferRepository bufferRepo;
+    @Autowired ScoutRepository scoutRepo;
+    private Scout scout;
 
     private Event stubEvent1;
     private Event stubEvent2;
@@ -42,9 +46,11 @@ public class ActivityValidatorTest {
 
     @Before
     public void SetUp() {
-        this.stubEvent1 = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information");
-        this.stubEvent2 = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information");
-        this.stubBuffer = new ActivityBuffer();
+        scout = new Scout("mockid", null, null, "scout");
+        scoutRepo.save(scout);
+        this.stubEvent1 = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information", scout);
+        this.stubEvent2 = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information", scout);
+        this.stubBuffer = new ActivityBuffer(null, scout);
         eventRepo.save(stubEvent1);
         eventRepo.save(stubEvent2);
         bufferRepo.save(stubBuffer);
@@ -57,6 +63,7 @@ public class ActivityValidatorTest {
         activityRepo.deleteAll();
         bufferRepo.deleteAll();
         eventRepo.deleteAll();
+        scoutRepo.deleteAll();
     }
 
     //new activity
@@ -97,10 +104,24 @@ public class ActivityValidatorTest {
     
 
     @Test
-    public void duplicateTest() {
+    public void duplicateTestInEvent() {
         activityRepo.save(stubActivity);
         this.stubActivity = new Activity(stubEvent1, null, null, "mock");
-        Assert.assertTrue(SHOULD_NOT_BE_EMPTY, 0 != validator.validateNew(stubActivity).size());
+        Assert.assertTrue(SHOULD_NOT_BE_EMPTY, 0 != validator.validateUnique(stubActivity, scout.getId()).size());
+    }
+    @Test
+    public void duplicateTestInEventAndBuffer() {
+        activityRepo.save(stubActivity);
+        this.stubActivity = new Activity(null, stubBuffer, null, "mock");
+        Assert.assertTrue(SHOULD_NOT_BE_EMPTY, 0 != validator.validateUnique(stubActivity, scout.getId()).size());
+    }
+    @Test
+    public void duplicateTestInBuffer() {
+        stubActivity.setEvent(null);
+        stubActivity.setBuffer(stubBuffer);
+        activityRepo.save(stubActivity);
+        this.stubActivity = new Activity(null, stubBuffer, null, "mock");
+        Assert.assertTrue(SHOULD_NOT_BE_EMPTY, 0 != validator.validateUnique(stubActivity, scout.getId()).size());
     }
 
     //mod activity

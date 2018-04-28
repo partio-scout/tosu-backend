@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Event;
+import partio.domain.Scout;
 import partio.repository.ActivityRepository;
 import partio.repository.EventGroupRepository;
 import partio.repository.EventRepository;
@@ -33,6 +34,9 @@ public class EventService {
     @Autowired
     private EventValidator eventValidator;
 
+    /*
+    List all events from database. Needed only at tests.
+     */
     public List<Event> list() {
         List<Event> events = eventRepository.findAll(orderBy());
         return events;
@@ -44,6 +48,9 @@ public class EventService {
                 new Order(Direction.ASC, "startTime"));
     }
 
+    /*
+    Add new event.
+     */
     public ResponseEntity<Object> add(Event event) {
         List<String> errors = eventValidator.validateNew(event);
         if (errors.isEmpty()) {
@@ -55,6 +62,9 @@ public class EventService {
     }
 // group id cannot be changed, activities changed by activitycontroller
 
+    /*
+    Edit event.
+     */
     public ResponseEntity<Object> edit(Long eventId, Event editedEvent) {
         Event original = eventRepository.findOne(eventId);
         List<String> errors = eventValidator.validateChanges(original, editedEvent);
@@ -68,16 +78,17 @@ public class EventService {
         }
     }
 
+    /*
+    Delete event.
+     */
     public ResponseEntity<Object> deleteById(Long eventId) {
         Event toDelete = eventRepository.findOne(eventId);
         if (toDelete == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Eventtiä ei löytynyt!");
         }
-        ActivityBuffer buffer = bufferService.findBuffer(0l);
+        ActivityBuffer buffer = toDelete.getScout().getBuffer();
         Event deleted = moveEventActivitysToBuffer(toDelete, buffer);
 
-        //jos on viimeinen eventti joka kuuluu ryhmään niin
-        //poistetaan ryhmä ja cascaden avul se poistaa myös eventin
         if (deleted.getGroupId() != null && deleted.getGroupId().getEvents().size() == 1) {
             groupRepository.delete(deleted.getGroupId());
         } else {
@@ -87,13 +98,15 @@ public class EventService {
 
     }
 
+    /*
+    When event is deleted move all its activities to bufferzone.
+     */
     private Event moveEventActivitysToBuffer(Event event, ActivityBuffer buffer) {
         List<Activity> eventActivitys = event.getActivities();
 
         if (eventActivitys == null || eventActivitys.isEmpty()) {
             return event; //nothin to momve
         }
-        System.out.println("proceed to move");
         if (buffer.getActivities() == null) {
             buffer.setActivities(new ArrayList<>());
         }
@@ -104,5 +117,10 @@ public class EventService {
         activityRepository.save(eventActivitys);
 
         return event;
+    }
+
+    public List<Event> listScoutsEvents(Scout scout) {
+        List<Event> events = eventRepository.findByScout(scout);
+        return events;
     }
 }

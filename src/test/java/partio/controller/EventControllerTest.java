@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,12 +22,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import partio.domain.Activity;
+import partio.domain.ActivityBuffer;
 import partio.domain.Event;
 import partio.domain.EventGroup;
+import partio.domain.Scout;
 import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
 import partio.repository.EventGroupRepository;
 import partio.repository.EventRepository;
+import partio.repository.ScoutRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -42,18 +47,28 @@ public class EventControllerTest {
     private ActivityBufferRepository bufferRepo;
     @Autowired
     private ActivityRepository activityRepo;
+    @Autowired ScoutRepository scoutRepo;
+    private Scout scout;
 
     private MockMvc mockMvc;
     private Event validStub;
     private Event invalidStub;
+    Map<String, Object> sessionAttrs;
     private TestHelperJson helper;
 
     @Before
     public void setUp() {
+        scout = new Scout("mockid", null, null, "scout");
+        scoutRepo.save(scout);
+        ActivityBuffer buffer = new ActivityBuffer(null, scout);
+        bufferRepo.save(buffer);
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
-        validStub = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub");
-        invalidStub = new Event("", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, " ", " ");
+        validStub = new Event("le stub", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, "stub type", "this is a valid stub", scout);
+        invalidStub = new Event("", LocalDate.now(), LocalDate.now(), LocalTime.MAX, LocalTime.MAX, " ", " ", scout);
         helper = new TestHelperJson();
+        
+        sessionAttrs = new HashMap<>();
+        sessionAttrs.putIfAbsent("scout", scout);
     }
     
     @After
@@ -62,17 +77,20 @@ public class EventControllerTest {
         groupRepo.deleteAll();
         bufferRepo.deleteAll();
         eventRepo.deleteAll();
+        scoutRepo.deleteAll();
     }
 
     @Test
     public void statusOk() throws Exception {
-        mockMvc.perform(get("/events"))
+        mockMvc.perform(get("/events")
+        .sessionAttrs(sessionAttrs))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void validPost() throws Exception {
         ResultActions res = mockMvc.perform(MockMvcRequestBuilders.post("/events")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isOk());
@@ -84,6 +102,7 @@ public class EventControllerTest {
     @Test
     public void validWithGroupPost() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/eventgroup")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
@@ -91,12 +110,11 @@ public class EventControllerTest {
         validStub.setGroupId(group);
 
         ResultActions res = mockMvc.perform(MockMvcRequestBuilders.post("/events")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isOk());
 
-        System.out.println("expexted---\n        " + helper.responseExpectedToContain(validStub) + "<-expexted");
-        System.out.println("received--\n" + res.andReturn().getResponse().getContentAsString() + "<-received");
         String responseBody = res.andReturn().getResponse().getContentAsString();
         Assert.assertTrue(responseBody.contains(helper.responseExpectedToContain(validStub)));
         Assert.assertTrue(responseBody.contains("\"groupId\":" + group.getId()));
@@ -105,6 +123,7 @@ public class EventControllerTest {
     @Test
     public void invalidPost() throws Exception {
         ResultActions res = mockMvc.perform(MockMvcRequestBuilders.post("/events")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(invalidStub)))
                 .andExpect(status().isBadRequest());
@@ -113,6 +132,7 @@ public class EventControllerTest {
     @Test
     public void validPut() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/events")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isOk());
@@ -121,6 +141,7 @@ public class EventControllerTest {
 
         validStub.setInformation("we have modded info for testing");
         ResultActions res = mockMvc.perform(MockMvcRequestBuilders.put("/events/" + id)
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isOk());
@@ -132,6 +153,7 @@ public class EventControllerTest {
     @Test
     public void invalidPut() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/events")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isOk());
@@ -140,6 +162,7 @@ public class EventControllerTest {
 
         validStub.setInformation(" ");
         ResultActions res = mockMvc.perform(MockMvcRequestBuilders.put("/events/" + id)
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isBadRequest());
@@ -151,12 +174,15 @@ public class EventControllerTest {
     @Test
     public void validDelete() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/events")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isOk());
 
+        Assert.assertTrue(eventRepo.findAll().isEmpty() == false);
         long id = eventRepo.findAll().get(0).getId();
         ResultActions res = mockMvc.perform(MockMvcRequestBuilders.delete("/events/" + id)
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
@@ -165,17 +191,20 @@ public class EventControllerTest {
     @Test
     public void validDeletePutsActivityToBuffer() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/events")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(validStub)))
                 .andExpect(status().isOk());
 
         long id = eventRepo.findAll().get(0).getId();
         mockMvc.perform(MockMvcRequestBuilders.post("/events/"+ id + "/activities")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.activityToJson(new Activity("activityguid"))))
                 .andExpect(status().isOk());
         Assert.assertTrue(activityRepo.findAll().get(0).getEvent().getId() == id);
         ResultActions res = mockMvc.perform(MockMvcRequestBuilders.delete("/events/" + id)
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
@@ -186,8 +215,10 @@ public class EventControllerTest {
     @Test
     public void invalidDelete() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/events/1")
+                .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.eventToJson(validStub)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isForbidden());
     }
+
 }

@@ -21,7 +21,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import org.hibernate.annotations.Proxy;
+import lombok.ToString;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import partio.jsonconfig.EventSerializer;
 
@@ -32,7 +32,7 @@ import partio.jsonconfig.EventSerializer;
 @Entity
 @JsonDeserialize(using = EventDeserializer.class)
 @JsonSerialize(using = EventSerializer.class)
-//@Proxy(lazy=false)
+@ToString(exclude = {"activities"})
 //format is for reading date, serializer still has to write correct format
 public class Event extends AbstractPersistable<Long> {
 //event=kokous, sisältää aktiviteettejä
@@ -65,7 +65,7 @@ public class Event extends AbstractPersistable<Long> {
     @JoinColumn
     private Scout scout;
 
-    public Event(String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String type, String information) {
+    public Event(String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String type, String information, Scout scout) {
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -75,18 +75,7 @@ public class Event extends AbstractPersistable<Long> {
         this.information = information;
         this.groupId = null;
         this.activities = new ArrayList<>();
-    }
-
-    public Event(String title, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String type, String information, EventGroup groupId, List<Activity> activities) {
-        this.title = title;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.type = type;
-        this.information = information;
-        this.groupId = groupId;
-        this.activities = activities;
+        this.scout = scout;
     }
 
     public void setVariables(Event event) {

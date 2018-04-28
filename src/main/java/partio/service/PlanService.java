@@ -1,6 +1,5 @@
 package partio.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +23,9 @@ public class PlanService {
     @Autowired
     private PlanValidator validator;
 
+    /*
+    Remove plan from activity.
+    */
     public ResponseEntity<Object> removePlan(Long planId) {
         Plan toDelete = planRepository.findOne(planId);
         if (toDelete == null) {
@@ -34,6 +36,9 @@ public class PlanService {
         return ResponseEntity.ok(toDelete);
     }
 
+    /*
+    Add plan to activity.
+    */
     public ResponseEntity<Object> addPlan(Long activityId, Plan plan) {
         Activity activity = activityRepository.findOne(activityId);
         if (activity == null) {
@@ -58,6 +63,9 @@ public class PlanService {
     }
 
     //maybe remove guid when modifying as a sign of custom plan
+    /*
+    Edit plan.
+    */
     public ResponseEntity<Object> modifyPlan(Plan plan, Long planId) {
         if (plan == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -74,6 +82,9 @@ public class PlanService {
         return ResponseEntity.ok(original);
     }
 
+    /*
+    List all plans for one activity.
+    */
     public ResponseEntity<Object> list(Long activityId) {
         Activity activity = activityRepository.findOne(activityId);
         if (activity == null) {

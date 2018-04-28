@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
+import partio.domain.Scout;
 import partio.repository.ActivityBufferRepository;
 import partio.repository.ActivityRepository;
 import partio.repository.EventRepository;
@@ -23,6 +24,17 @@ public class ActivityValidator extends Validator<Activity> {
     @Autowired
     private ActivityBufferRepository bufferRepository;
 
+    public List<String> validateUnique(Activity activity, Long scoutId) {
+        List<String> errors = new ArrayList<>();
+        if (!acitvityRepository.findByScoutEvents(activity.getGuid(), scoutId).isEmpty()) {
+            errors.add("player already has this activity");
+        }
+        if (!acitvityRepository.findByScoutBuffer(activity.getGuid(), scoutId).isEmpty()) {
+            errors.add("player already has this activity");
+        }
+        return errors;
+    }
+
     @Override
     public List<String> validateNew(Activity activity) {
         List<String> errors = new ArrayList<>();
@@ -38,10 +50,6 @@ public class ActivityValidator extends Validator<Activity> {
         //not only space in strings 
         if (!validateStringNotOnlySpaces(activity.getGuid(), NOT_NULL)) {
             errors.add("guid cannot be whitespace only");
-        }
-
-        if (activityWithSameGuidExists((activity.getGuid()))) {
-            errors.add("activity with same guid already exists");
         }
 
         return errors;
@@ -89,12 +97,4 @@ public class ActivityValidator extends Validator<Activity> {
 
         return errors;
     }
-
-    private boolean activityWithSameGuidExists(String guid) {
-        if (acitvityRepository.findByGuid(guid) == null) {
-            return false;
-        }
-        return true;
-    }
-
 }
