@@ -22,6 +22,7 @@ import partio.repository.ScoutRepository;
 @RestController
 @Scope(value = "session")
 public class ScoutController {
+
     @Autowired
     private ScoutRepository scoutRepo;
     @Autowired
@@ -29,29 +30,27 @@ public class ScoutController {
 
     @PostMapping("/scout") //this is supposed to do only when user logs in first time
     public ResponseEntity<Object> registerOrLoginScout(@RequestHeader String Authorization, HttpServletRequest request, HttpSession session) {
-       try {
-            GoogleIdToken idToken = scoutService.verifyId(Authorization);
-            ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
+        return findOrCreateScout(Authorization, request, session);
+    }
 
-           // session.invalidate();
-           // HttpSession newSession = request.getSession();
-            
-            session.setAttribute("scout", scoutRepo.findByGoogleId(idToken.getPayload().getSubject()));
-            return newScout;
-            //many cases of failing login due to invalid token or expired so wrapped in try-catch
-        } catch (GeneralSecurityException | IOException | IllegalArgumentException | NullPointerException ex) {
-            session.invalidate();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
-        }
+    @RequestMapping(value = "/scout", method = RequestMethod.OPTIONS) //this is supposed to do only when user logs in first time
+    public ResponseEntity<Object> registerOrLoginScout2(@RequestHeader String Authorization, HttpServletRequest request, HttpSession session) {
+        return findOrCreateScout(Authorization, request, session);
+    }
 
+    //preflight response to axios, maybe fix?
+    @RequestMapping(value = "/**", method = RequestMethod.OPTIONS)
+    public ResponseEntity handle() {
+        return new ResponseEntity(HttpStatus.OK);
     }
     
-   @RequestMapping(value="/scout", method=RequestMethod.OPTIONS) //this is supposed to do only when user logs in first time
-    public ResponseEntity<Object> registerOrLoginScout2(@RequestHeader String Authorization, HttpServletRequest request, HttpSession session) {
-        try {
+    public ResponseEntity findOrCreateScout(String Authorization, HttpServletRequest request, HttpSession session) {
+         try {
             GoogleIdToken idToken = scoutService.verifyId(Authorization);
             ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
 
+            // session.invalidate();
+            // HttpSession newSession = request.getSession();
             session.setAttribute("scout", scoutRepo.findByGoogleId(idToken.getPayload().getSubject()));
             return newScout;
             //many cases of failing login due to invalid token or expired so wrapped in try-catch
@@ -59,8 +58,8 @@ public class ScoutController {
             session.invalidate();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
         }
-
     }
+    
 
     @DeleteMapping("/scouts/{scoutId}")
     public ResponseEntity<Object> deleteScout(HttpSession session) {
