@@ -30,21 +30,23 @@ public class ScoutService {
     /*
     If user isn't in scoutRepository, he will be added. Return created or found scout.
     */
-    public ResponseEntity<Object> findOrCreateScout(GoogleIdToken idToken) {
+    public ResponseEntity<Object> findOrCreateScout(GoogleIdToken idToken) throws NullPointerException {
+        System.out.println("enter");
         Payload payload = idToken.getPayload();
-
         String userId = payload.getSubject();
         Scout existingScout = scoutRepository.findByGoogleId(userId);
-
+        
+        
         if (existingScout != null) { //If scout already exists, don't add same scout twice.
+            System.out.println("found old");
             return ResponseEntity.ok(existingScout);
         }
-
+        System.out.println("making new");
         Scout scout = new Scout();
         scout.setGoogleId(userId);
         scout.setName((String) payload.get("name"));
         scout.setBuffer(bufferService.newBuffer(scout));
-
+        System.out.println("return new");
         scoutRepository.save(scout);
         return ResponseEntity.ok(scout);
     }
@@ -78,7 +80,7 @@ public class ScoutService {
     /*
     Google idToken verifier, https://developers.google.com/identity/sign-in/web/backend-auth
     */
-    public GoogleIdToken verifyId(String idTokenString) throws GeneralSecurityException, IOException {
+    public GoogleIdToken verifyId(String idTokenString) throws GeneralSecurityException, IOException, IllegalArgumentException {
 
         JacksonFactory jacksonFactory = new JacksonFactory();
         HttpTransport transport = new ApacheHttpTransport();

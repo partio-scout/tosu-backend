@@ -2,67 +2,68 @@ package partio.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-@Service
-public class FillPofService {
+@Component
+public class FilledPof {
 
     public static final String TARPPO = "tarppo", TARPPODEV = "tarppodev";
 
-    @Autowired
-    private PofService pofService;
+    private final RestTemplate restTemplate;
+    private static Map<String, ObjectNode> filledPofData;
 
-    private RestTemplate restTemplate;
-    private static Map<String, ExpirableObject> filledPofData;
-
-    public FillPofService() {
+    //here is held pofdata filled with other details that front end needs
+    //which are found behind description link in rawpof
+    public FilledPof() {
         restTemplate = new RestTemplate();
         filledPofData = new HashMap<>();
-        filledPofData.put(TARPPO, new ExpirableObject());
-        filledPofData.put(TARPPODEV, new ExpirableObject());
+        filledPofData.put(TARPPO, null);
+        filledPofData.put(TARPPODEV, null);
     }
 
-    public ObjectNode getAgeGroup(String agegroup) throws IOException {
-        updateFilledPofIfNeeded(agegroup);
-        return (ObjectNode) filledPofData.get(agegroup).getContent();
-    }
-
-    private void updateFilledPofIfNeeded(String agegroup) throws IOException {
+    //return full info of an agegroup
+    public ObjectNode getAgeGroup(String agegroup, ObjectNode rawPofData) throws IOException, NullPointerException {
         if (!filledPofData.containsKey(agegroup)) {
             throw new IllegalArgumentException("no agegroup found for:" + agegroup);
         }
-        ExpirableObject inMemoryFilledPof = filledPofData.get(agegroup);
-        if (!inMemoryFilledPof.getLastUpdated().equals(LocalDate.now())) {
+        return filledPofData.get(agegroup);
+    }
 
-            JsonNode filledAgeGroupNode = getTaskGroupsOfAge(agegroup, pofService.getPof());
-            filledPofData.get(agegroup).setContent(filledAgeGroupNode);
+    //update an agegroup
+    public void updateFilledPof(String agegroup, ObjectNode rawPofData) throws IOException {
+        if (!filledPofData.containsKey(agegroup)) {
+            throw new IllegalArgumentException("no agegroup found for:" + agegroup +" in map of agegroups");
         }
+        JsonNode filledAgeGroupNode = getTaskGroupsOfAgeFromRawPof(agegroup, rawPofData);
+        filledPofData.put(agegroup, (ObjectNode) filledAgeGroupNode);
 
     }
 
-    private JsonNode getTaskGroupsOfAge(String age, ObjectNode rawPof) {
+    //here we select which index is chosen. 
+    //May choose dev for less info to retrieved with dev for inspecting
+    //dev break front end since the rest arent handled. Use to read json structure
+    private JsonNode getTaskGroupsOfAgeFromRawPof(String age, ObjectNode rawPof) {
         JsonNode cutByAge = rawPof.findValue("agegroups");
         switch (age) {
             case TARPPO:
-                return fill(cutByAge.get(3), false);
+                return fillTasks(cutByAge.get(3), false);
             case TARPPODEV:
-                return fill(cutByAge.get(3), true);
+                return fillTasks(cutByAge.get(3), true);
             default:
                 throw new IllegalArgumentException("no agegroup found for:" + age);
         }
     }
 
-    private JsonNode fill(JsonNode ageGroupNode, boolean dev) {
+    //here we simply follow the link and replace the original tasks
+    //async operation would make this faster
+    private JsonNode fillTasks(JsonNode ageGroupNode, boolean dev) {
         ObjectMapper mapper = new ObjectMapper();
         System.out.println("enter");
 
@@ -83,7 +84,7 @@ public class FillPofService {
                 JsonNode detailedTask = restTemplate.getForObject(detailUrl, JsonNode.class);
                 detailedNode.setAll((ObjectNode) detailedTask);
 
-                //suggesions
+                //suggestions
                 if (shallowDescription.findValue("suggestions_details").findValue("details") != null) {
                     URI suggetionUrlUrl = URI.create(shallowDescription.findValue("suggestions_details").findValue("details").asText());
                     JsonNode pofSuggestionJson = restTemplate.getForObject(suggetionUrlUrl, JsonNode.class);
@@ -99,15 +100,10 @@ public class FillPofService {
                 shallowNode.setAll((ObjectNode) detailedNode);
 
             }
-
+//loggin how far done
             System.out.println(++i + "/" + tasklists.size() + " done");
         }
         System.out.println("exit");
         return ageGroupNode;
-    }
-
-    public void reload() throws IOException {
-        JsonNode filledAgeGroupNode = getTaskGroupsOfAge(TARPPO, pofService.getPof());
-        filledPofData.get(TARPPO).setContent(filledAgeGroupNode);
     }
 }

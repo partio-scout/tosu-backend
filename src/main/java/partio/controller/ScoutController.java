@@ -14,6 +14,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import partio.domain.Scout;
 import partio.repository.ScoutRepository;
 
@@ -36,7 +38,25 @@ public class ScoutController {
             
             session.setAttribute("scout", scoutRepo.findByGoogleId(idToken.getPayload().getSubject()));
             return newScout;
-        } catch (GeneralSecurityException | IOException ex) {
+            //many cases of failing login due to invalid token or expired so wrapped in try-catch
+        } catch (GeneralSecurityException | IOException | IllegalArgumentException | NullPointerException ex) {
+            session.invalidate();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
+        }
+
+    }
+    
+   @RequestMapping(value="/scout", method=RequestMethod.OPTIONS) //this is supposed to do only when user logs in first time
+    public ResponseEntity<Object> registerOrLoginScout2(@RequestHeader String Authorization, HttpServletRequest request, HttpSession session) {
+        try {
+            GoogleIdToken idToken = scoutService.verifyId(Authorization);
+            ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
+
+            session.setAttribute("scout", scoutRepo.findByGoogleId(idToken.getPayload().getSubject()));
+            return newScout;
+            //many cases of failing login due to invalid token or expired so wrapped in try-catch
+        } catch (GeneralSecurityException | IOException | IllegalArgumentException | NullPointerException ex) {
+            session.invalidate();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
         }
 
@@ -44,9 +64,14 @@ public class ScoutController {
 
     @DeleteMapping("/scouts/{scoutId}")
     public ResponseEntity<Object> deleteScout(HttpSession session) {
+        try {
             ResponseEntity result = scoutService.deleteById((Scout) session.getAttribute("scout"));
             session.invalidate();
             return result;
+            //either no session or doesnt exist
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
+        }
     }
 
 }
