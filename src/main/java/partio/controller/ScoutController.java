@@ -46,6 +46,23 @@ public class ScoutController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
         }
     }
+    @PostMapping("scout") //this is supposed to do only when user logs in first time
+    public ResponseEntity<Object> registerOrLoginScout2(@RequestBody ObjectNode Authorization, HttpServletRequest request, HttpSession session) {
+        System.out.println(Authorization.get("Authorization").asText());
+        try {
+            GoogleIdToken idToken = scoutService.verifyId(Authorization.get("Authorization").asText());
+            ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
+
+            // session.invalidate();
+            // HttpSession newSession = request.getSession();
+            session.setAttribute("scout", scoutRepo.findByGoogleId(idToken.getPayload().getSubject()));
+            return newScout;
+            //many cases of failing login due to invalid token or expired so wrapped in try-catch
+        } catch (GeneralSecurityException | IOException | IllegalArgumentException | NullPointerException ex) {
+            session.invalidate();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
+        }
+    }
 
     @DeleteMapping("/scouts/{scoutId}")
     public ResponseEntity<Object> deleteScout(HttpSession session) {
