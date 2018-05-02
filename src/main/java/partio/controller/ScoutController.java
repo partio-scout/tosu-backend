@@ -37,8 +37,6 @@ public class ScoutController {
             GoogleIdToken idToken = scoutService.verifyId(Authorization.get("Authorization").asText());
             ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
 
-            // session.invalidate();
-            // HttpSession newSession = request.getSession();
             session.setAttribute("scout", scoutRepo.findByGoogleId(idToken.getPayload().getSubject()));
             return newScout;
             //many cases of failing login due to invalid token or expired so wrapped in try-catch
@@ -49,7 +47,7 @@ public class ScoutController {
     }
     
 
-    @DeleteMapping("/scouts/{scoutId}")
+    @DeleteMapping("/scouts")
     public ResponseEntity<Object> deleteScout(HttpSession session) {
         try {
             ResponseEntity result = scoutService.deleteById((Scout) session.getAttribute("scout"));
