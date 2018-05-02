@@ -13,12 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import partio.domain.Scout;
 import partio.repository.ScoutRepository;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Scope(value = "session")
 public class ScoutController {
@@ -30,21 +30,6 @@ public class ScoutController {
 
     @PostMapping("/scout") //this is supposed to do only when user logs in first time
     public ResponseEntity<Object> registerOrLoginScout(@RequestHeader String Authorization, HttpServletRequest request, HttpSession session) {
-        return findOrCreateScout(Authorization, request, session);
-    }
-
-    @RequestMapping(value = "/scout", method = RequestMethod.OPTIONS) //this is supposed to do only when user logs in first time
-    public ResponseEntity<Object> registerOrLoginScout2(@RequestHeader String Authorization, HttpServletRequest request, HttpSession session) {
-        return findOrCreateScout(Authorization, request, session);
-    }
-
-    //preflight response to axios, maybe fix?
-    @RequestMapping(value = "/**", method = RequestMethod.OPTIONS)
-    public ResponseEntity handle() {
-        return new ResponseEntity(HttpStatus.OK);
-    }
-    
-    public ResponseEntity findOrCreateScout(String Authorization, HttpServletRequest request, HttpSession session) {
          try {
             GoogleIdToken idToken = scoutService.verifyId(Authorization);
             ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
@@ -59,7 +44,6 @@ public class ScoutController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
         }
     }
-    
 
     @DeleteMapping("/scouts/{scoutId}")
     public ResponseEntity<Object> deleteScout(HttpSession session) {

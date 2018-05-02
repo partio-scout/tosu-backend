@@ -19,18 +19,20 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(counterInterceptor);
     }
-
+/*
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
-                        "https://cors-anywhere.herokuapp.com",
+                        "http://localhost:3001",
                         "http://localhost:3000",
-                        "https://suunnittelu.partio-ohjelma.fi")         
+                        "https://localhost:3001",
+                        "https://localhost:3000",
+                        "https://suunnittelu.partio-ohjelma.fi")   
                 .allowedHeaders("Authorization", "Content-Type", "Access-Control-Allow-Origin")
             //    .exposedHeaders("Authorization", "Content-Type", "Access-Control-Allow-Origin")
                 .allowedMethods("PUT", "DELETE", "OPTIONS", "POST", "GET")
                 .allowCredentials(true);
     }
-    
+    */
 }

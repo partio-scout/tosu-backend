@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import partio.domain.Scout;
 import partio.repository.VerifyScoutService;
 import partio.service.ActivityService;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Scope(value = "session")
 public class ActivityController {
