@@ -11,12 +11,15 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import partio.domain.Scout;
 import partio.repository.ScoutRepository;
 
@@ -30,24 +33,31 @@ public class ScoutController {
     @Autowired
     private ScoutService scoutService;
 
-    @PostMapping("/scout") //this is supposed to do only when user logs in first time
+    @RequestMapping(value = "/scout", method = RequestMethod.OPTIONS)
+    public ResponseEntity handle() {
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/scout") // this is supposed to do only when user logs in first time
     public ResponseEntity<Object> registerOrLoginScout(@RequestBody ObjectNode Authorization, HttpSession session) {
 
         try {
+            //
             System.out.println(Authorization.get("Authorization").asText());
             GoogleIdToken idToken = scoutService.verifyId(Authorization.get("Authorization").asText());
             ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
 
             session.setAttribute("scout", scoutRepo.findByGoogleId(idToken.getPayload().getSubject()));
             return newScout;
-            //many cases of failing login due to invalid token or expired so wrapped in try-catch
+            // many cases of fa iling login due to invalid token or expired so wrapped in
+            // try-catch
         } catch (GeneralSecurityException | IOException | IllegalArgumentException | NullPointerException ex) {
             session.invalidate();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
         }
     }
 
-    @PostMapping("/logout") //this is supposed to do only when user logs in first time
+    @PostMapping("/logout") // this is supposed to do only when user logs in first time
     public ResponseEntity<Object> logout(HttpSession session) {
         session.invalidate();
         return ResponseEntity.ok(null);
@@ -59,7 +69,7 @@ public class ScoutController {
             ResponseEntity result = scoutService.deleteById((Scout) session.getAttribute("scout"));
             session.invalidate();
             return result;
-            //either no session or doesnt exist
+            // either no session or doesnt exist
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
