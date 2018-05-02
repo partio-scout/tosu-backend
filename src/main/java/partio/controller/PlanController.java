@@ -17,6 +17,7 @@ import partio.domain.Scout;
 import partio.service.PlanService;
 import partio.repository.VerifyScoutService;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Scope(value = "session")
 public class PlanController {

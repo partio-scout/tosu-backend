@@ -18,6 +18,7 @@ import partio.domain.Scout;
 import partio.repository.VerifyScoutService;
 import partio.service.ActivityService;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Scope(value = "session")
 public class ActivityController {

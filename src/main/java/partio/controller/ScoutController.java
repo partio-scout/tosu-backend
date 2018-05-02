@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import partio.domain.Scout;
 import partio.repository.ScoutRepository;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Scope(value = "session")
 public class ScoutController {
@@ -31,7 +32,7 @@ public class ScoutController {
 
     @PostMapping("/scout") //this is supposed to do only when user logs in first time
     public ResponseEntity<Object> registerOrLoginScout(@RequestBody ObjectNode Authorization, HttpSession session) {
-       
+
         try {
             System.out.println(Authorization.get("Authorization").asText());
             GoogleIdToken idToken = scoutService.verifyId(Authorization.get("Authorization").asText());
@@ -45,7 +46,12 @@ public class ScoutController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
         }
     }
-    
+
+    @PostMapping("/logout") //this is supposed to do only when user logs in first time
+    public ResponseEntity<Object> logout(HttpSession session) {
+        session.invalidate();
+        return ResponseEntity.ok(null);
+    }
 
     @DeleteMapping("/scouts")
     public ResponseEntity<Object> deleteScout(HttpSession session) {
