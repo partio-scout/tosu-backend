@@ -33,6 +33,7 @@ public class PostgreSQLDatabaseGenerator {
         metadata.addAnnotatedClass(EventGroup.class);
         metadata.addAnnotatedClass(Activity.class);
         metadata.addAnnotatedClass(ActivityBuffer.class);
+        metadata.addAnnotatedClass(Scout.class);
         SchemaExport schemaExport = new SchemaExport(
                 (MetadataImplementor) metadata.buildMetadata()
         );
