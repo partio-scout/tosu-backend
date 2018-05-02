@@ -17,7 +17,6 @@ import partio.repository.ScoutRepository;
 import partio.repository.VerifyScoutService;
 import partio.service.EventGroupService;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Scope(value = "session")
 @Transactional

@@ -21,7 +21,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(counterInterceptor);
     }
-/*
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -38,5 +38,5 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 .allowedMethods("PUT", "DELETE", "OPTIONS", "POST", "GET")
                 .allowCredentials(true);
     }
-    */
+    
 }

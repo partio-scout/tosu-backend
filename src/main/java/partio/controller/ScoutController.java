@@ -1,5 +1,6 @@
 package partio.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,11 +15,11 @@ import javax.servlet.http.HttpSession;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import partio.domain.Scout;
 import partio.repository.ScoutRepository;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Scope(value = "session")
 public class ScoutController {
@@ -29,9 +30,10 @@ public class ScoutController {
     private ScoutService scoutService;
 
     @PostMapping("/scout") //this is supposed to do only when user logs in first time
-    public ResponseEntity<Object> registerOrLoginScout(@RequestHeader String Authorization, HttpServletRequest request, HttpSession session) {
-         try {
-            GoogleIdToken idToken = scoutService.verifyId(Authorization);
+    public ResponseEntity<Object> registerOrLoginScout(@RequestBody ObjectNode Authorization, HttpServletRequest request, HttpSession session) {
+        System.out.println(Authorization.get("Authorization").asText());
+        try {
+            GoogleIdToken idToken = scoutService.verifyId(Authorization.get("Authorization").asText());
             ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
 
             // session.invalidate();
