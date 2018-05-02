@@ -19,7 +19,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(counterInterceptor);
     }
-/*
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -28,11 +28,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                         "http://localhost:3000",
                         "https://localhost:3001",
                         "https://localhost:3000",
-                        "https://suunnittelu.partio-ohjelma.fi")   
+                        "https://suunnittelu.partio-ohjelma.fi",
+                        "https://suunnittelu.partio-ohjelma.fi:3001",
+                        "https://suunnittelu.partio-ohjelma.fi:3001")   
                 .allowedHeaders("Authorization", "Content-Type", "Access-Control-Allow-Origin")
             //    .exposedHeaders("Authorization", "Content-Type", "Access-Control-Allow-Origin")
                 .allowedMethods("PUT", "DELETE", "OPTIONS", "POST", "GET")
                 .allowCredentials(true);
     }
-    */
+    
 }
