@@ -21,13 +21,10 @@ public class OptionsController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(value = "**", method = RequestMethod.OPTIONS)
+    @RequestMapping(value = "/**", method = RequestMethod.OPTIONS)
     public ResponseEntity handle3() {
         return new ResponseEntity(HttpStatus.OK);
     }
-    @RequestMapping(value = "*", method = RequestMethod.OPTIONS)
-    public ResponseEntity handle4() {
-        return new ResponseEntity(HttpStatus.OK);
-    }
+   
     
 }
