@@ -28,4 +28,12 @@ public class OptionsController {
     public ResponseEntity handle2() {
         return new ResponseEntity(HttpStatus.OK);
     }
+    @RequestMapping(value = "**", method = RequestMethod.OPTIONS)
+    public ResponseEntity handle3() {
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    @RequestMapping(value = "*", method = RequestMethod.OPTIONS)
+    public ResponseEntity handle4() {
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }
