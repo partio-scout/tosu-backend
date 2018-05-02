@@ -30,7 +30,7 @@ public class ScoutController {
     private ScoutService scoutService;
 
     @PostMapping("/scout") //this is supposed to do only when user logs in first time
-    public ResponseEntity<Object> registerOrLoginScout(@RequestBody ObjectNode Authorization, HttpServletRequest request, HttpSession session) {
+    public ResponseEntity<Object> registerOrLoginScout(@RequestBody ObjectNode Authorization, HttpSession session) {
        
         try {
             System.out.println(Authorization.get("Authorization").asText());
