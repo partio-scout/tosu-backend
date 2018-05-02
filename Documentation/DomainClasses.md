@@ -1,4 +1,4 @@
-![Domain Classes UML](https://github.com/partio-scout/tosu-backend/blob/master/Documentation/classdiagram.png)
+![Domain Classes UML](https://github.com/partio-scout/tosu-backend/blob/master/Documentation/cla.png)
 
 Käytetyt termit luokissa, ja muut mahdollisesti käytetty termit (Classes and other terms for them we might have used):
 
