@@ -8,6 +8,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.spi.MetadataImplementor;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import partio.domain.*;
+import partio.domain.Scout;
 
 public class PostgreSQLDatabaseGenerator {
     
