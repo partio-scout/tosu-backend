@@ -115,7 +115,7 @@ params: @PathVariable Long activityId, @PathVariable Long eventId, @PathVariable
 First vefiry that session's scout is owner for activity, event and activitybuffer. Then move activity from event to buffer.
 
 ## moveActivityFromBufferToEvent
-PUT: "//activity/{activityId}/frombuffer/{bufferId}/toevent/{eventId}"
+PUT: "/activity/{activityId}/frombuffer/{bufferId}/toevent/{eventId}"
 
 params: @PathVariable Long activityId, @PathVariable Long bufferId, @PathVariable Long eventId, HttpSession session
 
@@ -129,4 +129,23 @@ params: HttpSession session
 First vefiry that session's scout is owner for activity and event. Then change activity's event to other event.
 # Plan
 
-...
+## Add Plan For Activity
+POST: "/activity/{activityId}/plans"
+
+params: @PathVariable Long activityId, @RequestBody Plan jsonPlan, HttpSession session
+
+First vefiry that session's scout is owner of the activity. Then add plan to activity.
+
+## Modify Plan
+PUT: "/plans/{planId}"
+
+params: @PathVariable Long planId, @RequestBody Plan jsonPlan, HttpSession session
+
+First vefiry that session's scout is owner of the plan. Then edit plan.
+
+## Delete Plan
+DELETE: "/plans/{planId}"
+
+params: @PathVariable Long planId, HttpSession session
+
+First vefiry that session's scout is owner of the plan. Then delete plan.
