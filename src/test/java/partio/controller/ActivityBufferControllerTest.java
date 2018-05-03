@@ -71,7 +71,7 @@ public class ActivityBufferControllerTest {
 
     @Test
     public void statusOk() throws Exception {
-        mockMvc.perform(get("/activitybuffer/1")
+        mockMvc.perform(get("/activitybuffer")
                 .sessionAttrs(sessionAttrs))
                 .andExpect(status().isOk());
     }
