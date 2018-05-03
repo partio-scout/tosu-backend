@@ -176,8 +176,8 @@ public class ActivityControllerTest {
         Activity stub = new Activity(event2, "this is a valid stub");
         activityRepo.save(stub);
         bufferRepo.save(buffer);
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/activity/" + stub.getId() + "/fromevent/" + event2.getId() + "/tobuffer/" + buffer.getId())
+                                           //      "/activity/{activityId}       /fromevent/{eventId}             /tobuffer"
+        mockMvc.perform(MockMvcRequestBuilders.put("/activity/" + stub.getId() + "/fromevent/" + event2.getId() + "/tobuffer")
                 .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
@@ -211,8 +211,8 @@ public class ActivityControllerTest {
         bufferRepo.save(buffer);
         Activity stub = new Activity(null, buffer, null, "ayaaa");
         activityRepo.save(stub);
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/activity/" + stub.getId() + "/frombuffer/" + buffer.getId() + "/toevent/" + event2.getId())
+                                                  //"/activity/{activityId}       /frombuffer/toevent/{eventId}
+        mockMvc.perform(MockMvcRequestBuilders.put("/activity/" + stub.getId() + "/frombuffer/toevent/" + event2.getId())
                 .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());

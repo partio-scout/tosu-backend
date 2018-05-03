@@ -13,8 +13,6 @@ import partio.controller.OptionsController;
 public class Application extends SpringBootServletInitializer{
 
     public static void main(String[] args) {
-        //PostgreSQLDatabaseGenerator postgreSQLDatabaseGenerator = new PostgreSQLDatabaseGenerator();
-        //postgreSQLDatabaseGenerator.generate();
         SpringApplication.run(Application.class, args);
     }
 

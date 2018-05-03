@@ -71,14 +71,14 @@ public class ActivityBufferControllerTest {
 
     @Test
     public void statusOk() throws Exception {
-        mockMvc.perform(get("/activitybuffer/1")
+        mockMvc.perform(get("/activitybuffer")
                 .sessionAttrs(sessionAttrs))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void testAddActivityToBuffer() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/activitybuffer/{id}/activities/", buffer.getId())
+        mockMvc.perform(MockMvcRequestBuilders.post("/activitybuffer/activities", buffer.getId())
                 .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.activityToJson(activity)))
@@ -94,7 +94,7 @@ public class ActivityBufferControllerTest {
     @Test
     public void testAddActivityToBufferFail() throws Exception {
         activity.setGuid("");
-        mockMvc.perform(MockMvcRequestBuilders.post("/activitybuffer/{id}/activities/", buffer.getId())
+        mockMvc.perform(MockMvcRequestBuilders.post("/activitybuffer/activities", buffer.getId())
                 .sessionAttrs(sessionAttrs)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(helper.activityToJson(activity)))

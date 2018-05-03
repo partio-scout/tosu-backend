@@ -55,16 +55,5 @@ public class ActivityBufferService {
 
         return ResponseEntity.ok(activity);
     }
-    
-    /*
-    Add new bufferzone. Use this only when scout is created!
-    */
-    public ActivityBuffer newBuffer(Scout scout) {
-        ActivityBuffer buffer = new ActivityBuffer();
-        buffer.setScout(scout);
-        bufferRepository.save(buffer);
-        return buffer;
-
-    }
 
 }
