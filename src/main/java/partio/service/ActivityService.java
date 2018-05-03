@@ -72,13 +72,12 @@ public class ActivityService {
     /*
     Change position of activity from event to activitybuffer.
      */
-    public ResponseEntity<Object> moveActivityFromEventToBuffer(Long activityId, Long eventId, Long activityBufferId) {
+    public ResponseEntity<Object> moveActivityFromEventToBuffer(Long activityId, Long eventId, ActivityBuffer to) {
         Activity activity = activityRepository.findOne(activityId);
         if (activity == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         Event from = eventRepository.findOne(eventId);
-        ActivityBuffer to = bufferRepository.findOne(activityBufferId);
         if ((from == null || from.getActivities() == null || !from.getActivities().contains(activity)) || to == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
@@ -99,14 +98,13 @@ public class ActivityService {
     /*
     Change position of activity from activitybuffer to event.
      */
-    public ResponseEntity<Object> moveActivityFromBufferToEvent(Long activityId, Long eventId, Long activityBufferId) {
+    public ResponseEntity<Object> moveActivityFromBufferToEvent(Long activityId, Long eventId, ActivityBuffer from) {
         //                                                   .moveActivityFromBufferToEvent(id, eventId, bufferId);
         Activity activity = activityRepository.findOne(activityId);
         if (activity == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         Event to = eventRepository.findOne(eventId);
-        ActivityBuffer from = bufferRepository.findOne(activityBufferId);
 
         if (from == null || from.getActivities() == null || !from.getActivities().contains(activity)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

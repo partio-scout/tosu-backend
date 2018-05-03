@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import partio.domain.Activity;
 import partio.domain.Scout;
+import partio.repository.ActivityBufferRepository;
 import partio.repository.VerifyScoutService;
 import partio.service.ActivityService;
 
@@ -27,6 +28,8 @@ public class ActivityController {
     private ActivityService activityService;
     @Autowired
     private VerifyScoutService verifyScoutService;
+    @Autowired 
+    private ActivityBufferRepository bufferRepository;
 
     @DeleteMapping("/activities/{activityId}")
     public ResponseEntity<Object> deleteActivity(@PathVariable Long activityId, HttpSession session) {
@@ -57,37 +60,35 @@ public class ActivityController {
 
     //add tests to these
     //new stuff from here
-    @PutMapping("/activity/{activityId}/fromevent/{eventId}/tobuffer/{bufferId}")
+    @PutMapping("/activity/{activityId}/fromevent/{eventId}/tobuffer")
     public ResponseEntity<Object> moveActivityFromEventToBuffer(@PathVariable Long activityId,
-            @PathVariable Long eventId, @PathVariable Long bufferId,
+            @PathVariable Long eventId,
             HttpSession session) {
         
-        Scout scout = (Scout) session.getAttribute("scout");
+            Scout scout = (Scout) session.getAttribute("scout");
+            
+            if (!verifyScoutService.isOwnerForActivity(activityId, scout)
+                    && !verifyScoutService.isOwnerForEvent(eventId, scout)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of these!");
+            }
 
-        if (!verifyScoutService.isOwnerForActivity(activityId, scout)
-                && !verifyScoutService.isOwnerForEvent(eventId, scout)
-                && !verifyScoutService.isOwnerForBuffer(bufferId, scout)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of these!");
-        }
+            return activityService.moveActivityFromEventToBuffer(activityId, eventId, bufferRepository.findByScout(scout));
 
-        return activityService.moveActivityFromEventToBuffer(activityId, eventId, bufferId);
     }
 
-    @PutMapping("/activity/{activityId}/frombuffer/{bufferId}/toevent/{eventId}")
+    @PutMapping("/activity/{activityId}/frombuffer/toevent/{eventId}")
     public ResponseEntity<Object> moveActivityFromBufferToEvent(@PathVariable Long activityId,
-            @PathVariable Long bufferId, @PathVariable Long eventId,
+            @PathVariable Long eventId,
             HttpSession session) {
-    
         Scout scout = (Scout) session.getAttribute("scout");
 
         if (!verifyScoutService.isOwnerForActivity(activityId, scout)
-                && !verifyScoutService.isOwnerForEvent(eventId, scout)
-                && !verifyScoutService.isOwnerForBuffer(bufferId, scout)) {
-            
+                && !verifyScoutService.isOwnerForEvent(eventId, scout)) {
+
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of these!");
         }
 
-        return activityService.moveActivityFromBufferToEvent(activityId, eventId, bufferId);
+        return activityService.moveActivityFromBufferToEvent(activityId, eventId, bufferRepository.findByScout(scout));
     }
 
     @PutMapping("/activity/{activityId}/fromevent/{fromId}/toevent/{toId}")
@@ -95,7 +96,7 @@ public class ActivityController {
             @PathVariable Long fromId,
             @PathVariable Long toId,
             HttpSession session) {
-           
+
         Scout scout = (Scout) session.getAttribute("scout");
 
         if (!verifyScoutService.isOwnerForActivity(activityId, scout)

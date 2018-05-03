@@ -9,13 +9,16 @@ import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import partio.domain.ActivityBuffer;
 import partio.domain.Scout;
+import partio.repository.ActivityBufferRepository;
 import partio.repository.ScoutRepository;
 
 @Service
@@ -25,7 +28,7 @@ public class ScoutService {
     @Autowired
     private ScoutRepository scoutRepository;
     @Autowired
-    private ActivityBufferService bufferService;
+    private ActivityBufferRepository bufferRepository;
 
     /*
     If user isn't in scoutRepository, he will be added. Return created or found scout.
@@ -41,13 +44,28 @@ public class ScoutService {
             System.out.println("found old");
             return ResponseEntity.ok(existingScout);
         }
+        
+            
+    /*
+    Add new bufferzone. Use this only when scout is created!
+    *//*
+    public ActivityBuffer newBuffer(Scout scout) {
+        ActivityBuffer buffer = new ActivityBuffer();
+        buffer.setScout(scout);
+        bufferRepository.save(buffer);
+        return buffer;
+
+    }
+        */
         System.out.println("making new");
         Scout scout = new Scout();
         scout.setGoogleId(userId);
         scout.setName((String) payload.get("name"));
-        scout.setBuffer(bufferService.newBuffer(scout));
         System.out.println("return new");
         scoutRepository.save(scout);
+        ActivityBuffer buffer = new ActivityBuffer(new ArrayList<>(), scout);
+        bufferRepository.save(buffer);
+        
         return ResponseEntity.ok(scout);
     }
     /*

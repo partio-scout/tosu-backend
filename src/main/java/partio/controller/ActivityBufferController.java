@@ -26,11 +26,11 @@ public class ActivityBufferController {
     @Autowired
     private VerifyScoutService verifyScoutService;
 
-    @PostMapping("/activitybuffer/{bufferId}/activities/")
-    public ResponseEntity<Object> postActivity(@PathVariable Long bufferId, @RequestBody Activity activity, HttpSession session) {
+    @PostMapping("/activitybuffer/activities")
+    public ResponseEntity<Object> postActivity(@RequestBody Activity activity, HttpSession session) {
         Scout scout = (Scout) session.getAttribute("scout");
-        if (!verifyScoutService.isOwnerForBuffer(bufferId, scout)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this buffer!");
+        if (!verifyScoutService.isLoggedIn(scout)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not logged in!");
         }
         
         return bufferService.addActivityToBuffer(activity, scout);
