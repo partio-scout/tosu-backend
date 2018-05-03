@@ -21,17 +21,19 @@ params: HttpSession session
 Here scout can remove his account. Allso invalidate particular session.
 
 # ActivityBuffer
-## Post Activity
-POST: "/activitybuffer/{bufferId}/activities/" 
+ActivityBufferId comes from Scout (Scout comes from session)
 
-params: @PathVariable Long bufferId, @RequestBody Activity activity, HttpSession session
+## Post Activity
+POST: "/activitybuffer/activities/" 
+
+params: @RequestBody Activity activity, HttpSession session
 
 Firt verify that session's scout is owner to the activitybuffer. Then add activity to activitybuffer.
 Validate and return ResponseEntity.ok(activity) or list of errors (ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors)).
 ## Get Buffer Content
-GET: "/activitybuffer/{id}" 
+GET: "/activitybuffer/" 
 
-params: @PathVariable Long id, HttpSession session
+params: HttpSession session
 
 Firt verify that session's scout is owner to the activitybuffer. Then return all activities from this activitybuffer.
 
