@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import partio.domain.Scout;
-import partio.repository.ScoutRepository;
 import partio.repository.VerifyScoutService;
 import partio.service.EventGroupService;
 
@@ -27,10 +26,9 @@ public class EventGroupController {
     private EventGroupService groupService;
     @Autowired
     private VerifyScoutService verifyScoutService;
-    @Autowired
-    private ScoutRepository scoutRepository;
 
     //creates a new group without params since it's only made of ids
+    //use returned id in activity post to attach activity to a group
     @PostMapping("/eventgroup")
     public ResponseEntity<Object> postEventGroup(HttpSession session) throws IOException {
         Scout loggedInScout = (Scout) session.getAttribute("scout");

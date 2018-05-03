@@ -26,10 +26,10 @@ public class ActivityValidator extends Validator<Activity> {
 
     public List<String> validateUnique(Activity activity, Long scoutId) {
         List<String> errors = new ArrayList<>();
-        if (!acitvityRepository.findByScoutEvents(activity.getGuid(), scoutId).isEmpty()) {
+        if (!acitvityRepository.findByScoutEventsAndGuid(activity.getGuid(), scoutId).isEmpty()) {
             errors.add("player already has this activity");
         }
-        if (!acitvityRepository.findByScoutBuffer(activity.getGuid(), scoutId).isEmpty()) {
+        if (!acitvityRepository.findByScoutBufferAndGuid(activity.getGuid(), scoutId).isEmpty()) {
             errors.add("player already has this activity");
         }
         return errors;

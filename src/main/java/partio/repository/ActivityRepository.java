@@ -16,8 +16,12 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
     List<Activity> findByEventGroupId(Long groupId);
 
     @Query("SELECT a FROM Activity a LEFT JOIN a.event e LEFT JOIN e.scout s WHERE a.guid = ?1 AND s.id = ?2")
-    List<Activity> findByScoutEvents(String guid, Long eventId);
+    List<Activity> findByScoutEventsAndGuid(String guid, Long scoutId);
+    
     @Query("SELECT a FROM Activity a LEFT JOIN a.buffer b LEFT JOIN b.scout s WHERE a.guid = ?1 AND s.id = ?2")
-    List<Activity> findByScoutBuffer(String guid, Long eventId);
+    List<Activity> findByScoutBufferAndGuid(String guid, Long scoutId);
+    
+    @Query("SELECT a FROM Activity a LEFT JOIN a.event e LEFT JOIN e.scout s WHERE s.id = ?2")
+    List<Activity> findByScoutEvents(Long scoutId);
 
 }

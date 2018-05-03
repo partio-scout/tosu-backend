@@ -36,7 +36,7 @@ public class ActivityBufferController {
         return bufferService.addActivityToBuffer(activity, scout);
     }
 
-    @GetMapping("/activitybuffer")//id voi poistaa
+    @GetMapping("/activitybuffer")
     public ResponseEntity<Object> getBufferContent(HttpSession session) {
         Scout scout = (Scout) session.getAttribute("scout");
         if (!verifyScoutService.isLoggedIn(scout)) {

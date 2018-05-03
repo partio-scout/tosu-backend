@@ -39,14 +39,12 @@ public class ScoutController {
     public ResponseEntity<Object> registerOrLoginScout(@RequestBody ObjectNode Authorization, HttpSession session) {
 
         try {
-            //
-            System.out.println(Authorization.get("Authorization").asText());
             GoogleIdToken idToken = scoutService.verifyId(Authorization.get("Authorization").asText());
             ResponseEntity<Object> newScout = scoutService.findOrCreateScout(idToken);
 
             session.setAttribute("scout", scoutRepo.findByGoogleId(idToken.getPayload().getSubject()));
             return newScout;
-            // many cases of fa iling login due to invalid token or expired so wrapped in
+            // many cases of failing login due to invalid token or expired so it is wrapped in
             // try-catch
         } catch (GeneralSecurityException | IOException | IllegalArgumentException | NullPointerException ex) {
             session.invalidate();
@@ -54,12 +52,13 @@ public class ScoutController {
         }
     }
 
-    @PostMapping("/logout") // this is supposed to do only when user logs in first time
+    @PostMapping("/logout") // invalidates session
     public ResponseEntity<Object> logout(HttpSession session) {
         session.invalidate();
         return ResponseEntity.ok(null);
     }
 
+    // delete scout and all info towards it, delete done by service because activities of events needs to be deleted separately
     @DeleteMapping("/scouts")
     public ResponseEntity<Object> deleteScout(HttpSession session) {
         try {

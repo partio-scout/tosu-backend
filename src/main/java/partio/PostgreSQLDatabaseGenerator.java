@@ -9,6 +9,7 @@ import org.hibernate.boot.spi.MetadataImplementor;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import partio.domain.*;
 
+// aws had trouble setting database automatically, this fixed it
 public class PostgreSQLDatabaseGenerator {
     
     public void generate() {

@@ -33,16 +33,14 @@ public class PlanController {
     //   return planService.list(activityId);
     //}
     @PostMapping("/activity/{activityId}/plans")
-    public ResponseEntity<Object> addPlanForActivity(@PathVariable Long activityId, @RequestBody Plan jsonPlan,
+    public ResponseEntity<Object> addPlanForActivity(@PathVariable Long activityId,
+            @RequestBody Plan jsonPlan,
             HttpSession session) {
+        
         Scout scout = (Scout) session.getAttribute("scout");
-        System.out.println(activityId);
         if (!verifyScoutService.isOwnerForActivity(activityId, scout)) {
-            System.out.println("feil login");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event group!");
         }
-
-        System.out.println("enter service");
         return planService.addPlan(activityId, jsonPlan);
     }
 
@@ -58,9 +56,9 @@ public class PlanController {
 
     @DeleteMapping("/plans/{planId}")
     public ResponseEntity<Object> deletePlan(@PathVariable Long planId, HttpSession session) {
+    
         Scout scout = (Scout) session.getAttribute("scout");
         if (!verifyScoutService.isOwnerForPlan(planId, scout)) {
-            System.out.println("not owner of plan");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event group!");
         }
         return planService.removePlan(planId);

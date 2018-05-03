@@ -7,25 +7,21 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.Proxy;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
-//@Proxy(lazy=false)
 @ToString(exclude = {"events"})
 @JsonSerialize(using = EventGroupSerializer.class)
 public class EventGroup extends AbstractPersistable<Long> {
-   // @JsonManagedReference
+    
     @OneToMany(mappedBy = "groupId", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Event> events;
     
@@ -41,12 +37,13 @@ public class EventGroup extends AbstractPersistable<Long> {
         return hash;
     }
     
+    @Override
     public boolean equals(Object other) {
         if (other.getClass() != EventGroup.class) {
             return false;
         }
         EventGroup otherGroup = (EventGroup) other;
-        return this.getId() == otherGroup.getId();
+        return Objects.equals(this.getId(), otherGroup.getId());
     }    
 
 }
