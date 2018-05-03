@@ -1,19 +1,19 @@
 # Scout
-## Register Or LoginScout
+### Register Or LoginScout
 POST: "/scout" 
 
 params: @RequestBody ObjectNode Authorization, HttpSession session
 
 First try to verify googleId token. Then either create new scout (if scout logs in first time) or confirm login for alredy existing scout. 
 When new scout is created, create also new activitybuffer for this scout.
-## Logout
+### Logout
 POST: "/logout" 
 
 params: HttpSession session
 
 Invalidate session.
 
-## Delete Scout
+### Delete Scout
 DELETE: "/scouts"
 
 params: HttpSession session
@@ -23,14 +23,14 @@ Here scout can remove his account. Allso invalidate particular session.
 # ActivityBuffer
 ActivityBufferId comes from Scout (Scout comes from session)
 
-## Post Activity
+### Post Activity
 POST: "/activitybuffer/activities/" 
 
 params: @RequestBody Activity activity, HttpSession session
 
 Firt verify that session's scout is owner to the activitybuffer. Then add activity to activitybuffer.
 Validate and return ResponseEntity.ok(activity) or list of errors (ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors)).
-## Get Buffer Content
+### Get Buffer Content
 GET: "/activitybuffer/" 
 
 params: HttpSession session
@@ -38,28 +38,28 @@ params: HttpSession session
 Firt verify that session's scout is owner to the activitybuffer. Then return all activities from this activitybuffer.
 
 # Event
-## Get Events
+### Get Events
 DELETE: "/events"
 
 params: HttpSession session
 
 Verify that session has scout, what means someone is logged in. Then Return this scout's events.
  
-## Post Event
+### Post Event
 POST: "/events"
 
 params: @RequestBody Event event, HttpSession session
 
 Verify that session has scout again. Then set that session's scout is this even's scout, and then save event.
 
-## Edit Event
+### Edit Event
 PUT: "/events/{eventId}"
 
 params: @PathVariable Long eventId, @RequestBody Event event, HttpSession session
 
 Verify that session's scout is same as the scout of the event to be edited. Then edit event.
 
-## Delete Event
+### Delete Event
 DELETE: "/events/{eventId}"
 
 params: @PathVariable Long eventId, HttpSession session
@@ -70,14 +70,14 @@ When event is deleted, all its activities will be moved to scout's activitybuffe
 
 # EventGroup
 
-## Post EventGroup
+### Post EventGroup
 DELETE: "/eventgroup"
 
 params: HttpSession session
 
 Verify that session has scout. Then create eventgroup for this scout. Eventgroup is needed when scout wants create repeating event.
 
-## Delete
+### Delete
 DELETE: "/eventgroup/{groupId}"
 
 params: @PathVariable Long groupId, HttpSession session
@@ -88,42 +88,42 @@ When eventgroup is deleted, it means that all its repeating events will be remov
 
 # Activity
 
-## Delete Activity
+### Delete Activity
 DELETE: "/activities/{activityId}"
 
 params: @PathVariable Long activityId, HttpSession session
  
 Verify that session's scout is same as the scout of the avtivity's event or bufferzone. Then remove activity, and it's plans.
  
- ## Post Activity
+ ### Post Activity
 POST: "/events/{eventId}/activities"
 
 params: @PathVariable Long eventId, @RequestBody Activity jsonActivity, HttpSession session
 
 Verify that session has scout. Then add activity to an event that matches the eventId.
 
-## Get Activity
+### Get Activity
 GET: "/activities"
 
 params: HttpSession session
 
 Verify that session has scout. Then return activities from this scout's events.
 
-## Move Activity From Event To Buffer
+### Move Activity From Event To Buffer
 PUT: "/activity/{activityId}/fromevent/{eventId}/tobuffer/{bufferId}"
 
 params: @PathVariable Long activityId, @PathVariable Long eventId, @PathVariable Long bufferId, HttpSession session
 
 First vefiry that session's scout is owner for activity, event and activitybuffer. Then move activity from event to buffer.
 
-## moveActivityFromBufferToEvent
+### moveActivityFromBufferToEvent
 PUT: "/activity/{activityId}/frombuffer/{bufferId}/toevent/{eventId}"
 
 params: @PathVariable Long activityId, @PathVariable Long bufferId, @PathVariable Long eventId, HttpSession session
 
 First vefiry that session's scout is owner for activity, event and activitybuffer. Then move activity from activitybuffer to given event.
 
-## Move Activity From Event To Other Event
+### Move Activity From Event To Other Event
 PUT: "/activity/{activityId}/fromevent/{fromId}/toevent/{toId}"
 
 params: HttpSession session
@@ -131,21 +131,21 @@ params: HttpSession session
 First vefiry that session's scout is owner for activity and event. Then change activity's event to other event.
 # Plan
 
-## Add Plan For Activity
+### Add Plan For Activity
 POST: "/activity/{activityId}/plans"
 
 params: @PathVariable Long activityId, @RequestBody Plan jsonPlan, HttpSession session
 
 First vefiry that session's scout is owner of the activity. Then add plan to activity.
 
-## Modify Plan
+### Modify Plan
 PUT: "/plans/{planId}"
 
 params: @PathVariable Long planId, @RequestBody Plan jsonPlan, HttpSession session
 
 First vefiry that session's scout is owner of the plan. Then edit plan.
 
-## Delete Plan
+### Delete Plan
 DELETE: "/plans/{planId}"
 
 params: @PathVariable Long planId, HttpSession session
