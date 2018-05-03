@@ -39,7 +39,7 @@ public class PlanController {
         System.out.println(activityId);
         if (!verifyScoutService.isOwnerForActivity(activityId, scout)) {
             System.out.println("feil login");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event group!");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of the activity!");
         }
 
         System.out.println("enter service");
@@ -51,7 +51,7 @@ public class PlanController {
 
         Scout scout = (Scout) session.getAttribute("scout");
         if (!verifyScoutService.isOwnerForPlan(planId, scout)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event group!");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this plan!");
         }
         return planService.modifyPlan(jsonPlan, planId);
     }
@@ -61,7 +61,7 @@ public class PlanController {
         Scout scout = (Scout) session.getAttribute("scout");
         if (!verifyScoutService.isOwnerForPlan(planId, scout)) {
             System.out.println("not owner of plan");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this event group!");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you are not owner of this plan!");
         }
         return planService.removePlan(planId);
     }
