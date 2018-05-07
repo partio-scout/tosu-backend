@@ -1,4 +1,8 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package partio;
 
 import java.util.HashMap;
@@ -7,11 +11,20 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.spi.MetadataImplementor;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
-import partio.domain.*;
+import partio.domain.Activity;
+import partio.domain.Event;
+import partio.domain.EventGroup;
+import partio.domain.Plan;
+import partio.domain.ActivityBuffer;
+import partio.domain.Scout;
 
+/**
+ *
+ * @author kari
+ */
 public class PostgreSQLDatabaseGenerator {
     
-    public void generate() {
+public void generate() {
         Map<String, String> settings = new HashMap<>();
         settings.put("spring.datasource.driverClassName", "org.postgresql.Driver");
         settings.put("spring.jpa.database-platform", "org.hibernate.dialect.PostgreSQLDialect");
@@ -22,16 +35,18 @@ public class PostgreSQLDatabaseGenerator {
         settings.put("show_sql", "true");
         settings.put("server.port", "3001");
         settings.put("server.ssl.key-store-type", "PKCS12");
-        settings.put("server.ssl.key-store", "certificate.p12");
+        settings.put("server.ssl.key-store", "/var/www/certificate.p12");
         settings.put("server.ssl.key-store-password", "tosudb");
+        settings.put("server.ssl.key-password", "tosudb");
 
         MetadataSources metadata = new MetadataSources(
                 new StandardServiceRegistryBuilder()
                         .applySettings(settings)
                         .build());
         metadata.addAnnotatedClass(Event.class);
-        metadata.addAnnotatedClass(EventGroup.class);
         metadata.addAnnotatedClass(Activity.class);
+        metadata.addAnnotatedClass(EventGroup.class);
+        metadata.addAnnotatedClass(Plan.class);
         metadata.addAnnotatedClass(ActivityBuffer.class);
         metadata.addAnnotatedClass(Scout.class);
         SchemaExport schemaExport = new SchemaExport(
@@ -45,3 +60,4 @@ public class PostgreSQLDatabaseGenerator {
     }
     
 }
+
