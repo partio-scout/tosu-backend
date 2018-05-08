@@ -5,20 +5,22 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
-//import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import partio.domain.Activity;
 import partio.domain.ActivityBuffer;
 import partio.domain.Scout;
 import partio.repository.ActivityBufferRepository;
+import partio.repository.ActivityRepository;
 import partio.repository.ScoutRepository;
 
 @Service
@@ -29,6 +31,8 @@ public class ScoutService {
     private ScoutRepository scoutRepository;
     @Autowired
     private ActivityBufferRepository bufferRepository;
+    @Autowired
+    private ActivityRepository activityRepository;
 
     /*
     If user isn't in scoutRepository, he will be added. Return created or found scout.
@@ -44,20 +48,7 @@ public class ScoutService {
             System.out.println("found old");
             return ResponseEntity.ok(existingScout);
         }
-        
-            
-    /*
-    Add new bufferzone. Use this only when scout is created!
-    *//*
-    public ActivityBuffer newBuffer(Scout scout) {
-        ActivityBuffer buffer = new ActivityBuffer();
-        buffer.setScout(scout);
-        bufferRepository.save(buffer);
-        return buffer;
 
-    }
-        */
-        System.out.println("making new");
         Scout scout = new Scout();
         scout.setGoogleId(userId);
         scout.setName((String) payload.get("name"));
@@ -75,7 +66,9 @@ public class ScoutService {
             if (!scoutRepository.exists(scout.getId())) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
+            List<Activity> activities  = activityRepository.findByScoutEvents(scout.getId());
             scoutRepository.delete(scout);
+            activityRepository.delete(activities);
             return ResponseEntity.ok(scout);
     }
     

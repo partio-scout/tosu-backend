@@ -1,9 +1,7 @@
 package partio.domain;
 
 import partio.jsonconfig.EventDeserializer;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
@@ -14,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -50,15 +47,14 @@ public class Event extends AbstractPersistable<Long> {
     private LocalTime endTime;
 
     private String type;
-    @Column(length = 10000)
+    @Column(length = 2047)
     private String information;
 
     @ManyToOne
     @JoinColumn
     private EventGroup groupId;
 
-    //  @JsonManagedReference           //should be moved to buffer and not deleted anymore
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER/*, cascade = CascadeType.REMOVE, orphanRemoval = true*/)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
     private List<Activity> activities;
 
     @ManyToOne

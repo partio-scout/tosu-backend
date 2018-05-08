@@ -6,7 +6,6 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -19,12 +18,11 @@ import partio.jsonconfig.ActivityBufferSerializer;
 @AllArgsConstructor
 @Data
 @Entity
-//@Proxy(lazy=false)
 @JsonSerialize(using = ActivityBufferSerializer.class)
 public class ActivityBuffer extends AbstractPersistable<Long> {
 
     public static final int BUFFER_SIZE = 10;
-    // @JsonManagedReference
+    
     @OneToMany(mappedBy = "buffer", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Activity> activities;
     

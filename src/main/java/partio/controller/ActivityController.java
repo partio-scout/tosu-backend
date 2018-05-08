@@ -58,8 +58,8 @@ public class ActivityController {
         return ResponseEntity.ok(activityService.listActivitiesForUser(user));
     }
 
-    //add tests to these
-    //new stuff from here
+    //not restful methods that make life on frontend easy
+    
     @PutMapping("/activity/{activityId}/fromevent/{eventId}/tobuffer")
     public ResponseEntity<Object> moveActivityFromEventToBuffer(@PathVariable Long activityId,
             @PathVariable Long eventId,

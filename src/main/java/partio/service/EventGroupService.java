@@ -9,7 +9,9 @@ import partio.domain.Activity;
 import partio.domain.EventGroup;
 import partio.repository.ActivityRepository;
 import partio.repository.EventGroupRepository;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class EventGroupService {
 

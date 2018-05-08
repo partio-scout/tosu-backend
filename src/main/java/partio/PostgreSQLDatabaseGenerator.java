@@ -18,10 +18,9 @@ import partio.domain.Plan;
 import partio.domain.ActivityBuffer;
 import partio.domain.Scout;
 
-/**
- *
- * @author kari
- */
+
+// aws had trouble setting database automatically, this fixed it
+
 public class PostgreSQLDatabaseGenerator {
     
 public void generate() {

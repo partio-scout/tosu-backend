@@ -86,13 +86,14 @@ public class FilledPof {
 
                 //suggestions
                 if (shallowDescription.findValue("suggestions_details").findValue("details") != null) {
+                    System.out.println("sugg yeeeee");
                     URI suggetionUrlUrl = URI.create(shallowDescription.findValue("suggestions_details").findValue("details").asText());
                     JsonNode pofSuggestionJson = restTemplate.getForObject(suggetionUrlUrl, JsonNode.class);
                     detailedNode.set("suggestions_details", pofSuggestionJson);
                 } else {
                     detailedNode.set("suggestions_details", null);
                 }
-
+               
                 //add key and value that treesearch uses
                 //replace old data with extracted data
                 ObjectNode shallowNode = (ObjectNode) shallowDescription;

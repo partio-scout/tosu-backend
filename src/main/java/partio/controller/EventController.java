@@ -27,8 +27,6 @@ public class EventController {
     @Autowired
     private EventService eventService;
     @Autowired
-    private EventRepository eventRepo;
-    @Autowired
     private VerifyScoutService verifyScoutService;
     @Autowired
     EventRepository er;
