@@ -53,9 +53,9 @@ public class FilledPof {
         JsonNode cutByAge = rawPof.findValue("agegroups");
         switch (age) {
             case TARPPO:
-                return fillTasks(cutByAge.get(3), false);
+                return fillTasks(cutByAge.get(2), false);
             case TARPPODEV:
-                return fillTasks(cutByAge.get(3), true);
+                return fillTasks(cutByAge.get(2), true);
             default:
                 throw new IllegalArgumentException("no agegroup found for:" + age);
         }
