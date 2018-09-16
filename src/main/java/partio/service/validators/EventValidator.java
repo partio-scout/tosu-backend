@@ -39,9 +39,6 @@ public class EventValidator extends Validator<Event> {
         try {
             List<String> errors = validateNewAndOld(event);
 
-            if (!startAfterCurrentTime(event)) {
-                errors.add("you cannot create an event that starts in the past");
-            }
             if (event.getGroupId() != null) {
                 if (eventRepository.countByGroupId(event.getGroupId()) >= GROUP_LIMIT) {
                     errors.add("This event group is full. Max capacity:" + GROUP_LIMIT);

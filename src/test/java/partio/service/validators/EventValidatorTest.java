@@ -38,9 +38,9 @@ public class EventValidatorTest {
     public void makePreEvent() {
         scout = new Scout("mockid", null, null, "scout");
         scoutRepository.save(scout);
-        
+
         this.preEvent = new Event("stub", LocalDate.now().minusMonths(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "type", "information", scout);
-        
+
     }
     @After
     public void clean() {
@@ -91,12 +91,6 @@ public class EventValidatorTest {
     @Test
     public void invalidNewEventStartOver1Year() {
         Event stub = new Event("lol", DateNowPlusAmount(1, 0, 1), DateNowPlusAmount(1, 0, 1), LocalTime.MIN, LocalTime.MIN, "ass", "asshole", scout);
-        Assert.assertFalse("validator should have found errors!", 0 == validator.validateNew(stub).size());
-    }
-
-    @Test
-    public void invalidNewEventInPast() {
-        Event stub = new Event("lol", LocalDate.now().minusDays(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "ass", "asshole", scout);
         Assert.assertFalse("validator should have found errors!", 0 == validator.validateNew(stub).size());
     }
 
@@ -249,12 +243,6 @@ public class EventValidatorTest {
     @Test
     public void invalidModEventStartOver1Year() {
         Event stub = new Event("lol", DateNowPlusAmount(1, 0, 1), DateNowPlusAmount(1, 0, 1), LocalTime.MIN, LocalTime.MIN, "ass", "asshole", scout);
-        Assert.assertFalse(validator.validateNew(stub).toString(), 0 == validator.validateNew(stub).size());
-    }
-
-    @Test
-    public void invalidModEventInPast() {
-        Event stub = new Event("lol", LocalDate.now().minusDays(1), DateNowPlusAmount(0, 0, 1), LocalTime.MIN, LocalTime.MIN, "ass", "asshole", scout);
         Assert.assertFalse(validator.validateNew(stub).toString(), 0 == validator.validateNew(stub).size());
     }
 
